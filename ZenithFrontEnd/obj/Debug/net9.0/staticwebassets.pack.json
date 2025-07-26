@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/ZenithFrontEnd/obj/Debug/net9.0/scopedcss/projectbundle/ZenithFrontEnd.bundle.scp.css",
+      "PackagePath": "staticwebassets/ZenithFrontEnd.aaf5j6supq.bundle.scp.css"
+    },
+    {
+      "Id": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/ZenithFrontEnd/wwwroot/app.css",
+      "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "obj/Debug/net9.0/staticwebassets/msbuild.ZenithFrontEnd.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj/Debug/net9.0/staticwebassets/msbuild.ZenithFrontEnd.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net9.0/staticwebassets/msbuild.build.ZenithFrontEnd.props",
+      "PackagePath": "build\\ZenithFrontEnd.props"
+    },
+    {
+      "Id": "obj/Debug/net9.0/staticwebassets/msbuild.buildMultiTargeting.ZenithFrontEnd.props",
+      "PackagePath": "buildMultiTargeting\\ZenithFrontEnd.props"
+    },
+    {
+      "Id": "obj/Debug/net9.0/staticwebassets/msbuild.buildTransitive.ZenithFrontEnd.props",
+      "PackagePath": "buildTransitive\\ZenithFrontEnd.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

@@ -1,0 +1,17 @@
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/bin/Debug/net9.0/Zenith.Application.deps.json
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/bin/Debug/net9.0/Zenith.Application.dll
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/bin/Debug/net9.0/Zenith.Application.pdb
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/bin/Debug/net9.0/Zenith.Contracts.dll
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/bin/Debug/net9.0/Zenith.Models.dll
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/bin/Debug/net9.0/Zenith.Contracts.pdb
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/bin/Debug/net9.0/Zenith.Models.pdb
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/Zenith.Application.csproj.AssemblyReference.cache
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/Zenith.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/Zenith.Application.AssemblyInfoInputs.cache
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/Zenith.Application.AssemblyInfo.cs
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/Zenith.Application.csproj.CoreCompileInputs.cache
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/Zenith.A.B994D58C.Up2Date
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/Zenith.Application.dll
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/refint/Zenith.Application.dll
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/Zenith.Application.pdb
+/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/Debug/net9.0/ref/Zenith.Application.dll

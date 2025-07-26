@@ -1,0 +1,126 @@
+using Npgsql;
+using Zenith.Application.Database;
+using Zenith.Models.Account;
+
+namespace Zenith.Application.Repository;
+
+public class AccountRepo : IAccountRepo //inheritance, this is the implmentation of the IAccountRepo to implement the data collection methods
+{
+
+    private readonly IDBConnectionFactory _dbConnection;
+
+    public AccountRepo(IDBConnectionFactory dbConnection) //loosely coupling the DbConnection to the Repo
+    {
+        _dbConnection = dbConnection;
+    }
+
+    private async Task<int> CreateID() //will create a new ID for the account for the account being created 
+    {
+        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            var command = new NpgsqlCommand("SELECT * FROM students ORDER BY studentid DESC", connection);
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                try
+                {
+                    await reader.ReadAsync();
+                    int id = reader.GetInt32(0);
+                    int newId = id + 1;
+                    return newId;
+                }
+                catch (Exception ex)
+                {
+                    return 1;
+                }
+
+
+            }
+
+
+        }
+    }
+
+
+    public async Task<bool> CreateAccount(SignUp account) //add duplicate account protection
+    {
+        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            try
+            {
+                var command = new NpgsqlCommand("INSERT INTO students (studentid, email, username, fullname, password, classcode) VALUES ( @student, @email,  @username,  @fullname, @password, @classcode)", connection);
+                int Id = await CreateID();
+                
+                command.Parameters.AddWithValue("@student", Id); //using parameters for the SQL to prevent from SQL injection
+                command.Parameters.AddWithValue("@email", account.Email);
+                command.Parameters.AddWithValue("@username", account.Username);
+                command.Parameters.AddWithValue("@fullname", account.Fullname);
+                command.Parameters.AddWithValue("@password", account.Password);
+                if (account.ClassCode != null)
+                {
+                    command.Parameters.AddWithValue("@classcode", account.ClassCode);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@classcode", DBNull.Value);
+                }
+
+                await command.ExecuteNonQueryAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+            
+            
+            
+        }
+        
+    }
+
+    public async Task<int> LogIn(LogIn account)
+    {
+        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            var command = new NpgsqlCommand("SELECT studentid FROM students WHERE password = @password AND username = @username", connection);
+            command.Parameters.AddWithValue("@username", account.Username);
+            command.Parameters.AddWithValue("@password", account.Password);
+            try
+            {
+                await using (var reader = await command.ExecuteReaderAsync())
+                {
+                    await reader.ReadAsync();
+                    int id = reader.GetInt32(0);
+                    return id;
+
+
+        
+                }
+            }
+            catch
+            {
+                return 0; //no account will have ID 0 so this can be checked to say that it did not work
+            }
+            
+            
+        }
+        throw new NotImplementedException();
+    }
+
+    public Task<account> GetAccountInfo(string accountId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> UpdateAccount(SignUp account)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteAccount(string accountId)
+    {
+        throw new NotImplementedException();
+    }
+}

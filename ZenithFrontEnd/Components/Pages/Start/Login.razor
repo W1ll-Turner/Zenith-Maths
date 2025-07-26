@@ -1,0 +1,26 @@
+﻿@page "/login"
+
+<h3>Login</h3>
+
+
+
+@if (Error == true) @*This is displaying the error messaghe when the username or password are incorrect, they did not match the regex or did not validate  by the API*@
+{
+    <p style="color:#b32121">Wrong username or password</p>
+}
+<p>username of password incorrect</p>
+<form @onsubmit="Submit">
+    <div> @*This is the forms taking the username and password to log in *@
+        <label>
+            Username:
+            <input @bind="Username" />
+        </label>
+        <label>
+            Password:
+            <input @bind="Password"/>
+        </label>
+    </div>
+    <div>
+        <button type="submit">Login</button>
+    </div>
+</form>

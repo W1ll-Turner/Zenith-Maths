@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{3F184141-01A5-405D-BC04-4D82A2C0B460}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{551E2B06-DE1E-4A20-B520-E0A1325A8296}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenith.Contracts", "Zenith.Contracts\Zenith.Contracts.csproj", "{66998B6E-115E-4BEE-BCDB-40B57F7EDC2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZenithFrontEnd", "ZenithFrontEnd\ZenithFrontEnd.csproj", "{4EA2D865-2C11-4600-A86E-B4ED02797109}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZenithAPI", "ZenithAPI\ZenithAPI.csproj", "{88D42D0B-9AAE-4226-8FB1-1BB509C058A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenith.Application", "Zenith.Application\Zenith.Application.csproj", "{01F0B582-12AC-4E9F-919D-18A1F2D0BEDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenith.Models", "Zenith.Models\Zenith.Models.csproj", "{629BB8BA-A0FB-49C7-9256-0153968CB107}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66998B6E-115E-4BEE-BCDB-40B57F7EDC2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66998B6E-115E-4BEE-BCDB-40B57F7EDC2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66998B6E-115E-4BEE-BCDB-40B57F7EDC2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66998B6E-115E-4BEE-BCDB-40B57F7EDC2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EA2D865-2C11-4600-A86E-B4ED02797109}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA2D865-2C11-4600-A86E-B4ED02797109}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EA2D865-2C11-4600-A86E-B4ED02797109}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA2D865-2C11-4600-A86E-B4ED02797109}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88D42D0B-9AAE-4226-8FB1-1BB509C058A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88D42D0B-9AAE-4226-8FB1-1BB509C058A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88D42D0B-9AAE-4226-8FB1-1BB509C058A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88D42D0B-9AAE-4226-8FB1-1BB509C058A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01F0B582-12AC-4E9F-919D-18A1F2D0BEDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01F0B582-12AC-4E9F-919D-18A1F2D0BEDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01F0B582-12AC-4E9F-919D-18A1F2D0BEDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01F0B582-12AC-4E9F-919D-18A1F2D0BEDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{629BB8BA-A0FB-49C7-9256-0153968CB107}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{629BB8BA-A0FB-49C7-9256-0153968CB107}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{629BB8BA-A0FB-49C7-9256-0153968CB107}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{629BB8BA-A0FB-49C7-9256-0153968CB107}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4EA2D865-2C11-4600-A86E-B4ED02797109} = {551E2B06-DE1E-4A20-B520-E0A1325A8296}
+		{01F0B582-12AC-4E9F-919D-18A1F2D0BEDD} = {3F184141-01A5-405D-BC04-4D82A2C0B460}
+		{88D42D0B-9AAE-4226-8FB1-1BB509C058A0} = {3F184141-01A5-405D-BC04-4D82A2C0B460}
+	EndGlobalSection
+EndGlobal

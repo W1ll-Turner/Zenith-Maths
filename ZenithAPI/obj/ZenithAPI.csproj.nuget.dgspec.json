@@ -1,0 +1,286 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/ZenithAPI/ZenithAPI.csproj": {}
+  },
+  "projects": {
+    "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/Zenith.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/Zenith.Application.csproj",
+        "projectName": "Zenith.Application",
+        "projectPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/Zenith.Application.csproj",
+        "packagesPath": "/Users/williamturner/.nuget/packages/",
+        "outputPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/williamturner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Contracts/Zenith.Contracts.csproj": {
+                "projectPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Contracts/Zenith.Contracts.csproj"
+              },
+              "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Models/Zenith.Models.csproj": {
+                "projectPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Models/Zenith.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "DependencyInjection": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.7, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[10.0.0-preview.5.25277.114, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.0-preview.5.25277.114, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/williamturner/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Contracts/Zenith.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Contracts/Zenith.Contracts.csproj",
+        "projectName": "Zenith.Contracts",
+        "projectPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Contracts/Zenith.Contracts.csproj",
+        "packagesPath": "/Users/williamturner/.nuget/packages/",
+        "outputPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/williamturner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/williamturner/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Models/Zenith.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Models/Zenith.Models.csproj",
+        "projectName": "Zenith.Models",
+        "projectPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Models/Zenith.Models.csproj",
+        "packagesPath": "/Users/williamturner/.nuget/packages/",
+        "outputPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Models/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/williamturner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/williamturner/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/ZenithAPI/ZenithAPI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/ZenithAPI/ZenithAPI.csproj",
+        "projectName": "ZenithAPI",
+        "projectPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/ZenithAPI/ZenithAPI.csproj",
+        "packagesPath": "/Users/williamturner/.nuget/packages/",
+        "outputPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/ZenithAPI/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/williamturner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/Zenith.Application.csproj": {
+                "projectPath": "/Users/williamturner/Library/Mobile Documents/com~apple~CloudDocs/Documents/A-levels/Computer Science/NEA_ZenithMaths/Zenith.Application/Zenith.Application.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/williamturner/.dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
