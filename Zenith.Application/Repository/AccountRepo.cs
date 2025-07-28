@@ -56,7 +56,7 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
                 command.Parameters.AddWithValue("@username", account.Username);
                 command.Parameters.AddWithValue("@fullname", account.Fullname);
                 command.Parameters.AddWithValue("@password", account.Password);
-                if (account.ClassCode != null)
+                if (account.ClassCode != null) //this will add a class code to the student depedning on if they are the member of a class or not 
                 {
                     command.Parameters.AddWithValue("@classcode", account.ClassCode);
                 }
@@ -65,7 +65,7 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
                     command.Parameters.AddWithValue("@classcode", DBNull.Value);
                 }
 
-                await command.ExecuteNonQueryAsync();
+                await command.ExecuteNonQueryAsync(); //executing the query to add the data to the database
                 return true;
             }
             catch (Exception ex)
@@ -80,7 +80,7 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
         
     }
 
-    public async Task<int> LogIn(LogIn account)
+    public async Task<int> LogIn(LogIn account) //this will be used to check if the account exists and if so it returns the id, this will be used for the authentication token
     {
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
@@ -106,7 +106,7 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
             
             
         }
-        throw new NotImplementedException();
+        
     }
 
     public Task<account> GetAccountInfo(string accountId)

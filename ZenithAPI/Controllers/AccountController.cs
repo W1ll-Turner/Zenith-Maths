@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Zenith.Application.Repository;
+using Zenith.Application.TokenService;
 using Zenith.Contracts.Request.Account;
 using Zenith.Models.Account;
 using ZenithAPI.ContractMapping;
@@ -12,9 +13,10 @@ namespace ZenithAPI.Controllers;
 public class AccountController : ControllerBase //inhertiance from the ASP.NET Framework to enable the controller functionalilty 
 {
     private readonly IAccountRepo _accountRepo;
-
-    public AccountController(IAccountRepo accountRepo) //loosely coupling the account repository for the data access capabilites 
+    private readonly IZenithTokenService  _tokenService;
+    public AccountController(IAccountRepo accountRepo, IZenithTokenService tokenService) //loosely coupling the account repository for the data access capabilites 
     {
+        _tokenService = tokenService;
         _accountRepo = accountRepo;
     }
 
@@ -24,9 +26,9 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
     {
 
         SignUp account = request.MapFromSignUpRequest();
-        Console.WriteLine("mapped");
-        bool success = await _accountRepo.CreateAccount(account);
-        Console.WriteLine("added to db");
+   
+        bool success = await _accountRepo.CreateAccount(account); //adding the data to the database
+        
         return success ? Ok() : BadRequest();
 
     }
@@ -35,17 +37,19 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         LogIn account = request.MapFromLogInRequest();
-        int id = await _accountRepo.LogIn(account);
+        int id = await _accountRepo.LogIn(account); //gets the id of the account
         if (id == 0)
         {
             return Unauthorized();
         }
         else
         {
-            //create token
+            var s = id.ToString();
+            var Token = _tokenService.CreateToken(s);
+            return Ok(Token);
         }
 
-    throw new NotImplementedException();
+    
 
     }
     

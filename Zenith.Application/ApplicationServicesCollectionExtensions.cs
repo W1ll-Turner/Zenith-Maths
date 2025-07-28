@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Zenith.Application.Database;
 using Zenith.Application.Repository;
+using Zenith.Application.TokenService;
 
 namespace Zenith.Application;
 
@@ -10,6 +11,7 @@ public static class ApplicationServicesCollectionExtensions //This is used to in
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddSingleton<IAccountRepo, AccountRepo>();
+        services.AddSingleton<IZenithTokenService, ZenithTokenService>();
         return services;
     }
 
