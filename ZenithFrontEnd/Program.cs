@@ -1,6 +1,10 @@
 using Blazored.LocalStorage;
 using ZenithFrontEnd.Components;
 
+using System.Text.Json;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
+
 namespace ZenithFrontEnd;
 
 public class Program
@@ -12,8 +16,10 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-        builder.Services.AddHttpClient();
-        builder.Services.AddBlazoredLocalStorage();
+        builder.Services.AddHttpClient(); //used for requestin the API 
+        builder.Services.AddBlazoredLocalStorage(); // used for sotring the authorsation token in the browser storage
+
+        
         
         var app = builder.Build();
 

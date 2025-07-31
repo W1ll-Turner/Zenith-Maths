@@ -1,11 +1,9 @@
 
 
-using System.Text.Json;
+
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.AspNetCore.Identity.Data;
-using Zenith.Contracts.Request;
+
 using Zenith.Contracts.Request.Account;
 
 namespace ZenithFrontEnd.Components.Pages.Start;
@@ -13,8 +11,8 @@ namespace ZenithFrontEnd.Components.Pages.Start;
 public partial class Login : ComponentBase //inheritance from ASP.NET Framework allowing for the code to be linked into the HTML file
 {
     
-    public required string Username { get; set; } = " "; 
-    public required string Password { get; set; } = " ";
+    public required string Username { get; set; } = ""; 
+    public required string Password { get; set; } = "";
     public bool Error { get; set; } = false;
 
     private async Task Submit()
@@ -36,18 +34,20 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
                 username = Username,
                 password = Password
             };
+            Console.WriteLine(request.password);
+            Console.WriteLine(request.username);
             var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5148/api/");
             HttpResponseMessage response = await client.PostAsJsonAsync("Account/Login", request);
             if (response.IsSuccessStatusCode)
             {
-                string token = await response.Content.ReadAsStringAsync();
-                var jwt = JsonSerializer.Deserialize<JwtResponse>(token);
-                
-                Console.WriteLine(token);
-                Console.WriteLine(jwt.Token);
-                
-                await LocalStorage.SetItemAsync("authToken", jwt.Token);
+               string Id = response.Content.ReadAsStringAsync().Result;
+               Console.WriteLine(Id);
+        
+            }
+            else
+            {
+                Console.WriteLine("no work");
             }
             
             
@@ -73,9 +73,6 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         
     }
 
-    private class JwtResponse
-    {
-        public string Token { get; set; }
-    }
+    
     
 }

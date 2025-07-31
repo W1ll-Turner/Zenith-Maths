@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Zenith.Application.Repository;
-using Zenith.Application.TokenService;
 using Zenith.Contracts.Request.Account;
 using Zenith.Models.Account;
 using ZenithAPI.ContractMapping;
@@ -12,10 +11,10 @@ namespace ZenithAPI.Controllers;
 public class AccountController : ControllerBase //inhertiance from the ASP.NET Framework to enable the controller functionalilty 
 {
     private readonly IAccountRepo _accountRepo;
-    private readonly IZenithTokenService  _tokenService;
-    public AccountController(IAccountRepo accountRepo, IZenithTokenService tokenService) //loosely coupling the account repository for the data access capabilites 
+  
+    public AccountController(IAccountRepo accountRepo) //loosely coupling the account repository for the data access capabilites 
     {
-        _tokenService = tokenService;
+     
         _accountRepo = accountRepo;
     }
 
@@ -44,9 +43,7 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
         else
         {
             var s = id.ToString();
-            var Token = _tokenService.CreateToken(s);
-            Console.WriteLine(Token);
-            return Ok(Token);
+            return Ok(s);
         }
 
     
