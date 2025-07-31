@@ -1,7 +1,12 @@
 
 
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Identity.Data;
+using Zenith.Contracts.Request;
+using Zenith.Contracts.Request.Account;
 
 namespace ZenithFrontEnd.Components.Pages.Start;
 
@@ -12,7 +17,7 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
     public required string Password { get; set; } = " ";
     public bool Error { get; set; } = false;
 
-    private void Submit()
+    private async Task Submit()
     {
         string usernamePattern = "[a-zA-Z_0-9]+";   //Regex to match a Username, (Any combination of a-z 0-9 with an underscore, no spaces)
         string passwordPattern = "[a-zA-Z0-9]+";// regex to match a Password. This is any combination of a-z 0-9 however with no spaces or underscores
@@ -23,13 +28,38 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         
         if (userRg.IsMatch(Username) && passwordRg.IsMatch(Password))
         {
+            Console.WriteLine("match");
             //send request to API
             //move onto dashboard if true
+            loginRequest request = new loginRequest()
+            {
+                username = Username,
+                password = Password
+            };
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5148/api/");
+            HttpResponseMessage response = await client.PostAsJsonAsync("Account/Login", request);
+            if (response.IsSuccessStatusCode)
+            {
+                string token = await response.Content.ReadAsStringAsync();
+                var jwt = JsonSerializer.Deserialize<JwtResponse>(token);
+                
+                Console.WriteLine(token);
+                Console.WriteLine(jwt.Token);
+                
+                await LocalStorage.SetItemAsync("authToken", jwt.Token);
+            }
             
+            
+            
+           
+
+
         }
         else //This will display the message that they have given an invalid username and password
         {
             Error = true;
+            return;
         }
         
         
@@ -38,6 +68,14 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         
         
         
+        
+        
+        
+    }
+
+    private class JwtResponse
+    {
+        public string Token { get; set; }
     }
     
 }

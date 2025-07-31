@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using ZenithFrontEnd.Components;
 
 namespace ZenithFrontEnd;
@@ -11,7 +12,9 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-
+        builder.Services.AddHttpClient();
+        builder.Services.AddBlazoredLocalStorage();
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

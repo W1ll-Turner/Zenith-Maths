@@ -10,7 +10,7 @@ public class SignUpRequest
     
 }
 
-public class LoginRequest
+public class loginRequest
 {
     public required string username { get; init; }
     public required string password { get; init; }

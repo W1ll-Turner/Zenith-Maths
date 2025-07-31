@@ -20,7 +20,7 @@ public static class AccountMapping
 
     }
 
-    public static LogIn MapFromLogInRequest(this LoginRequest request)
+    public static LogIn MapFromLogInRequest(this loginRequest request)
     {
         return new LogIn
         {
