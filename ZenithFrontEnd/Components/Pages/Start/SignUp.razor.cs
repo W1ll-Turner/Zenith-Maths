@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
+using Zenith.Contracts.Request.Account;
 
 namespace ZenithFrontEnd.Components.Pages.Start;
 
@@ -11,20 +12,50 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string ConfirmPassword { get; set; }
+    
+    public required string ClassCode { get; set; }
 
     public bool Error { get; set; } = false;
-    private void Submit()
+    private async void Submit()
     {
-        bool Match = StringMatch();
+        bool Match = false;
+        try
+        {
+            Match = StringMatch();
+        }
+        catch (Exception e) //Some invalid inputs have been given
+        {
+            Error = true;
+        }
+        
         if (Match == true && Password == ConfirmPassword)
         {
-            //account will be made and sent to the API
-            //move to log in screen 
+            SignUpRequest request = new SignUpRequest()
+            {
+                username = Username,
+                password = Password,
+                email = Email,
+                classcode = ClassCode,
+                fullname = FirstName + " " + LastName,
+            };
+            
+            //sending the sign up request
+            Console.WriteLine("sending request");
+            http.BaseAddress = new Uri("http://localhost:5148/api/");
+            HttpResponseMessage response = await http.PostAsJsonAsync("Account/SignUp", request);
+            Console.WriteLine(response);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/");
+            }
         }
         else
         {
-            Error = true; //will display the text detialing that the given credentails are incorrect
+            //will display the text detialing that the given credentails are incorrect
+            Error = true; 
         }
+        
 
 
     }

@@ -21,14 +21,16 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
             try
             {
                 var command = new NpgsqlCommand("INSERT INTO students (studentid, email, username, fullname, password, classcode) VALUES ( @student, @email,  @username,  @fullname, @password, @classcode)", connection);
-                int Id = await CreateID();
+                int id = await CreateId();
                 
-                command.Parameters.AddWithValue("@student", Id); //using parameters for the SQL to prevent from SQL injection
+                //using parameters for the SQL query to prevent agaisnt injection attacks
+                command.Parameters.AddWithValue("@student", id); 
                 command.Parameters.AddWithValue("@email", account.Email);
                 command.Parameters.AddWithValue("@username", account.Username);
                 command.Parameters.AddWithValue("@fullname", account.Fullname);
                 command.Parameters.AddWithValue("@password", account.Password);
-                if (account.ClassCode != null) //this will add a class code to the student depedning on if they are the member of a class or not 
+                //this will add a class code to the student depedning on if they are the member of a class or not 
+                if (account.ClassCode != null) 
                 {
                     command.Parameters.AddWithValue("@classcode", account.ClassCode);
                 }
@@ -38,6 +40,7 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
                 }
 
                 await command.ExecuteNonQueryAsync(); //executing the query to add the data to the database
+                Console.WriteLine("data added");
                 return true;
             }
             catch (Exception ex)
@@ -94,5 +97,28 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
     public Task<bool> DeleteAccount(string accountId)
     {
         throw new NotImplementedException();
+    }
+    
+    private async Task<int> CreateId() //will create a new ID for the account being created 
+    {
+        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            var command = new NpgsqlCommand("SELECT * FROM students ORDER BY studentid DESC", connection);
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                try
+                {
+                    await reader.ReadAsync();
+                    int id = reader.GetInt32(0);
+                    int newId = id + 1;
+                    return newId;
+                }
+                catch (Exception ex)
+                {
+                    return 1;
+                }
+            }
+        }
     }
 }

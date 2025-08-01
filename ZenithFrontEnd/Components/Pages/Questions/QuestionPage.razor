@@ -1,17 +1,18 @@
+@using Blazored.LocalStorage
+@using Blazored.LocalStorage.StorageOptions
 @using Microsoft.AspNetCore.Components.Authorization
 @page "/Questions"
-@inject IHttpClientFactory httpClientFactory
+@inject ILocalStorageService LocalStorage
 
-<AuthorizeView>
-    <Authorized>
-        <h1>Finally got it to work</h1>
-    </Authorized>
-    <NotAuthorized>
-        <h1>Tinme for a menty B</h1>
-    </NotAuthorized>
+@if (authenticated == true)
+{
+    <h1>What topic would you like to practice</h1>
     
-</AuthorizeView>
-
+}
+else
+{
+    <h1>Oops you shouldnt be seeig this yet</h1>
+}
 
 
 

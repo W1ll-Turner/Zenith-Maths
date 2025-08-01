@@ -20,39 +20,41 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         string usernamePattern = "[a-zA-Z_0-9]+";   //Regex to match a Username, (Any combination of a-z 0-9 with an underscore, no spaces)
         string passwordPattern = "[a-zA-Z0-9]+";// regex to match a Password. This is any combination of a-z 0-9 however with no spaces or underscores
         
+        
+        // initialising the regex patterns
         Regex userRg = new Regex(usernamePattern);
         Regex passwordRg = new Regex(passwordPattern);
         
         
         if (userRg.IsMatch(Username) && passwordRg.IsMatch(Password))
         {
-            Console.WriteLine("match");
-            //send request to API
-            //move onto dashboard if true
-            loginRequest request = new loginRequest()
+            
+            loginRequest request = new loginRequest() //making the log in request object
             {
                 username = Username,
                 password = Password
             };
-            Console.WriteLine(request.password);
-            Console.WriteLine(request.username);
-            var client = new HttpClient();
-            client.BaseAddress = new Uri("http://localhost:5148/api/");
-            HttpResponseMessage response = await client.PostAsJsonAsync("Account/Login", request);
+            
+           
+            http.BaseAddress = new Uri("http://localhost:5148/api/");
+            
+            HttpResponseMessage response = await http.PostAsJsonAsync("Account/Login", request); //making the log in request to the API 
             if (response.IsSuccessStatusCode)
             {
-               string Id = response.Content.ReadAsStringAsync().Result;
-               Console.WriteLine(Id);
-        
+               string id = response.Content.ReadAsStringAsync().Result; //getting the USer's ID from the response
+               Console.WriteLine(id);
+               await LocalStorage.SetItemAsync("Id", id);
+               string test = await LocalStorage.GetItemAsync<string>("Id");
+               Console.WriteLine(test);
             }
             else
             {
-                Console.WriteLine("no work");
+                Error = true; // usernmae or password were incorrect
             }
-            
-            
-            
-           
+
+
+
+
 
 
         }

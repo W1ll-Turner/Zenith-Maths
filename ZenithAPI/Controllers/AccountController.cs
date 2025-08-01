@@ -24,8 +24,9 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
     {
 
         SignUp account = request.MapFromSignUpRequest();
-   
-        bool success = await _accountRepo.CreateAccount(account); //adding the data to the database
+        
+        //adding the data to the database
+        bool success = await _accountRepo.CreateAccount(account); 
         
         return success ? Ok() : BadRequest();
 
