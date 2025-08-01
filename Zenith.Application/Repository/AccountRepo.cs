@@ -13,35 +13,7 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
     {
         _dbConnection = dbConnection;
     }
-
-    private async Task<int> CreateID() //will create a new ID for the account for the account being created 
-    {
-        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
-        {
-            var command = new NpgsqlCommand("SELECT * FROM students ORDER BY studentid DESC", connection);
-
-            await using (var reader = await command.ExecuteReaderAsync())
-            {
-                try
-                {
-                    await reader.ReadAsync();
-                    int id = reader.GetInt32(0);
-                    int newId = id + 1;
-                    return newId;
-                }
-                catch (Exception ex)
-                {
-                    return 1;
-                }
-
-
-            }
-
-
-        }
-    }
-
-
+    
     public async Task<bool> CreateAccount(SignUp account) //add duplicate account protection
     {
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
