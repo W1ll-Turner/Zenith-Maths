@@ -43,13 +43,13 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
             {
                string id = response.Content.ReadAsStringAsync().Result; //getting the USer's ID from the response
                Console.WriteLine(id);
-               await LocalStorage.SetItemAsync("Id", id);
-               string test = await LocalStorage.GetItemAsync<string>("Id");
+               await SessionStorage.SetAsync("Id", id);
+               
                NavigationManager.NavigateTo("/Questions");
             }
             else
             {
-                Error = true; // usernmae or password were incorrect
+                Error = true; // username or password were incorrect
             }
 
 

@@ -1,0 +1,54 @@
+@using Blazored.LocalStorage
+@using Blazored.LocalStorage.StorageOptions
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@page "/Questions"
+@inject ProtectedSessionStorage SessionStorage
+@inject NavigationManager NavigationManager
+
+@if (authenticated == true)
+{
+    //topics: addition , Subtraction , Multiplication , INtegration , Division, Differentiation , Quadratics , Collecting 
+    
+    <h1>What topic would you like to practice</h1>
+    
+    <div class="SelctionContainer">
+        <button class="Selection">
+            <h2>Addition</h2>
+        </button>
+        <button class="Selection">
+            <h2>Subtraction</h2>
+        </button>
+        <button class="Selection">
+            <h2>Multiplication</h2>
+        </button>
+        <button class="Selection">
+            <h2>Division</h2>
+        </button>
+        <button class="Selection">
+            <h2>Differentiation</h2>
+        </button>
+        <button class="Selection">
+            <h2>Integration</h2>
+        </button>
+        <button class="Selection">
+            <h2>Quadratics</h2>
+        </button>
+        <button class="Selection">
+            <h2>Collecting terms</h2>
+        </button>
+        
+    </div>
+    
+}
+else
+{
+    <h1>Oops you shouldnt be seeig this yet</h1>
+    
+}
+
+
+
+
+
+
