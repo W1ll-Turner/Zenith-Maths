@@ -41,13 +41,13 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
             
             //sending the sign up request
             Console.WriteLine("sending request");
-            http.BaseAddress = new Uri("http://localhost:5148/api/");
-            HttpResponseMessage response = await http.PostAsJsonAsync("Account/SignUp", request);
+            
+            HttpResponseMessage response = await http.PostAsJsonAsync("http://localhost:5148/api/Account/SignUp", request);
             Console.WriteLine(response);
             
             if (response.IsSuccessStatusCode)
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/Login");
             }
         }
         else
@@ -66,14 +66,17 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
         const string passwordPattern = "[a-zA-Z0-9]+"; //regex, for password. any numbre or letter with no spaces of underscores
         const string namePattern = "[A-Z][a-z]+"; //regex for a name, a capital lettyer followed by any number of a-z
         const string emailPattern = "^[A-Za-z0-9][A-Za-z1-9!#$%^&*_+=?`{}|~.]+[A-Za-z0-9!#$%^&*_+=?`{}|~.\\\\-]+[A-Za-z0-9]@[A-Za-z1-9][A-Za-z0-9\\\\-]+[A-Za-z0-9].[A-Za-z0-9.]+[A-Za-z0-9]$"; //regex for an email
-
+        const string ClassCodePattern = "^[A-Za-z0-9]+$";
+        
+        //initialisi g the patterns in regex
+        Regex ClassCodeRg = new Regex(ClassCodePattern);
         Regex userRg = new Regex(usernamePattern);
         Regex passwordRg = new Regex(passwordPattern);
         Regex nameRg = new Regex(namePattern);
         Regex emailRg = new Regex(emailPattern);
 
         if (userRg.IsMatch(Username) && passwordRg.IsMatch(Password) && nameRg.IsMatch(FirstName) &&
-            emailRg.IsMatch(Email) && nameRg.IsMatch(LastName)) //if all the string match
+            emailRg.IsMatch(Email) && nameRg.IsMatch(LastName) && ClassCodeRg.IsMatch(ClassCode) ) //if all the string match
         {
             return true;
         }

@@ -45,7 +45,7 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
                Console.WriteLine(id);
                await LocalStorage.SetItemAsync("Id", id);
                string test = await LocalStorage.GetItemAsync<string>("Id");
-               Console.WriteLine(test);
+               NavigationManager.NavigateTo("/Questions");
             }
             else
             {

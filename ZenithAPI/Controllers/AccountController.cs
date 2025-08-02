@@ -22,10 +22,11 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
     [HttpPost("SignUp")]
     public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
     {
-
+        Console.WriteLine("mapping");
         SignUp account = request.MapFromSignUpRequest();
         
         //adding the data to the database
+        Console.WriteLine("going to repo");
         bool success = await _accountRepo.CreateAccount(account); 
         
         return success ? Ok() : BadRequest();

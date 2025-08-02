@@ -18,8 +18,10 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
     {
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
+            Console.WriteLine("DbConnected");
             try
             {
+                Console.WriteLine("querying");
                 var command = new NpgsqlCommand("INSERT INTO students (studentid, email, username, fullname, password, classcode) VALUES ( @student, @email,  @username,  @fullname, @password, @classcode)", connection);
                 int id = await CreateId();
                 
@@ -45,6 +47,7 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
             }
             catch (Exception ex)
             {
+                Console.WriteLine("no work");
                 Console.WriteLine(ex);
                 return false;
             }
