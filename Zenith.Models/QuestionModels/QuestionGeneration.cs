@@ -3,7 +3,7 @@ namespace Zenith.Models.Account;
 public class Addition : IQuestion
 {
     public string QuestionText { get; set; }
-    public string Answer { get; set; }
+    public Fraction Answer { get; set; }
     public string Difficulty { get; set; }
     public Dictionary<string, Func<string>> _generators { get; set; }
 
@@ -37,14 +37,46 @@ public class Addition : IQuestion
 
     public string GenerateHard()
     {
-        throw new NotImplementedException();
+        
+        Random random = new Random();
+        
+        Fraction operand1 = new Fraction(random.Next(1,20) , random.Next(1,12));
+        Fraction operand2 = new Fraction(random.Next(1,20),  random.Next(1,12));
+        //computing the answer
+        Answer = operand1 + operand2;
+        
+        int DecimalOrFraction = random.Next(0,1);
+        //this will return a fraction or decimal question at random each time, 0 being a fraction and 1 a decimal
+        if (DecimalOrFraction == 0)
+        {
+            return operand1.StringFormat + " + " + operand2.StringFormat;
+        }
+        else
+        {
+            return Convert.ToString(operand1.DecimalValue) + " + " + Convert.ToString(operand2.DecimalValue) + " ="; 
+        }
     }
 
     public string GenerateMedium()
     {
-        Fraction operand1 = new Fraction();
-
-        throw new NotImplementedException();
+        int[] acceptableDenominators = new int[] { 2, 3, 4, 5, 8, 10}; //This is a list of acceptable denominators for the fractions to be generated, This means the resulting fraction or decimal will not be too harsh
+        Random random = new Random();
+        
+        Fraction operand1 = new Fraction(random.Next(1,12) , acceptableDenominators[random.Next(0, acceptableDenominators.Length - 1)]);
+        Fraction operand2 = new Fraction(random.Next(1,12),  acceptableDenominators[random.Next(0, acceptableDenominators.Length - 1)]);
+        //computing the answer
+        Answer = operand1 + operand2;
+        
+        int DecimalOrFraction = random.Next(0,1);
+        //this will return a fraction or decimal question at random each time, 0 being a fraction and 1 a decimal
+        if (DecimalOrFraction == 0)
+        {
+            return operand1.StringFormat + " + " + operand2.StringFormat;
+        }
+        else
+        {
+            return Convert.ToString(operand1.DecimalValue) + " + " + Convert.ToString(operand2.DecimalValue) + " ="; 
+        }
     }
 
     public string GenerateEasy()
@@ -53,15 +85,13 @@ public class Addition : IQuestion
 
         int operand1 = random.Next(0, 150);
         int operand2 = random.Next(0, 150);
-
-        Answer = Convert.ToString(operand1 + operand2);
-        return operand2.ToString() + operand1 + "=";
-    }
-
-    enum DecimalsForMedium
-    {
         
+        //will make a fraction with denominator 1 so that it is technically not a fraction but can still be stored under Answer
+        Answer.Numerator = operand1 + operand2;
+        Answer.Denominator = 1;
+        return operand2.ToString() + operand1 + " = ";
     }
+    
 }
     
 
