@@ -1,30 +1,45 @@
 namespace Zenith.Models.Account;
 
-public class Addition : IQuestion
+public class QuestionStack
+{
+    //This is a stack of 10 questions 
+    private int pointer = -1;
+    public IQuestion[] Questions = new IQuestion[10];
+    
+    
+    public void Push(IQuestion question)
+    {
+        pointer++;
+        Questions[pointer] = question;
+    }
+
+}
+
+
+
+
+public class AdditionQuestion : IQuestion
 {
     public string QuestionText { get; set; }
     public Fraction Answer { get; set; }
-    public string Difficulty { get; set; }
-    public Dictionary<string, Func<string>> _generators { get; set; }
+    public Dictionary<int, Func<string>> _generators { get; set; }
 
 
 
-    public Addition(string difficulty)
+    public AdditionQuestion(int difficulty)
     {
-        Difficulty = difficulty.ToString();
-        QuestionText = difficulty;
-
-        _generators = new Dictionary<string, Func<string>>
+        _generators = new Dictionary<int, Func<string>>
         {
-            { "easy", GenerateEasy },
-            { "medium", GenerateMedium },
-            { "hard", GenerateHard }
+            { 1, GenerateEasy },
+            { 2, GenerateMedium },
+            { 3, GenerateHard }
         };
+        Generate(difficulty);
     }
 
-    public void Generate()
+    public void Generate(int difficulty)
     {
-        if (_generators.TryGetValue(Difficulty,
+        if (_generators.TryGetValue(difficulty,
                 out Func<string> generator)) //if the key is within the dictionary it will call the coressponding function as the method generator()
         {
             QuestionText = generator();
@@ -34,6 +49,7 @@ public class Addition : IQuestion
             throw new KeyNotFoundException();
         }
     }
+    
 
     public string GenerateHard()
     {
