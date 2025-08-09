@@ -4,7 +4,7 @@ public class QuestionStack
 {
     //This is a stack of 10 questions 
     private int pointer = -1;
-    public IQuestion[] Questions = new IQuestion[10];
+    public IQuestion[] Questions = new IQuestion[10]; //using the IQuestion interace so it can store all classes whhc inherited from it
     
     
     public void Push(IQuestion question)
@@ -13,9 +13,22 @@ public class QuestionStack
         Questions[pointer] = question;
     }
 
+    public IQuestion Pop()
+    {
+        return Questions[pointer--];
+    }
+
 }
 
-
+//all question types no matter the topic will end up as this object to be then sent to the API
+public class AnsweredQuestion
+{
+    public bool Correct { get; set; }
+    public string CorrectAnswer { get; set; }
+    public string UserAnswer { get; set; }
+    public string QuestionText { get; set; }
+    public double TimeTaken { get; set; }
+}
 
 
 public class AdditionQuestion : IQuestion
@@ -56,6 +69,7 @@ public class AdditionQuestion : IQuestion
         
         Random random = new Random();
         
+        //initialising fraction objects
         Fraction operand1 = new Fraction(random.Next(1,20) , random.Next(1,12));
         Fraction operand2 = new Fraction(random.Next(1,20),  random.Next(1,12));
         //computing the answer
@@ -103,8 +117,12 @@ public class AdditionQuestion : IQuestion
         int operand2 = random.Next(0, 150);
         
         //will make a fraction with denominator 1 so that it is technically not a fraction but can still be stored under Answer
-        Answer.Numerator = operand1 + operand2;
-        Answer.Denominator = 1;
+        int numerator  = operand1 + operand2;
+        Console.WriteLine(numerator);
+        Fraction answer = new Fraction(numerator, 1);
+
+        Answer = answer;
+        
         return operand2.ToString() + operand1 + " = ";
     }
     
