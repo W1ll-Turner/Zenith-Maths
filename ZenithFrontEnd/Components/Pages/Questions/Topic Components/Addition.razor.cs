@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Zenith.Models.Account;
 
@@ -11,7 +12,8 @@ public partial class Addition : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         QuestionStack questions = InitialiseStack(); //initialising the questions
-        QuestioningSequence(questions);
+        AnsweredQuestionStack answeredQuestions = new AnsweredQuestionStack();
+        QuestioningSequence(questions , answeredQuestions);
 
     }
 
@@ -23,6 +25,7 @@ public partial class Addition : ComponentBase
         for (int i = 0; i < 10; i++)
         {
             AdditionQuestion question = new AdditionQuestion(testdifficulty);
+            Console.WriteLine("pushing item to the stack");
             questions.Push(question);
 
         }
@@ -30,12 +33,25 @@ public partial class Addition : ComponentBase
         return questions;
     }
 
-    public void QuestioningSequence(QuestionStack questions)
+    private AnsweredQuestionStack QuestioningSequence(QuestionStack questions, AnsweredQuestionStack answeredQuestions)
     {
+        if(questions.isEmpty()) //if the user has answered all questions then stop the recursion
+        {
+            return answeredQuestions;
+        }
+        
         AdditionQuestion question = (questions.Pop() as AdditionQuestion)!;
+        Stopwatch timer = new Stopwatch();
         QuestionText = question.QuestionText;
+        timer.Start();
         
         
+        
+        
+        
+        return QuestioningSequence(questions , answeredQuestions);
+
+
 
     }
     

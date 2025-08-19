@@ -18,6 +18,15 @@ public class QuestionStack
         return Questions[pointer--];
     }
 
+    public bool isEmpty()
+    {
+        if (pointer == -1)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }
 
 //all question types no matter the topic will end up as this object to be then sent to the API
@@ -28,6 +37,12 @@ public class AnsweredQuestion
     public string UserAnswer { get; set; }
     public string QuestionText { get; set; }
     public double TimeTaken { get; set; }
+}
+
+public class AnsweredQuestionStack
+{
+    private AnsweredQuestion[] Questions = new AnsweredQuestion[10];
+    
 }
 
 
@@ -113,17 +128,17 @@ public class AdditionQuestion : IQuestion
     {
         Random random = new Random();
 
-        int operand1 = random.Next(0, 150);
-        int operand2 = random.Next(0, 150);
+        int operand1 = random.Next(1, 150);
+        int operand2 = random.Next(1, 150);
         
         //will make a fraction with denominator 1 so that it is technically not a fraction but can still be stored under Answer
         int numerator  = operand1 + operand2;
-        Console.WriteLine(numerator);
-        Fraction answer = new Fraction(numerator, 1);
-
-        Answer = answer;
         
-        return operand2.ToString() + operand1 + " = ";
+        Fraction answer = new Fraction(numerator, 1);
+        
+        Answer = answer;
+        Console.WriteLine("answre to Q " + answer.Numerator);
+        return operand2.ToString() + "+" + operand1 + " = ";
     }
     
 }
