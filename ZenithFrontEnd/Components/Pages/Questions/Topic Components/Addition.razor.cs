@@ -54,6 +54,12 @@ public partial class Addition : ComponentBase
 
 
     }
+
+    void WaitForAnswer()
+    {
+        
+        
+    }
     
     
     
