@@ -13,5 +13,7 @@ public interface IQuestion
     public string GenerateHard();
     public string GenerateMedium();
     public string GenerateEasy();
+    
+    public bool CheckAnswer(string[] answer);
 
 }

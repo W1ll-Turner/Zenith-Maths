@@ -4,9 +4,10 @@
     <h1>Welcome to the Question page</h1>
     <h3 >@QuestionText</h3>
     
+    @while(QuestionStack.isEmpty() != true)
     <form onsubmit="">
         
-        <input type="text"></input>
+        <input type="text" @bind="UserAnswer"></input>
         
         <button type="Submit">Submit</button>
     </form>

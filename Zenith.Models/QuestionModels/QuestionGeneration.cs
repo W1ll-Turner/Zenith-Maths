@@ -140,6 +140,11 @@ public class AdditionQuestion : IQuestion
         Console.WriteLine("answre to Q " + answer.Numerator);
         return operand2.ToString() + "+" + operand1 + " = ";
     }
+
+    public bool CheckAnswer(Fraction userAnswer)
+    {
+        
+    }
     
 }
     

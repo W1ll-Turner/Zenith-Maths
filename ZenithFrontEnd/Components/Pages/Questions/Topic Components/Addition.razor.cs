@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using Zenith.Models.Account;
 
@@ -9,15 +10,18 @@ public partial class Addition : ComponentBase
     public int Difficulty { get; set; }
     public string QuestionText { get; set; } = "";
     public string UserAnswer { get; set; } = "";
+    public QuestionStack QuestionStack { get; set; } = new QuestionStack();
+    public bool Error = false;
     protected override async Task OnInitializedAsync()
     {
-        QuestionStack questions = InitialiseStack(); //initialising the questions
+        Error = false;
+        QuestionStack = InitialiseStack(2  ); //initialising the questions // gett the actruial difficulty from the local storgae
         AnsweredQuestionStack answeredQuestions = new AnsweredQuestionStack();
-        QuestioningSequence(questions , answeredQuestions);
+        
 
     }
 
-    private QuestionStack InitialiseStack() //used to generate a stack of questions 
+    private QuestionStack InitialiseStack(int difficulty) //used to generate a stack of questions 
     {
         int testdifficulty = 1;
         
@@ -33,34 +37,22 @@ public partial class Addition : ComponentBase
         return questions;
     }
 
-    private AnsweredQuestionStack QuestioningSequence(QuestionStack questions, AnsweredQuestionStack answeredQuestions)
+    private void AnswerQuesation()
     {
-        if(questions.isEmpty()) //if the user has answered all questions then stop the recursion
+        string answerPattern = "^[0-9](\\/[0-9])?$";
+        Regex answerRG = new Regex(answerPattern);
+        if (answerRG.IsMatch(QuestionText))
         {
-            return answeredQuestions;
+            string[] answer = UserAnswer.Split("/");
+            
+        }
+        {
+            Error = true;
         }
         
-        AdditionQuestion question = (questions.Pop() as AdditionQuestion)!;
-        Stopwatch timer = new Stopwatch();
-        QuestionText = question.QuestionText;
-        timer.Start();
-        
-        
-        
-        
-        
-        return QuestioningSequence(questions , answeredQuestions);
-
 
 
     }
-
-    void WaitForAnswer()
-    {
-        
-        
-    }
-    
     
     
     
