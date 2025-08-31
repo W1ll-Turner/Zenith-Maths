@@ -1,16 +1,28 @@
 @page "/"
+@inject NavigationManager NavigationManager
 
 <div class = "QuestionComponent">
     <h1>Welcome to the Question page</h1>
     <h3 >@QuestionText</h3>
     
-    @while(QuestionStack.isEmpty() != true)
-    <form onsubmit="">
+    @if (QuestionStack.isEmpty() != true)
+    {
         
-        <input type="text" @bind="UserAnswer"></input>
+        <form onsubmit="AnswerQuestion">
         
-        <button type="Submit">Submit</button>
-    </form>
+            <input type="text" @bind="UserAnswer"></input>
+        
+            <button type="Submit">Submit</button>
+        </form>
+        
+    }
+    else
+    {
+        //@NavigationManager.NavigateTo("") // moves them to the question completed screen or dashboard 
+    }
+    
+    
+    
     
     
     

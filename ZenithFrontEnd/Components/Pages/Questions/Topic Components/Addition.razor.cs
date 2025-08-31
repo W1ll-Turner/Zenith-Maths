@@ -10,14 +10,16 @@ public partial class Addition : ComponentBase
     public int Difficulty { get; set; }
     public string QuestionText { get; set; } = "";
     public string UserAnswer { get; set; } = "";
-    public QuestionStack QuestionStack { get; set; } = new QuestionStack();
+    
+    
     public bool Error = false;
     protected override async Task OnInitializedAsync()
     {
         Error = false;
-        QuestionStack = InitialiseStack(2  ); //initialising the questions // gett the actruial difficulty from the local storgae
+        QuestionStack questionStack = InitialiseStack(2  ); //initialising the questions // gett the actruial difficulty from the local storgae
         AnsweredQuestionStack answeredQuestions = new AnsweredQuestionStack();
-        
+        QuestionSequence(questionStack);
+
 
     }
 
@@ -37,17 +39,38 @@ public partial class Addition : ComponentBase
         return questions;
     }
 
-    private void AnswerQuesation()
+
+    public void QuestionSequence(QuestionStack questionStack)
+    {
+        question
+    }
+    
+
+    public void AnswerQuestion(AdditionQuestion CurrentQuestion)
     {
         string answerPattern = "^[0-9](\\/[0-9])?$";
-        Regex answerRG = new Regex(answerPattern);
+        Regex answerRG = new Regex(answerPattern); //this will make sure the answer has been given withing the correct format
         if (answerRG.IsMatch(QuestionText))
         {
             string[] answer = UserAnswer.Split("/");
+            if (answer.Length == 1)
+            {
+                Fraction input = new Fraction(int.Parse(answer[0]), 1);
+                CurrentQuestion.CheckAnswer(input);
+            }else if (answer.Length == 2)
+            {
+                Fraction input = new Fraction(int.Parse(answer[0]), int.Parse(answer[1]));
+                CurrentQuestion.CheckAnswer(input);
+            }
+            else
+            {
+                //wrong inpout type 
+                Console.WriteLine("wrong input type");
+            }
             
         }
         {
-            Error = true;
+            Error = true;//wring input 
         }
         
 

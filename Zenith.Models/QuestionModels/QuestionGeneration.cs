@@ -143,7 +143,14 @@ public class AdditionQuestion : IQuestion
 
     public bool CheckAnswer(Fraction userAnswer)
     {
-        
+        if (userAnswer.DecimalValue == Answer.DecimalValue)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     
 }

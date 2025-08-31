@@ -14,6 +14,6 @@ public interface IQuestion
     public string GenerateMedium();
     public string GenerateEasy();
     
-    public bool CheckAnswer(string[] answer);
+    public bool CheckAnswer(Fraction answer);
 
 }
