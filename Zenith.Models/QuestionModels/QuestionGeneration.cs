@@ -37,12 +37,28 @@ public class AnsweredQuestion
     public string UserAnswer { get; set; }
     public string QuestionText { get; set; }
     public double TimeTaken { get; set; }
+
+    public AnsweredQuestion(bool correct, string correctAnswer, string userAnswer, string questionText, double timeTaken)
+    {
+        Correct = correct;
+        CorrectAnswer = correctAnswer;
+        UserAnswer = userAnswer;
+        QuestionText = questionText;
+        TimeTaken = timeTaken;
+    }
+    
 }
 
 public class AnsweredQuestionStack
 {
     private AnsweredQuestion[] Questions = new AnsweredQuestion[10];
-    
+    private int pointer = -1;
+
+    public void Push(AnsweredQuestion question)
+    {
+        pointer++;
+        Questions[pointer] = question;
+    }
 }
 
 
@@ -50,6 +66,8 @@ public class AdditionQuestion : IQuestion
 {
     public string QuestionText { get; set; }
     public Fraction Answer { get; set; }
+    
+    public string AnswerStringFormat { get; set; }
     public Dictionary<int, Func<string>> _generators { get; set; }
 
 
@@ -89,7 +107,7 @@ public class AdditionQuestion : IQuestion
         Fraction operand2 = new Fraction(random.Next(1,20),  random.Next(1,12));
         //computing the answer
         Answer = operand1 + operand2;
-        
+        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
         int DecimalOrFraction = random.Next(0,1);
         //this will return a fraction or decimal question at random each time, 0 being a fraction and 1 a decimal
         if (DecimalOrFraction == 0)
