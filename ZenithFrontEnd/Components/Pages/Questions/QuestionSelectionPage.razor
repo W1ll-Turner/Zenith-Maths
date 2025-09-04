@@ -1,8 +1,7 @@
-@using Blazored.LocalStorage
-@using Blazored.LocalStorage.StorageOptions
-@using Microsoft.AspNetCore.Components.Authorization
+
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@page "/Questions"
+@using ZenithFrontEnd.Components.Pages.Questions.Topic_Components
+
 @inject ProtectedSessionStorage SessionStorage
 @inject NavigationManager NavigationManager
 
@@ -39,6 +38,7 @@
         </button>
         
     </div>
+    
     
 }
 else

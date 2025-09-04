@@ -15,11 +15,12 @@ public partial class Addition : ComponentBase
     private QuestionStack Questions { get; set; } = new QuestionStack();
     private AdditionQuestion CurrentQuestion { get; set; }
     private AnsweredQuestionStack AnsweredQuestionStack { get; set; } 
-    protected override async Task OnInitializedAsync()
+    private void Start()
     {
         
         Questions = InitialiseStack(Difficulty  ); //initialising the questions // gett the actruial difficulty from the route 
         AnsweredQuestionStack = new AnsweredQuestionStack();
+        Console.WriteLine(Questions.pointer);
         QuestionSequence(); //prepare the question for the user to answer
 
 
@@ -44,23 +45,31 @@ public partial class Addition : ComponentBase
 
     private void QuestionSequence()
     {
+        
+   
         CurrentQuestion = (AdditionQuestion)Questions.Pop(); //getting the next question off the stack \
-        QuestionText = CurrentQuestion.QuestionText;
-        TimeToAnswer.Start();
+       
+        QuestionText = CurrentQuestion.QuestionText; //displaying the new question
+
+        TimeToAnswer.Start(); //starting the timer 
+     
         
     }
     
 
     public void AnswerQuestion()
     {
-        TimeToAnswer.Stop();
+        
+        TimeToAnswer.Stop(); //stopping the timer 
         bool AnswerCorrect = false;
         
         string answerPattern = "^[0-9](\\/[0-9])?$";
         Regex answerRG = new Regex(answerPattern); //this will make sure the answer has been given withing the correct format
-        if (answerRG.IsMatch(UserAnswer))
+        
+        
+        if (answerRG.IsMatch(UserAnswer)) //checking the answer is appropraite to start checking
         {
-            string[] answer = UserAnswer.Split("/");
+            string[] answer = UserAnswer.Split("/"); //if the answer is a fraction it will be 
             if (answer.Length == 1)
             {
                 Fraction input = new Fraction(int.Parse(answer[0]), 1);
@@ -71,13 +80,16 @@ public partial class Addition : ComponentBase
                 AnswerCorrect = CurrentQuestion.CheckAnswer(input);
             }
         }
+
+        
         
         
         AnsweredQuestion answeredQuestion = new AnsweredQuestion(AnswerCorrect , CurrentQuestion.AnswerStringFormat , UserAnswer , CurrentQuestion.QuestionText ,TimeToAnswer.ElapsedMilliseconds);
         AnsweredQuestionStack.Push(answeredQuestion);
-
+        Console.WriteLine(Questions.pointer);
         if (Questions.isEmpty())
         {
+            NavigationManager.NavigateTo("/Home");
             SendResultsToAPI(); //round of questioning has finshed time, send results to API then move user onto the summary screen 
 
         }
@@ -95,6 +107,4 @@ public partial class Addition : ComponentBase
     {
         
     }
-    
-    
 }

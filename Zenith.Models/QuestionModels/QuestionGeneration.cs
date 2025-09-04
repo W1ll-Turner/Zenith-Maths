@@ -3,7 +3,7 @@ namespace Zenith.Models.Account;
 public class QuestionStack
 {
     //This is a stack of 10 questions 
-    private int pointer = -1;
+    public int pointer = -1;
     public IQuestion[] Questions = new IQuestion[10]; //using the IQuestion interace so it can store all classes whhc inherited from it
     
     

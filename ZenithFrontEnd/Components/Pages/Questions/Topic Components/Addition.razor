@@ -1,24 +1,24 @@
-@page "/"
-@inject NavigationManager NavigationManager
 
+@inject NavigationManager NavigationManager
+@rendermode InteractiveAuto
+@page "/"
 <div class = "QuestionComponent">
     <h1>Welcome to the Question page</h1>
-    <h3 >@QuestionText</h3>
+    
     
     @if (Questions.isEmpty() != true)
     {
         
-        <form onsubmit="AnswerQuestion">
+        <h3 >@QuestionText</h3>
         
-            <input type="text" @bind="UserAnswer"></input>
-        
-            <button type="Submit">Submit</button>
-        </form>
+        <input type="text" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class = "AnswerBox"></input> 
+        <button @onclick="AnswerQuestion" >Submit</button>
+      
         
     }
     else
     {
-        //@NavigationManager.NavigateTo("") // moves them to the question completed screen or dashboard 
+        <button @onclick="Start"  >Start</button>
     }
     
     
@@ -29,3 +29,16 @@
 </div>
 
 
+@code{
+
+
+    private void KeyboardEventHandler(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            UserAnswer = String.Empty;
+            AnswerQuestion();
+        }
+    }
+
+}
