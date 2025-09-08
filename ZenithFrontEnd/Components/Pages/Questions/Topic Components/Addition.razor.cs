@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using Zenith.Models.Account;
+using Zenith.Models.QuestionModels;
 
 namespace ZenithFrontEnd.Components.Pages.Questions.Topic_Components;
 
@@ -20,7 +21,7 @@ public partial class Addition : ComponentBase
         
         Questions = InitialiseStack(Difficulty  ); //initialising the questions // gett the actruial difficulty from the route 
         AnsweredQuestionStack = new AnsweredQuestionStack();
-        Console.WriteLine(Questions.pointer);
+        Console.WriteLine(Questions.Pointer);
         QuestionSequence(); //prepare the question for the user to answer
 
 
@@ -86,8 +87,8 @@ public partial class Addition : ComponentBase
         
         AnsweredQuestion answeredQuestion = new AnsweredQuestion(AnswerCorrect , CurrentQuestion.AnswerStringFormat , UserAnswer , CurrentQuestion.QuestionText ,TimeToAnswer.ElapsedMilliseconds);
         AnsweredQuestionStack.Push(answeredQuestion);
-        Console.WriteLine(Questions.pointer);
-        if (Questions.isEmpty())
+        Console.WriteLine(Questions.Pointer);
+        if (Questions.IsEmpty())
         {
             NavigationManager.NavigateTo("/Home");
             SendResultsToAPI(); //round of questioning has finshed time, send results to API then move user onto the summary screen 

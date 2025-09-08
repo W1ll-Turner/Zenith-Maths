@@ -1,14 +1,14 @@
 ﻿@page "/login"
-@using Blazored.LocalStorage
+
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject HttpClient http
+@inject HttpClient Http
 @inject ProtectedSessionStorage SessionStorage
 @inject NavigationManager NavigationManager
 <h3>Login</h3>
 
 
 
-@if (Error == true) @*This is displaying the error messaghe when the username or password are incorrect, they did not match the regex or did not validate  by the API*@
+@if (Error) @*This is displaying the error messaghe when the username or password are incorrect, they did not match the regex or did not validate  by the API*@
 {
     <p style="color:#b32121">Wrong username or password</p>
 }

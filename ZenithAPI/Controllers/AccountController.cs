@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Zenith.Application.Repository;
+using Zenith.Contracts.Request;
 using Zenith.Contracts.Request.Account;
 using Zenith.Models.Account;
 using ZenithAPI.ContractMapping;
+using LoginRequest = Zenith.Contracts.Request.LoginRequest;
 
 namespace ZenithAPI.Controllers;
 [ApiController]
@@ -34,7 +36,7 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
     }
 
     [HttpPost("Login")]
-    public async Task<IActionResult> Login([FromBody] loginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         LogIn account = request.MapFromLogInRequest();
         int id = await _accountRepo.LogIn(account); //gets the id of the account

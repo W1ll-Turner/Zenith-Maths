@@ -1,3 +1,4 @@
+using Zenith.Contracts.Request;
 using Zenith.Contracts.Request.Account;
 using Zenith.Models.Account;
 
@@ -10,22 +11,22 @@ public static class AccountMapping
     {
         return new SignUp
         {
-            Email = request.email,
-            Password = request.password,
-            Username = request.username,
-            Fullname = request.fullname,
-            ClassCode = request.classcode
+            Email = request.Email,
+            Password = request.Password,
+            Username = request.Username,
+            Fullname = request.Fullname,
+            ClassCode = request.Classcode
         };
         
 
     }
 
-    public static LogIn MapFromLogInRequest(this loginRequest request)
+    public static LogIn MapFromLogInRequest(this LoginRequest request)
     {
         return new LogIn
         {
-            Password = request.password,
-            Username = request.username,
+            Password = request.Password,
+            Username = request.Username,
         };
     }
     

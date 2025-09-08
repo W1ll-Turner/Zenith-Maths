@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
+using Zenith.Contracts.Request;
 using Zenith.Contracts.Request.Account;
 
 namespace ZenithFrontEnd.Components.Pages.Start;
@@ -32,11 +33,11 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
         {
             SignUpRequest request = new SignUpRequest()
             {
-                username = Username,
-                password = Password,
-                email = Email,
-                classcode = ClassCode,
-                fullname = FirstName + " " + LastName,
+                Username = Username,
+                Password = Password,
+                Email = Email,
+                Classcode = ClassCode,
+                Fullname = FirstName + " " + LastName,
             };
             
             //sending the sign up request

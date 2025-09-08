@@ -1,4 +1,4 @@
-namespace Zenith.Models.Account;
+namespace Zenith.Models.QuestionModels;
 
 public class Fraction
 {
@@ -40,7 +40,7 @@ public class Fraction
 
     public static Fraction operator +(Fraction operand1, Fraction operand2)//polymorphism, overlaoding the + operator to add two fractions
     {
-        int CommonDenominator = operand1.Numerator * operand1.Denominator; //finding the common denominator 
+        int commonDenominator = operand1.Numerator * operand1.Denominator; //finding the common denominator 
         
         //comnputing the new numerators of each fraction with the common denomitator
         operand1.Numerator *= operand2.Denominator;
@@ -48,13 +48,13 @@ public class Fraction
         operand2.Numerator *= operand1.Denominator;
         
         //Numerator of the answeer
-        int Numerator = operand1.Numerator + operand2.Denominator;
+        int numerator = operand1.Numerator + operand2.Denominator;
         
         //Finding the Highest common factor
-        int HCF = HighestCommonFactor(Numerator, CommonDenominator);
+        int hcf = HighestCommonFactor(numerator, commonDenominator);
         
         //generating the new fraction in its simplest form 
-        Fraction result = new Fraction(Numerator/HCF, CommonDenominator/HCF);
+        Fraction result = new Fraction(numerator/hcf, commonDenominator/hcf);
         return result;
     }
 

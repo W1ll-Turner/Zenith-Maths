@@ -1,17 +1,17 @@
-namespace Zenith.Contracts.Request.Account;
+namespace Zenith.Contracts.Request;
 
 public class SignUpRequest
 {
-    public required string email { get; init; }
-    public required string password { get; init; }
-    public required string username { get; init; }
-    public required string fullname { get; init; }
-    public required string classcode { get; init; }
+    public required string Email { get; init; }
+    public required string Password { get; init; }
+    public required string Username { get; init; }
+    public required string Fullname { get; init; }
+    public required string Classcode { get; init; }
     
 }
 
-public class loginRequest
+public class LoginRequest
 {
-    public required string username { get; init; }
-    public required string password { get; init; }
+    public required string Username { get; init; }
+    public required string Password { get; init; }
 }

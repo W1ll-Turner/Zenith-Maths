@@ -1,26 +1,28 @@
-namespace Zenith.Models.Account;
+using Zenith.Models.Account;
+
+namespace Zenith.Models.QuestionModels;
 
 public class QuestionStack
 {
     //This is a stack of 10 questions 
-    public int pointer = -1;
+    public int Pointer = -1;
     public IQuestion[] Questions = new IQuestion[10]; //using the IQuestion interace so it can store all classes whhc inherited from it
     
     
     public void Push(IQuestion question)
     {
-        pointer++;
-        Questions[pointer] = question;
+        Pointer++;
+        Questions[Pointer] = question;
     }
 
     public IQuestion Pop()
     {
-        return Questions[pointer--];
+        return Questions[Pointer--];
     }
 
-    public bool isEmpty()
+    public bool IsEmpty()
     {
-        if (pointer == -1)
+        if (Pointer == -1)
         {
             return true;
         }
@@ -68,13 +70,13 @@ public class AdditionQuestion : IQuestion
     public Fraction Answer { get; set; }
     
     public string AnswerStringFormat { get; set; }
-    public Dictionary<int, Func<string>> _generators { get; set; }
+    public Dictionary<int, Func<string>> Generators { get; set; }
 
 
 
     public AdditionQuestion(int difficulty)
     {
-        _generators = new Dictionary<int, Func<string>>
+        Generators = new Dictionary<int, Func<string>>
         {
             { 1, GenerateEasy },
             { 2, GenerateMedium },
@@ -85,7 +87,7 @@ public class AdditionQuestion : IQuestion
 
     public void Generate(int difficulty)
     {
-        if (_generators.TryGetValue(difficulty,
+        if (Generators.TryGetValue(difficulty,
                 out Func<string> generator)) //if the key is within the dictionary it will call the coressponding function as the method generator()
         {
             QuestionText = generator();

@@ -3,7 +3,7 @@
 
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
-
+using Zenith.Contracts.Request;
 using Zenith.Contracts.Request.Account;
 
 namespace ZenithFrontEnd.Components.Pages.Start;
@@ -29,16 +29,16 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         if (userRg.IsMatch(Username) && passwordRg.IsMatch(Password))
         {
             
-            loginRequest request = new loginRequest() //making the log in request object
+            LoginRequest request = new LoginRequest() //making the log in request object
             {
-                username = Username,
-                password = Password
+                Username = Username,
+                Password = Password
             };
             
            
-            http.BaseAddress = new Uri("http://localhost:5148/api/");
+            Http.BaseAddress = new Uri("http://localhost:5148/api/");
             
-            HttpResponseMessage response = await http.PostAsJsonAsync("Account/Login", request); //making the log in request to the API 
+            HttpResponseMessage response = await Http.PostAsJsonAsync("Account/Login", request); //making the log in request to the API 
             if (response.IsSuccessStatusCode)
             {
                string id = response.Content.ReadAsStringAsync().Result; //getting the USer's ID from the response
