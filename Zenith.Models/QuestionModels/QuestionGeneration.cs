@@ -2,68 +2,6 @@ using Zenith.Models.Account;
 
 namespace Zenith.Models.QuestionModels;
 
-public class QuestionStack
-{
-    //This is a stack of 10 questions 
-    public int Pointer = -1;
-    public IQuestion[] Questions = new IQuestion[10]; //using the IQuestion interace so it can store all classes whhc inherited from it
-    
-    
-    public void Push(IQuestion question)
-    {
-        Pointer++;
-        Questions[Pointer] = question;
-    }
-
-    public IQuestion Pop()
-    {
-        return Questions[Pointer--];
-    }
-
-    public bool IsEmpty()
-    {
-        if (Pointer == -1)
-        {
-            return true;
-        }
-        return false;
-    }
-
-}
-
-//all question types no matter the topic will end up as this object to be then sent to the API
-public class AnsweredQuestion
-{
-    public bool Correct { get; set; }
-    public string CorrectAnswer { get; set; }
-    public string UserAnswer { get; set; }
-    public string QuestionText { get; set; }
-    public double TimeTaken { get; set; }
-
-    public AnsweredQuestion(bool correct, string correctAnswer, string userAnswer, string questionText, double timeTaken)
-    {
-        Correct = correct;
-        CorrectAnswer = correctAnswer;
-        UserAnswer = userAnswer;
-        QuestionText = questionText;
-        TimeTaken = timeTaken;
-    }
-    
-}
-
-public class AnsweredQuestionStack
-{
-    private AnsweredQuestion[] Questions = new AnsweredQuestion[10];
-    private int pointer = -1;
-
-    public void Push(AnsweredQuestion question)
-    {
-        pointer++;
-        Questions[pointer] = question;
-    }
-}
-
-
 public class AdditionQuestion : IQuestion
 {
     public string QuestionText { get; set; }
@@ -174,10 +112,5 @@ public class AdditionQuestion : IQuestion
     }
     
 }
-    
-
-   
-
-    
     
     
