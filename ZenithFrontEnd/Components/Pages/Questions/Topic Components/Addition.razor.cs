@@ -13,25 +13,25 @@ public partial class Addition : ComponentBase
     private string UserAnswer { get; set; } = "";
     private Stopwatch TimeToAnswer { get; set; } = new Stopwatch();
     
-    private QuestionStack Questions { get; set; } = new QuestionStack();
+    private QuestionModels.QuestionStack Questions { get; set; } = new QuestionModels.QuestionStack();
     private AdditionQuestion CurrentQuestion { get; set; }
-    private AnsweredQuestionStack AnsweredQuestionStack { get; set; } 
+    private QuestionModels.AnsweredQuestionStack AnsweredQuestionStack { get; set; } 
     private void Start()
     {
         
         Questions = InitialiseStack(Difficulty  ); //initialising the questions // gett the actruial difficulty from the route 
-        AnsweredQuestionStack = new AnsweredQuestionStack();
+        AnsweredQuestionStack = new QuestionModels.AnsweredQuestionStack();
         Console.WriteLine(Questions.Pointer);
         QuestionSequence(); //prepare the question for the user to answer
 
 
     }
 
-    private QuestionStack InitialiseStack(int difficulty) //used to generate a stack of questions 
+    private QuestionModels.QuestionStack InitialiseStack(int difficulty) //used to generate a stack of questions 
     {
         int testdifficulty = 1;
         
-        QuestionStack questions = new QuestionStack();
+        QuestionModels.QuestionStack questions = new QuestionModels.QuestionStack();
         for (int i = 0; i < 10; i++)
         {
             AdditionQuestion question = new AdditionQuestion(testdifficulty);
@@ -85,7 +85,7 @@ public partial class Addition : ComponentBase
         
         
         
-        AnsweredQuestion answeredQuestion = new AnsweredQuestion(AnswerCorrect , CurrentQuestion.AnswerStringFormat , UserAnswer , CurrentQuestion.QuestionText ,TimeToAnswer.ElapsedMilliseconds);
+        QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion(AnswerCorrect , CurrentQuestion.AnswerStringFormat , UserAnswer , CurrentQuestion.QuestionText ,TimeToAnswer.ElapsedMilliseconds);
         AnsweredQuestionStack.Push(answeredQuestion);
         Console.WriteLine(Questions.Pointer);
         if (Questions.IsEmpty())
