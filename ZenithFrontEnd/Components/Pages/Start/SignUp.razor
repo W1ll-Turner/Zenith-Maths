@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 
 <h3>SignUp</h3>
-@if (Error = true)
+@if (Error == true)
 {
     <p>Credentials incorrect, check your passwords match, is it a valid email address</p>
 }
@@ -38,7 +38,11 @@
         </label>
     </div>
     <div>
-        <input type="password" @bind="ClassCode"/>
+        <label>
+            Class Code:
+            <input type="text" @bind="ClassCode"/>
+        </label>
+        
     </div>
     <div>
         <button type="submit">Sign up</button>
