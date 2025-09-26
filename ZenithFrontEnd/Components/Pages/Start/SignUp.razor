@@ -1,54 +1,38 @@
 ﻿@page "/SignUp"
 @inject HttpClient http
 @inject NavigationManager NavigationManager
-
-<h3>SignUp</h3>
-@if (Error == true)
-{
-    <p>Credentials incorrect, check your passwords match, is it a valid email address</p>
-}
-<form @onsubmit="Submit">
-    <div> @*This is thr form taking all the information to create an account*@
-        <div>
-            <label>
-                Firstname:
-                <input type="text" @bind="FirstName"/>
-            </label>
-            <label>
-                Lastname:
-                <input type="text" @bind="LastName"/>
-                
-            </label>
+<div class="page signUpPage">
+    <h3 class="Title">SignUp</h3>
+    @if (Error == true)
+    {
+        <p>Credentials incorrect, check your passwords match, is it a valid email address</p>
+    }
+    <form @onsubmit="Submit" class="UserInfoInput">
+        <div class ="SignUpInputs"> @*This is thr form taking all the information to create an account*@
+            <input class="Input" type="Text" @bind="Email" placeholder="Email"/>
+            
+            <div class="Names">
+                <input class="NameInput" type="text" @bind="FirstName" placeholder="FirstName"/>
+                <input  class="NameInput" type="text" @bind="LastName" placeholder="LastName"/>
+            </div>
+            
+            <input class="Input"type="text" @bind="Username" placeholder="Username"/>
+            <input class="Input"type="password" @bind="Password" placeholder="Password"/>
+            <input class="Input"type="password" @bind="ConfirmPassword" placeholder="ConfirmPassword"/>
+            <input class="Input"type="text" @bind="ClassCode" placeholder="ClassCode"/>
         </div>
-        <label>
-            Email
-            <input type="Text" @bind="Email"/>
-        </label>
-        <label>
-            Username:
-            <input type="text" @bind="Username"/>
-        </label>
-        <label>
-            Password:
-            <input type="password" @bind="Password"/>
-        </label>
-        <label>
-            Confirm Password:
-            <input type="password" @bind="ConfirmPassword"/>
-        </label>
-    </div>
-    <div>
-        <label>
-            Class Code:
-            <input type="text" @bind="ClassCode"/>
-        </label>
         
-    </div>
-    <div>
-        <button type="submit">Sign up</button>
-    </div>
+        <div class = "NavButtons">
+            <div class="LinkButton">
+                <button type="submit" class="Button">Sign up</button>
+            </div>
+        </div>
+        
+    
+        
     
     
+    </form>
     
     
-</form>
+</div>

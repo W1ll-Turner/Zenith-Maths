@@ -16,7 +16,7 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
     
     public required string ClassCode { get; set; }
 
-    public bool Error { get; set; } = false;
+    private bool Error { get; set; } = false;
     private async void Submit()
     {
         bool Match = false;
