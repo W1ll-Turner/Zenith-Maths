@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject ProtectedSessionStorage SessionStorage
 @inject NavigationManager NavigationManager
-<h3>Login</h3>
+<h3 class="Title">Login</h3>
 
 
 
@@ -14,15 +14,10 @@
 }
 
 <form @onsubmit="Submit">
-    <div> @*This is the forms taking the username and password to log in *@
-        <label>
-            Username:
-            <input @bind="Username" />
-        </label>
-        <label>
-            Password:
-            <input @bind="Password"/>
-        </label>
+    <div class="LogInInputs"> @*This is the forms taking the username and password to log in *@
+        
+        <input class="Input" @bind="Username" placeholder="Username" />
+        <input class="Input" @bind="Password" placeholder="Password"/>
     </div>
     <div>
         <div class="LinkButton">
