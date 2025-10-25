@@ -73,6 +73,28 @@ public class QuestionModels
             pointer++;
             Questions[pointer] = question;
         }
+
+        public int CalculateScore()
+        {
+            int score = 0;
+            foreach (AnsweredQuestion question in Questions)
+            {
+                if (question.Correct == true)
+                {
+                    score++;
+                }
+                
+            }
+            return score;
+        }
+    }
+
+    public class RoundInfo
+    {
+        public required int Difficulty { get; init; }
+        public required string UserId { get; init; }
+        public required string Topic { get; init; }
+        public required string TimeCompleted { get; init; }
     }
 }
 

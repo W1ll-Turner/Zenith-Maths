@@ -18,7 +18,7 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
     {
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            Console.WriteLine("DbConnected");
+            
             try
             {
                 Console.WriteLine("querying");

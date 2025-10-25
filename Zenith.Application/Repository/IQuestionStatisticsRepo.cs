@@ -1,14 +1,15 @@
 using Zenith.Models.QuestionModels;
 
+
 namespace Zenith.Application.Repository;
 
 public interface IQuestionStatisticsRepo
 {
-    Task<bool> AddQuestioningRound(QuestionModels models);
+    Task<bool> AddQuestioningRound(QuestionModels.AnsweredQuestionStack questions , QuestionModels.RoundInfo statistics);
     
     Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds();
     
-    Task<IEnumerable<WeeklySummary>> GetAllWeeklySummary();
+    //Task<IEnumerable<WeeklySummary>> GetAllWeeklySummary();
 
     Task<bool> DeleteShortTermData();
     
