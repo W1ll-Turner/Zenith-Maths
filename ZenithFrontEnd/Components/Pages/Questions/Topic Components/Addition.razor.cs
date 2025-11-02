@@ -81,9 +81,6 @@ public partial class Addition : ComponentBase
                 AnswerCorrect = CurrentQuestion.CheckAnswer(input);
             }
         }
-
-        
-        
         
         QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion(AnswerCorrect , CurrentQuestion.AnswerStringFormat , UserAnswer , CurrentQuestion.QuestionText ,TimeToAnswer.ElapsedMilliseconds);
         AnsweredQuestionStack.Push(answeredQuestion);

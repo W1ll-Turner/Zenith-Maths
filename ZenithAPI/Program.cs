@@ -10,6 +10,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
+        builder.Services.AddHashing();
         builder.Services.AddDatabase(config["Database:ConnectionString"]); 
         builder.Services.AddControllers();
         builder.Services.AddApplicationServices(); //adding the repositroies to the application services, this is so that the API controller is able to use the data access methods

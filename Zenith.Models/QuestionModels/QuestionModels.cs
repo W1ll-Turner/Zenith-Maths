@@ -49,7 +49,7 @@ public class QuestionModels
         public bool Correct { get; set; }
         public string CorrectAnswer { get; set; }
         public string UserAnswer { get; set; }
-        public string QuestionText { get; set; }
+        public string Question { get; set; }
         public double TimeTaken { get; set; }
 
         public AnsweredQuestion(bool correct, string correctAnswer, string userAnswer, string questionText, double timeTaken)
@@ -57,12 +57,12 @@ public class QuestionModels
             Correct = correct;
             CorrectAnswer = correctAnswer;
             UserAnswer = userAnswer;
-            QuestionText = questionText;
+            Question = questionText;
             TimeTaken = timeTaken;
         }
     
     }
-
+    
     public class AnsweredQuestionStack
     {
         private AnsweredQuestion[] Questions = new AnsweredQuestion[10];
@@ -72,6 +72,11 @@ public class QuestionModels
         {
             pointer++;
             Questions[pointer] = question;
+        }
+
+        public AnsweredQuestion Pop()
+        {
+            return Questions[pointer--];
         }
 
         public int CalculateScore()
