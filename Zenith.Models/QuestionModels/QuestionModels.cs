@@ -46,13 +46,13 @@ public class QuestionModels
 //all question types no matter the topic will end up as this object to be then sent to the API
     public class AnsweredQuestion
     {
-        public bool Correct { get; set; }
-        public string CorrectAnswer { get; set; }
-        public string UserAnswer { get; set; }
-        public string Question { get; set; }
-        public float TimeTaken { get; set; }
+        public bool Correct { get;}
+        public string CorrectAnswer { get;}
+        public string UserAnswer { get;}
+        public string Question { get; }
+        public double TimeTaken { get; }
 
-        public AnsweredQuestion(bool correct, string correctAnswer, string userAnswer, string questionText, float timeTaken)
+        public AnsweredQuestion(bool correct, string correctAnswer, string userAnswer, string questionText, double timeTaken)
         {
             Correct = correct;
             CorrectAnswer = correctAnswer;
@@ -66,7 +66,7 @@ public class QuestionModels
     public class AnsweredQuestionStack
     {
         private AnsweredQuestion[] Questions = new AnsweredQuestion[10];
-        private int pointer = -1;
+        public int pointer = -1; 
         public void Push(AnsweredQuestion question)
         {
             pointer++;
@@ -88,9 +88,9 @@ public class QuestionModels
             }
             return score;
         }
-        public float CalculateAverageTime()
+        public double CalculateAverageTime()
         {
-            float totalTime = 0;
+            double totalTime = 0;
             foreach (AnsweredQuestion question in Questions)
             {
                 totalTime += question.TimeTaken;

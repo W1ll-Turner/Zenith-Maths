@@ -23,15 +23,15 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         //needs to macth the topic IDs btw
         try
         {
-
             await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
             {
                 
                 //paramertarised SQL query which will add each question from the round to the question bank table
-                var AddQuestionsCommand = new NpgsqlCommand("INSERT INTO questionbank(roundid, question, answer, useranswer, correct, timetaken ) VALUES (@roundid, @question, @answer, @useranswer, @correct, @timetaken)");
+                var AddQuestionsCommand = new NpgsqlCommand("INSERT INTO questionbank(roundid, question, answer, useranswer, correct, timetaken ) VALUES (@roundid, @question, @answer, @useranswer, @correct, @timetaken)", connection);
 
                 for (int i = 1; i < 11; i++) //This will add each question in the AnsweredQuestion Stack that has been given by the front end to the databsde,
                 {
+                    Console.WriteLine("Trying query");
                     AddQuestionsCommand.Parameters.Clear(); //making no paramters will conflict with previosu executions of the quersy 
                     QuestionModels.AnsweredQuestion currentQuestion = questions.Pop();
 
@@ -44,7 +44,9 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                     AddQuestionsCommand.Parameters.AddWithValue("@correct", currentQuestion.Correct);
                     AddQuestionsCommand.Parameters.AddWithValue("@timetaken", currentQuestion.TimeTaken);
 
-                    AddQuestionsCommand.ExecuteNonQuery();
+
+                    Console.WriteLine("parameters intitialised");
+                    await AddQuestionsCommand.ExecuteNonQueryAsync();
                 }
                 
                 //getting the summary statistics 
@@ -66,6 +68,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         }
         catch (Exception ex) // excpetion handling the qury, if somehting goes wrong it will return false to say it did not work
         {
+            Console.WriteLine(ex);
             Console.WriteLine(ex.Message);
             Console.WriteLine("repo failed");
             return false;

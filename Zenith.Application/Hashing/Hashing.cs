@@ -15,10 +15,12 @@ public class Hashing : IHashing
     
     public async Task<string> GenerateShortTermStatsID(string StudentId)
     {
+        Console.WriteLine("starting to hash");
         int Entries = 1;
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            var command = new NpgsqlCommand("SELECT COUNT(*) FROM shorttermstatbridge WHERE StudentId = @StudentId", connection); //this will get the number of entries in the shorttermstst bridge table which the current student has
+            Console.WriteLine("trying to run the qury ");
+            var command = new NpgsqlCommand("SELECT COUNT(*) FROM shorttermstatsbridge WHERE StudentId = @StudentId", connection); //this will get the number of entries in the shorttermstst bridge table which the current student has
             command.Parameters.AddWithValue("StudentId", StudentId);
 
             await using (var reader = await command.ExecuteReaderAsync()) //extracting the value the query and incrementing 

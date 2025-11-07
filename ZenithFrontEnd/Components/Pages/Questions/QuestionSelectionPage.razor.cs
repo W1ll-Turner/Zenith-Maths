@@ -6,19 +6,6 @@ public partial class QuestionSelectionPage : ComponentBase
 {
     public string Id { get; set; }
     private bool authenticated  = false;
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
