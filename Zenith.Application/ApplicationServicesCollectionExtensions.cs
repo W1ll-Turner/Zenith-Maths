@@ -12,6 +12,7 @@ public static class ApplicationServicesCollectionExtensions //This is used to in
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddSingleton<IAccountRepo, AccountRepo>();
+        services.AddSingleton<IQuestionStatisticsRepo, QuestionStatisticsRepo>();
         return services;
     }
 

@@ -9,7 +9,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
 {
     private readonly IDBConnectionFactory _dbConnection;
     private readonly IHashing _Hashing;
-    public QuestionStatisticsRepo(IDBConnectionFactory dbConnection, IHashing Hashing) //loosely coupling the databse connection system
+    public QuestionStatisticsRepo(IDBConnectionFactory dbConnection, IHashing Hashing) //loosely coupling the databse connection system and the hasing algorithms 
     {
         _dbConnection = dbConnection;
         _Hashing = Hashing;
@@ -21,40 +21,58 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
     {
         //this will add all the information about a round of questionsing to the required tables 
         //needs to macth the topic IDs btw
-        //calculates the score the user got 
-        int score = questions.CalculateScore();
-
-        
-        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        try
         {
-            var AddQuestionsCommand = new NpgsqlCommand("INSERT INTO questionbank(roundid, question, answer, useranswer, correct, timetaken ) VALUES (@roundid, @question, @answer, @useranswer, @correct, @timetaken)");
 
-            for (int i = 1; i < 11; i++) //This will add each question in the AnsweredQuestion Stack that has been given by the front end to the databsde,
+            await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
             {
-                AddQuestionsCommand.Parameters.Clear(); //making no paramters will conflict with previosu executions of the quersy 
-                QuestionModels.AnsweredQuestion currentQuestion = questions.Pop();
                 
-                string roundId = studentId + "#" + i.ToString();
-                //dynamically assigning the querys parameters 
-                AddQuestionsCommand.Parameters.AddWithValue("@roundid", roundId);
-                AddQuestionsCommand.Parameters.AddWithValue("@question", currentQuestion.Question);
-                AddQuestionsCommand.Parameters.AddWithValue("@answer", currentQuestion.CorrectAnswer);
-                AddQuestionsCommand.Parameters.AddWithValue("@useranswer", currentQuestion.UserAnswer);
-                AddQuestionsCommand.Parameters.AddWithValue("@correct", currentQuestion.Correct);
-                AddQuestionsCommand.Parameters.AddWithValue("@timetaken" , currentQuestion.TimeTaken);
+                //paramertarised SQL query which will add each question from the round to the question bank table
+                var AddQuestionsCommand = new NpgsqlCommand("INSERT INTO questionbank(roundid, question, answer, useranswer, correct, timetaken ) VALUES (@roundid, @question, @answer, @useranswer, @correct, @timetaken)");
+
+                for (int i = 1; i < 11; i++) //This will add each question in the AnsweredQuestion Stack that has been given by the front end to the databsde,
+                {
+                    AddQuestionsCommand.Parameters.Clear(); //making no paramters will conflict with previosu executions of the quersy 
+                    QuestionModels.AnsweredQuestion currentQuestion = questions.Pop();
+
+                    string roundId = studentId + "#" + i.ToString();
+                    //dynamically assigning the querys parameters 
+                    AddQuestionsCommand.Parameters.AddWithValue("@roundid", roundId);
+                    AddQuestionsCommand.Parameters.AddWithValue("@question", currentQuestion.Question);
+                    AddQuestionsCommand.Parameters.AddWithValue("@answer", currentQuestion.CorrectAnswer);
+                    AddQuestionsCommand.Parameters.AddWithValue("@useranswer", currentQuestion.UserAnswer);
+                    AddQuestionsCommand.Parameters.AddWithValue("@correct", currentQuestion.Correct);
+                    AddQuestionsCommand.Parameters.AddWithValue("@timetaken", currentQuestion.TimeTaken);
+
+                    AddQuestionsCommand.ExecuteNonQuery();
+                }
                 
-                AddQuestionsCommand.ExecuteNonQuery();
+                //getting the summary statistics 
+                double averageTime = questions.CalculateAverageTime();
+                int score = questions.CalculateScore();
+                string ShortTermId = await _Hashing.GenerateShortTermStatsID(studentId); //getting the shortterm id hash for this entry in the table
+                
+                //adding the summary statistics for the round to the table  
+                //paramertised SQL query working across the shorttermstats table and the topics table to store the relevant data
+                var AddStatistcsCommand = new NpgsqlCommand("INSERT INTO shorttermstats(shorttermid, averagetime, score, topicid, difficulty, timecompleted) VALUES (@shorttermid, @averagetime, @score, SELECT topicid FROM topic WHERE topicname = 'addition' , @difficulty, @timecompleted)");
+                AddStatistcsCommand.Parameters.AddWithValue("@shorttermid", ShortTermId);
+                AddStatistcsCommand.Parameters.AddWithValue("@averagetime", averageTime);
+                AddStatistcsCommand.Parameters.AddWithValue("@score", score);
+                AddStatistcsCommand.Parameters.AddWithValue("@difficulty", Statistics.Difficulty);
+                AddStatistcsCommand.Parameters.AddWithValue("@timecompleted", Statistics.TimeCompleted);
             }
-            
-            //need to calculaqte the average time as well btw
-            
-            string ShortTermId = _Hashing.GenerateShortTermStatsID(studentId);
-            var AddStatistcsCommand = new NpgsqlCommand("INSERT INTO shorttermstats(shorttermid, averagetime, score, topicid, difficulty, timecompleted) VALUES (@shorttermid, @averagetime, @score, @topicid, @difficulty, @timecompleted)");
-            AddStatistcsCommand.Parameters.AddWithValue("@shorttermid", ShortTermId);
-            AddStatistcsCommand.Parameters.AddWithValue("@averagetime", );
+            return true;
+
+        }
+        catch (Exception ex) // excpetion handling the qury, if somehting goes wrong it will return false to say it did not work
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine("repo failed");
+            return false;
         }
         
-        return true;
+        
+        
     }
 
     public Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds()

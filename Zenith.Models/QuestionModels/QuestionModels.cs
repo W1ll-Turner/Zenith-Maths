@@ -50,9 +50,9 @@ public class QuestionModels
         public string CorrectAnswer { get; set; }
         public string UserAnswer { get; set; }
         public string Question { get; set; }
-        public double TimeTaken { get; set; }
+        public float TimeTaken { get; set; }
 
-        public AnsweredQuestion(bool correct, string correctAnswer, string userAnswer, string questionText, double timeTaken)
+        public AnsweredQuestion(bool correct, string correctAnswer, string userAnswer, string questionText, float timeTaken)
         {
             Correct = correct;
             CorrectAnswer = correctAnswer;
@@ -67,18 +67,15 @@ public class QuestionModels
     {
         private AnsweredQuestion[] Questions = new AnsweredQuestion[10];
         private int pointer = -1;
-
         public void Push(AnsweredQuestion question)
         {
             pointer++;
             Questions[pointer] = question;
         }
-
         public AnsweredQuestion Pop()
         {
             return Questions[pointer--];
         }
-
         public int CalculateScore()
         {
             int score = 0;
@@ -88,18 +85,27 @@ public class QuestionModels
                 {
                     score++;
                 }
-                
             }
             return score;
         }
-    }
+        public float CalculateAverageTime()
+        {
+            float totalTime = 0;
+            foreach (AnsweredQuestion question in Questions)
+            {
+                totalTime += question.TimeTaken;
+            }
 
+            return totalTime / 10;
+        }
+    }
     public class RoundInfo
     {
+
         public required int Difficulty { get; init; }
-        public required string UserId { get; init; }
         public required string Topic { get; init; }
         public required string TimeCompleted { get; init; }
+        
     }
 }
 
