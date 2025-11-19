@@ -1,13 +1,18 @@
-
+@page "/Questions"
+@page "/Questions/{Topic}/{Difficulty}"
 @inject NavigationManager NavigationManager
 @rendermode InteractiveAuto
-@page "/adds"
+
+
 <div class = "QuestionComponent">
     <h1>Welcome to the Question page</h1>
     
+    
     @if (Questions.IsEmpty() != true)
     {
+        
         <h3 >@QuestionText</h3>
+        
         <input type="text" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class = "AnswerBox"></input> 
         <button @onclick="AnswerQuestion" >Submit</button>
     }
@@ -16,6 +21,7 @@
         <button @onclick="Start">Start</button>
     }
 </div>
+
 
 @code{
 
@@ -27,6 +33,10 @@
             UserAnswer = String.Empty;
             AnswerQuestion();
         }
+
+       
     }
 
 }
+
+
