@@ -3,7 +3,8 @@ using Zenith.Models.Account;
 
 namespace Zenith.Models.QuestionModels;
 
-public class AdditionQuestion : IQuestion
+
+public class AdditionQuestion : IQuestion 
 {
     public string QuestionText { get; set; }
     public Fraction Answer { get; set; } //this is the version of the answer that will be used to chekv if the user got it right
@@ -148,19 +149,53 @@ public class SubtractionQuestion : IQuestion
 
     public string GenerateHard()
     {
-        throw new NotImplementedException();
+        //initialisng the random class
+        Random random = new Random();
+        
+        //generating the fractions using random generation
+        Fraction operand1 = new Fraction(random.Next(1,20) , random.Next(1,12));
+        Fraction operand2 = new Fraction(random.Next(1,20),  random.Next(1,12));
+        
+        //computing the answer and putting it inot string form 
+        Answer = operand1 - operand2;
+        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
+        
+         //returning the answer as either a decimal or fraction 
+         int DecimalOrFraction = random.Next(0,1);
+         if (DecimalOrFraction == 0)
+         {
+             return operand1.StringFormat + "-" + operand2.StringFormat;
+         }
+         else
+         {
+             return Convert.ToString(operand1.DecimalValue) + " - " + Convert.ToString(operand2.DecimalValue);
+         }
     }
 
     public string GenerateMedium()
     {
+        //initialisng the random 
         Random random = new Random();
-        
         int[] acceptableDenominators = new int[] { 2, 3, 4, 5, 8, 10}; //the list of accepatbale denominators for the fractions being used 
         
+        //randomly generating the fracions for the questions 
         Fraction operand1 = new Fraction(random.Next(1,12), acceptableDenominators[random.Next(0, acceptableDenominators.Length - 1)]);
         Fraction operand2 = new Fraction(random.Next(1,12),  acceptableDenominators[random.Next(0, acceptableDenominators.Length - 1)]);
         
+        //computing the answer the to the question and putting it into the string format
         Answer = operand1 - operand2;
+        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
+        
+        //returning the question string as a decimal or fraction whcih is decided randomly
+        int DecimalOrFraction = random.Next(0,1);
+        if (DecimalOrFraction == 0)
+        {
+            return operand1.StringFormat + "-" + operand2.StringFormat;
+        }
+        else
+        {
+            return Convert.ToString(operand1.DecimalValue) + " + " + Convert.ToString(operand2.DecimalValue);
+        }
     }
 
     public string GenerateEasy()
