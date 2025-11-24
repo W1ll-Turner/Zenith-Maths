@@ -30,8 +30,6 @@ public class Fraction
             return false;
         }
         
-
-        
     }
     //overlaoding the != to compare two fractions
     public static bool operator !=(Fraction a, Fraction b)

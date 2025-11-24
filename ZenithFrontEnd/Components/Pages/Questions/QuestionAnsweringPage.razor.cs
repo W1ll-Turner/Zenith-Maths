@@ -22,101 +22,65 @@ public partial class QuestionAnsweringPage:ComponentBase
     private QuestionModels.QuestionStack Questions { get; set; } = new QuestionModels.QuestionStack();
     private AdditionQuestion CurrentQuestion { get; set; }
     private QuestionModels.AnsweredQuestionStack AnsweredQuestionStack { get; set; } 
+    public Dictionary<string, Func<QuestionModels.QuestionStack>> TopicsMapper { get; set; }
     private void Start()
     {
-        Questions = InitialiseStack(); //initialising the questions // gett the actruial difficulty from the route 
+        //this dictionary maps the topic to the genric methods that will generate the questions, This is dependant on a topic
+        TopicsMapper = new Dictionary<string, Func<QuestionModels.QuestionStack>>()
+        {
+            //the key is the topic and the vlue is a function call that will call the Intitlaise stack method using the appropiate question type 
+            {"addition" , InitialiseStack<AdditionQuestion>}, 
+            {"subtraction", InitialiseStack<SubtractionQuestion>},
+            {"multiplication" , InitialiseStack<MultiplicationQuestion>},
+            {"division", InitialiseStack<DivisionQuestion>},
+            {"differentiation",  InitialiseStack<DifferentiationQuestion>},
+            {"integration" ,  InitialiseStack<IntegrationQuestion>},
+            {"quadratics",  InitialiseStack<QuadraticsQuestion>},
+            {"collectingterms",  InitialiseStack<CollectingTermsQuestion>},
+            {"everything", TestEverything()},
+            
+        };
+
+        //initilaising the question stack, if the topic cannot be found an exception will be thrown
+        if (TopicsMapper.TryGetValue(Topic, out Func<QuestionModels.QuestionStack> InitialiseStack))
+        {
+            Questions = InitialiseStack(); //running the method to generate the question stack
+        }
+        else
+        {
+            //makse the HTML display an error to the user
+            Console.WriteLine("topic invalid");
+            
+        }
+        
+         
         AnsweredQuestionStack = new QuestionModels.AnsweredQuestionStack();
         Console.WriteLine(Questions.Pointer);
         QuestionSequence(); //prepare the question for the user to answer
     }
 
-
-
-
-    private QuestionModels.QuestionStack InitialiseStack() //used to generate a stack of questions 
+    private Func<QuestionModels.QuestionStack> TestEverything()
     {
-        int testdifficulty = 1;
-        QuestionModels.QuestionStack questions = new QuestionModels.QuestionStack();
-        switch (Topic)
-        {
-            case "addition":
-                for (int i = 0; i < 10; i++)
-                {
-                    AdditionQuestion question = new AdditionQuestion(testdifficulty);
-                    Console.WriteLine("pushing item to the stack");
-                    questions.Push(question);
-                }
-
-                break;
-                /**
-                case "subtraction":
-                    for (int i = 0; i < 10; i++)
-                    {
-                        SubtractionQuestion question = new SubtractionQuestion(testdifficulty);
-                        Console.WriteLine("pushing item to the stack");
-                        questions.Push(question);
-                    }
-                    break;
-                case "multiplication":
-                    for (int i = 0; i < 10; i++)
-                    {
-                        MultiplicationQuestion question = new SubtractionQuestion(testdifficulty);
-                        Console.WriteLine("pushing item to the stack");
-                        questions.Push(question);
-                    }
-                    break;
-                case "division":
-                    for (int i = 0; i < 10; i++)
-                    {
-                        DivisionQuestion question = new DivisionQuestion(testdifficulty);
-                        Console.WriteLine("pushing item to the stack");
-                        questions.Push(question);
-                    }
-                    break;
-                case "differentiation":
-                    for (int i = 0; i < 10; i++)
-                    {
-                        DifferentiationQuestion question = new DifferentiationQuestion();
-                        Console.WriteLine("pushing item to the stack");
-                        questions.Push(question);
-                    }
-                    break;
-                case "integration":
-                    for (int i = 0; i < 10; i++)
-                    {
-                        IntegrationQuestion question = new Integrationuestion(testdifficulty);
-                        Console.WriteLine("pushing item to the stack");
-                        questions.Push(question);
-                    }
-                    break;
-                case "quadratics":
-                    for (int i = 0; i < 10; i++)
-                    {
-                        QuadraticsQuestion question = new QuadraticsQuestion(testdifficulty);
-                        Console.WriteLine("pushing item to the stack");
-                        questions.Push(question);
-                    }
-                    break;
-                case "collectingterms":
-                    for (int i = 0; i < 10; i++)
-                    {
-                        CollectingTermsQuestion question = new CollectingTermsQuestion(testdifficulty);
-                        Console.WriteLine("pushing item to the stack");
-                        questions.Push(question);
-                    }
-                    break;
-                case "everything:":
-                    //this will requre some specialised code for the code
-                    break;
-
-            }
-            **/ 
-                
-        }
-        return questions;
+        throw new NotImplementedException();
     }
 
 
+    private QuestionModels.QuestionStack InitialiseStack<T>() where T : IQuestion, new() //used to generate a stack of questions 
+    {
+        int testdifficulty = 1;
+        QuestionModels.QuestionStack questions = new QuestionModels.QuestionStack();
+
+        for (int i = 0; i < 10; i++)
+        {
+            T question = new T();
+            question.Difficulty = testdifficulty;
+            questions.Push(question);
+        }
+        
+        return questions;
+    }
+    
+    
     private void QuestionSequence()
     {
         

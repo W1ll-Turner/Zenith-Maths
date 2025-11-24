@@ -7,7 +7,6 @@
 <div class = "QuestionComponent">
     <h1>Welcome to the Question page</h1>
     
-    
     @if (Questions.IsEmpty() != true)
     {
         
@@ -24,8 +23,7 @@
 
 
 @code{
-
-
+    //method to handle the event of if the enter key is entered 
     private void KeyboardEventHandler(KeyboardEventArgs args)
     {
         if (args.Key == "Enter")

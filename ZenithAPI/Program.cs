@@ -8,8 +8,6 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         var config = builder.Configuration;  //importing the app settings
         // Add services to the container.
-        builder.Services.AddAuthentication();
-        builder.Services.AddAuthorization();
         builder.Services.AddHashing();
         builder.Services.AddDatabase(config["Database:ConnectionString"]); 
         builder.Services.AddControllers();

@@ -10,21 +10,21 @@ public interface IDBConnectionFactory //creating a interface so that they Class 
     Task<IDbConnection> CreateDBConnection();
 }
 
-
 public class NpgsqlConnectionFactory : IDBConnectionFactory //Implementing the the Interface
 {
     private readonly string _connectionString;
-
-
-    public NpgsqlConnectionFactory(string connectionString) //getting the DB Connection
+    
+    public NpgsqlConnectionFactory(string connectionString) //getting the DB Connection string
     {
         _connectionString = connectionString;
     }
 
     public async Task<IDbConnection> CreateDBConnection()
     {
+        //initialisng the connection to the database and returning it 
         var connection = new NpgsqlConnection(_connectionString);
-        await connection.OpenAsync(); //Asynchronus as postgres supports this and will allow for multiple qurys to be executed simulatnaously
+        //Asynchronus as postgres supports this and will allow for multiple qurys to be executed simulatnaously
+        await connection.OpenAsync(); 
         return connection;
     }
     

@@ -3,7 +3,6 @@ using Zenith.Models.Account;
 
 namespace Zenith.Models.QuestionModels;
 
-
 public class AdditionQuestion : IQuestion 
 {
     public string QuestionText { get; set; }
@@ -11,8 +10,9 @@ public class AdditionQuestion : IQuestion
     
     public string AnswerStringFormat { get; set; } //This is the answer that will be displayed to the user and stored in the database
     public Dictionary<int, Func<string>> Generators { get; set; }
-    
-    public AdditionQuestion(int difficulty)
+    public int Difficulty { get; set; }
+
+    public AdditionQuestion()
     {
         Generators = new Dictionary<int, Func<string>>
         {
@@ -20,12 +20,12 @@ public class AdditionQuestion : IQuestion
             { 2, GenerateMedium },
             { 3, GenerateHard }
         }; 
-        Generate(difficulty);
+        Generate();
     }
 
-    public void Generate(int difficulty)
+    public void Generate()
     {
-        if (Generators.TryGetValue(difficulty,
+        if (Generators.TryGetValue(Difficulty,
                 out Func<string> generator)) //if the key is within the dictionary it will call the coressponding function as the method generator()
         {
             QuestionText = generator();
@@ -122,9 +122,10 @@ public class SubtractionQuestion : IQuestion
     public string AnswerStringFormat { get; set; }
 
     public Dictionary<int, Func<string>> Generators { get; set; }
+    public int Difficulty { get; set; }
 
 
-    public SubtractionQuestion(int difficulty)
+    public SubtractionQuestion()
     {
         Generators = new Dictionary<int, Func<string>>
         {
@@ -132,12 +133,12 @@ public class SubtractionQuestion : IQuestion
             { 2, GenerateMedium },
             { 3, GenerateHard }
         }; 
-        Generate(difficulty);
+        Generate();
     }
 
-    public void Generate(int difficulty)
+    public void Generate()
     {
-        if (Generators.TryGetValue(difficulty, out Func<string> generator))
+        if (Generators.TryGetValue(Difficulty, out Func<string> generator))
         {
             QuestionText = generator();
         }
@@ -239,29 +240,114 @@ public class MultiplicationQuestion : IQuestion
     public Fraction Answer { get; set; }
     public string AnswerStringFormat { get; set; }
     public Dictionary<int, Func<string>> Generators { get; set; }
-    public void Generate(int difficulty)
+    public int Difficulty { get; set; }
+
+    public MultiplicationQuestion()
     {
-        throw new NotImplementedException();
+        Generators = new Dictionary<int, Func<string>>
+        {
+            { 1, GenerateEasy },
+            { 2, GenerateMedium },
+            { 3, GenerateHard }
+        }; 
+        Generate();
+    }
+
+    public void Generate()
+    {
+        if (Generators.TryGetValue(Difficulty, out Func<string> generator))
+        {
+            QuestionText = generator();
+        }
+        else
+        {
+            throw new KeyNotFoundException();
+        }
     }
 
     public string GenerateHard()
     {
-        throw new NotImplementedException();
+        //initialising the random class
+        Random random = new Random();
+       
+        //randomly generating the fractions
+        Fraction operand1 = new Fraction(random.Next(1,25), random.Next(1,40));
+        Fraction operand2 = new Fraction(random.Next(1,12),  random.Next(1,12));
+       
+        //computing the answer and putting it into string form 
+        Fraction answer = operand1 * operand2;
+        Answer = answer;
+        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
+       
+        return operand1.StringFormat + "*" + Convert.ToString(Answer.DecimalValue);
     }
 
     public string GenerateMedium()
     {
-        throw new NotImplementedException();
+        //initialising the random class
+       Random random = new Random();
+       
+       //randomly generating the fractions
+       Fraction operand1 = new Fraction(random.Next(1,12), random.Next(1,12));
+       Fraction operand2 = new Fraction(random.Next(1,12),  random.Next(1,12));
+       
+       //computing the answer and putting it into string form 
+       Fraction answer = operand1 * operand2;
+       Answer = answer;
+       AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
+       
+       return operand1.StringFormat + "*" + Convert.ToString(Answer.DecimalValue);
     }
 
     public string GenerateEasy()
     {
-        throw new NotImplementedException();
+        //initialisng the random class
+        Random random = new Random();
+        
+        //used to pick which type of mulitplication question
+        int num1 = random.Next(0,1);
+        if(num1==1)
+        {
+            //randomly generating the operands
+            int operand1 =  random.Next(1, 25);
+            int operand2 = random.Next(1, 12);
+            
+            //computing the answer
+            int answer = operand1 * operand2;
+            AnswerStringFormat = Convert.ToString(answer);
+            
+            //returning the question string 
+            return Convert.ToString(operand1) + "*" + Convert.ToString(operand2);
+        }
+        else
+        {
+            //generating the operands for the calculation
+            int operand1 = random.Next(1, 60);
+            int operand2 = random.Next(1, 5);
+            
+            //Computing the answer, storing it and then putting it into string form
+            Fraction answer = new Fraction(operand1 * operand2, 1);
+            Answer = answer;
+            AnswerStringFormat = Convert.ToString(operand1 * operand2); 
+            
+            //returning the question text
+            return Convert.ToString(answer) + "*" + Convert.ToString(operand2);
+        }
+        
+        
+        
     }
 
-    public bool CheckAnswer(Fraction answer)
+    public bool CheckAnswer(Fraction userAnswer)
     {
-        throw new NotImplementedException();
+        if (userAnswer == Answer)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
@@ -273,8 +359,110 @@ public class DivisionQuestion : IQuestion
     public Fraction Answer { get; set; }
     public string AnswerStringFormat { get; set; }
     public Dictionary<int, Func<string>> Generators { get; set; }
+    public int Difficulty { get; set; }
 
-    public void Generate(int difficulty)
+    public DivisionQuestion()
+    {
+        Generators = new Dictionary<int, Func<string>>
+        {
+            { 1, GenerateEasy },
+            { 2, GenerateMedium },
+            { 3, GenerateHard }
+        }; 
+        Generate();
+    }
+    
+    
+    public void Generate()
+    {
+        if (Generators.TryGetValue(Difficulty, out Func<string> generator))
+        {
+            QuestionText = generator();
+        }
+        else
+        {
+            throw new KeyNotFoundException();
+        }
+    }
+
+    public string GenerateHard()
+    {
+        //intitilising the random class
+        Random random = new Random();
+        
+        //Generating the fraction randomly
+        Fraction operand1 = new Fraction(random.Next(1,25), random.Next(1,12)); 
+        Fraction operand2 = new Fraction(random.Next(1,25),  random.Next(1,12));
+        
+        //Computing the answer and putting it into string format
+        Fraction answer = operand1 / operand2;
+        Answer = answer;
+        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
+        
+        //returning the question text
+        return operand1.StringFormat + "÷" + operand2.StringFormat;
+    }
+
+    public string GenerateMedium()
+    {
+        //initilaisng the random class 
+        Random random = new Random();
+        
+        //generating the frcations to work with 
+        Fraction operand1 = new Fraction(random.Next(1,12), random.Next(1,12));
+        Fraction operand2 = new Fraction(random.Next(1,12),  random.Next(1,12));
+        
+        //computing the answer
+        Fraction anwer = operand1 / operand2;
+        Answer = anwer;
+        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);    
+        
+        //returning the question text
+        string questionText = operand1.ToString() + "÷" + operand2.ToString();
+        return questionText;
+    }
+
+    public string GenerateEasy()
+    {
+        //intitiasing the random class
+        Random random = new Random();
+
+        //randomly generating the numbers for the question
+        int operand1 = random.Next(1, 15);
+        int operand2 = random.Next(1, 15) * operand1;
+        int numerator = operand2 / operand1;
+        
+        //Computing the asnwer and putting it into string format 
+        Fraction answer = new Fraction(numerator, 1);
+        Answer = answer;
+        AnswerStringFormat = numerator.ToString();
+        
+        //returning the question text
+        string questionText = operand2.ToString() + "÷" + operand1.ToString();
+        return questionText;
+    }
+
+    public bool CheckAnswer(Fraction UserAnswer)
+    {
+        if (UserAnswer == Answer)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+public class DifferentiationQuestion : IQuestion
+{
+    public string QuestionText { get; set; }
+    public Fraction Answer { get; set; }
+    public string AnswerStringFormat { get; set; }
+    public Dictionary<int, Func<string>> Generators { get; set; }
+    public int Difficulty { get; set; }
+    public void Generate()
     {
         throw new NotImplementedException();
     }
@@ -294,9 +482,109 @@ public class DivisionQuestion : IQuestion
         throw new NotImplementedException();
     }
 
-    public bool CheckAnswer(Fraction answer)
+    public bool CheckAnswer(Fraction UserAnswer)
     {
         throw new NotImplementedException();
     }
 }
+
+public class IntegrationQuestion : IQuestion
+{
+    public string QuestionText { get; set; }
+    public Fraction Answer { get; set; }
+    public string AnswerStringFormat { get; set; }
+    public Dictionary<int, Func<string>> Generators { get; set; }
+    public int Difficulty { get; set; }
+    public void Generate()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateHard()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateMedium()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateEasy()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool CheckAnswer(Fraction UserAnswer)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class CollectingTermsQuestion : IQuestion
+{
+    public string QuestionText { get; set; }
+    public Fraction Answer { get; set; }
+    public string AnswerStringFormat { get; set; }
+    public Dictionary<int, Func<string>> Generators { get; set; }
+    public int Difficulty { get; set; }
+    public void Generate()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateHard()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateMedium()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateEasy()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool CheckAnswer(Fraction UserAnswer)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class QuadraticsQuestion : IQuestion
+{
+    public string QuestionText { get; set; }
+    public Fraction Answer { get; set; }
+    public string AnswerStringFormat { get; set; }
+    public Dictionary<int, Func<string>> Generators { get; set; }
+    public int Difficulty { get; set; }
+    public void Generate()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateHard()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateMedium()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateEasy()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool CheckAnswer(Fraction UserAnswer)
+    {
+        throw new NotImplementedException();
+    }
+}
+
 
