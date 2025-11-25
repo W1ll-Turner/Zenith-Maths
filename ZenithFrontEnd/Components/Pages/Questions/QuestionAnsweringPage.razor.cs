@@ -20,53 +20,53 @@ public partial class QuestionAnsweringPage:ComponentBase
     private Stopwatch TimeToAnswer { get; set; } = new Stopwatch();
     
     private QuestionModels.QuestionStack Questions { get; set; } = new QuestionModels.QuestionStack();
-    private AdditionQuestion CurrentQuestion { get; set; }
+    private IQuestion CurrentQuestion { get; set; }
     private QuestionModels.AnsweredQuestionStack AnsweredQuestionStack { get; set; } 
-    public Dictionary<string, Func<QuestionModels.QuestionStack>> TopicsMapper { get; set; }
+    public Dictionary<string, Func<bool>> TopicsMapper { get; set; }
+    public Type QuestionType { get; set; }
+
     private void Start()
     {
+        Console.WriteLine("started");
         //this dictionary maps the topic to the genric methods that will generate the questions, This is dependant on a topic
-        TopicsMapper = new Dictionary<string, Func<QuestionModels.QuestionStack>>()
+        TopicsMapper = new Dictionary<string, Func<bool>>()
         {
             //the key is the topic and the vlue is a function call that will call the Intitlaise stack method using the appropiate question type 
-            {"addition" , InitialiseStack<AdditionQuestion>}, 
-            {"subtraction", InitialiseStack<SubtractionQuestion>},
-            {"multiplication" , InitialiseStack<MultiplicationQuestion>},
-            {"division", InitialiseStack<DivisionQuestion>},
-            {"differentiation",  InitialiseStack<DifferentiationQuestion>},
-            {"integration" ,  InitialiseStack<IntegrationQuestion>},
-            {"quadratics",  InitialiseStack<QuadraticsQuestion>},
-            {"collectingterms",  InitialiseStack<CollectingTermsQuestion>},
-            {"everything", TestEverything()},
-            
+            { "addition", InitialiseStack<AdditionQuestion> },
+            { "subtraction", InitialiseStack<SubtractionQuestion> },
+            { "multiplication", InitialiseStack<MultiplicationQuestion> },
+            { "division", InitialiseStack<DivisionQuestion> },
+            { "differentiation", InitialiseStack<DifferentiationQuestion> },
+            { "integration", InitialiseStack<IntegrationQuestion> },
+            { "quadratics", InitialiseStack<QuadraticsQuestion> },
+            { "collectingterms", InitialiseStack<CollectingTermsQuestion> },
+            { "everything", InitialiseStack<TestEverything> }
+
         };
 
+        Console.WriteLine("dictionary has been made");
         //initilaising the question stack, if the topic cannot be found an exception will be thrown
-        if (TopicsMapper.TryGetValue(Topic, out Func<QuestionModels.QuestionStack> InitialiseStack))
+        try
         {
-            Questions = InitialiseStack(); //running the method to generate the question stack
+            TopicsMapper.TryGetValue("subtraction", out Func<bool>? intialiseStack);
+            Console.WriteLine("dictionary one worked initilaisng the stack");
+
+            AnsweredQuestionStack = new QuestionModels.AnsweredQuestionStack();
+            intialiseStack!();
+            
+            return;
         }
-        else
+        catch (Exception e)
         {
-            //makse the HTML display an error to the user
-            Console.WriteLine("topic invalid");
+            Console.WriteLine(e.Message);
+            return;
             
         }
-        
-         
-        AnsweredQuestionStack = new QuestionModels.AnsweredQuestionStack();
-        Console.WriteLine(Questions.Pointer);
-        QuestionSequence(); //prepare the question for the user to answer
     }
-
-    private Func<QuestionModels.QuestionStack> TestEverything()
+    
+    private bool InitialiseStack<T>() where T : IQuestion, new() //used to generate a stack of questions 
     {
-        throw new NotImplementedException();
-    }
-
-
-    private QuestionModels.QuestionStack InitialiseStack<T>() where T : IQuestion, new() //used to generate a stack of questions 
-    {
+        ;
         int testdifficulty = 1;
         QuestionModels.QuestionStack questions = new QuestionModels.QuestionStack();
 
@@ -74,24 +74,27 @@ public partial class QuestionAnsweringPage:ComponentBase
         {
             T question = new T();
             question.Difficulty = testdifficulty;
+            question.Generate();
             questions.Push(question);
         }
-        
-        return questions;
+ 
+        Questions = questions;
+        QuestionSequence();
+        return true;
     }
     
+    private bool TestEverything()
+    {
+        return true;
+    }
     
     private void QuestionSequence()
     {
-        
-   
-        CurrentQuestion = (AdditionQuestion)Questions.Pop(); //getting the next question off the stack \
+        CurrentQuestion = (IQuestion)Questions.Pop(); //getting the next question off the stack
        
         QuestionText = CurrentQuestion.QuestionText; //displaying the new question
 
         TimeToAnswer.Start(); //starting the timer 
-     
-        
     }
     
 
@@ -133,9 +136,6 @@ public partial class QuestionAnsweringPage:ComponentBase
             QuestionSequence();
         }
         
-        
-
-
     }
 
     private void  SendResultsToAPI()

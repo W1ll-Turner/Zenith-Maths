@@ -11,7 +11,7 @@ public interface IQuestion
     Dictionary<int, Func<string>> Generators { get; set; } //this will be the dictionary mapping the difficulty type to the method that will be used to generate the question
     
     int Difficulty { get; set; }
-    protected void Generate();
+    public void Generate();
     
     public string GenerateHard();
     public string GenerateMedium();

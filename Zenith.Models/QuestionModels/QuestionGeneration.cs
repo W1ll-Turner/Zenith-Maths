@@ -12,7 +12,9 @@ public class AdditionQuestion : IQuestion
     public Dictionary<int, Func<string>> Generators { get; set; }
     public int Difficulty { get; set; }
 
-    public AdditionQuestion()
+    
+
+    public void Generate()
     {
         Generators = new Dictionary<int, Func<string>>
         {
@@ -20,11 +22,6 @@ public class AdditionQuestion : IQuestion
             { 2, GenerateMedium },
             { 3, GenerateHard }
         }; 
-        Generate();
-    }
-
-    public void Generate()
-    {
         if (Generators.TryGetValue(Difficulty,
                 out Func<string> generator)) //if the key is within the dictionary it will call the coressponding function as the method generator()
         {
@@ -124,20 +121,15 @@ public class SubtractionQuestion : IQuestion
     public Dictionary<int, Func<string>> Generators { get; set; }
     public int Difficulty { get; set; }
 
-
-    public SubtractionQuestion()
+    
+    public void Generate()
     {
         Generators = new Dictionary<int, Func<string>>
         {
             { 1, GenerateEasy },
             { 2, GenerateMedium },
             { 3, GenerateHard }
-        }; 
-        Generate();
-    }
-
-    public void Generate()
-    {
+        };
         if (Generators.TryGetValue(Difficulty, out Func<string> generator))
         {
             QuestionText = generator();
@@ -241,20 +233,16 @@ public class MultiplicationQuestion : IQuestion
     public string AnswerStringFormat { get; set; }
     public Dictionary<int, Func<string>> Generators { get; set; }
     public int Difficulty { get; set; }
+    
 
-    public MultiplicationQuestion()
+    public void Generate()
     {
         Generators = new Dictionary<int, Func<string>>
         {
             { 1, GenerateEasy },
             { 2, GenerateMedium },
             { 3, GenerateHard }
-        }; 
-        Generate();
-    }
-
-    public void Generate()
-    {
+        };
         if (Generators.TryGetValue(Difficulty, out Func<string> generator))
         {
             QuestionText = generator();
@@ -360,21 +348,15 @@ public class DivisionQuestion : IQuestion
     public string AnswerStringFormat { get; set; }
     public Dictionary<int, Func<string>> Generators { get; set; }
     public int Difficulty { get; set; }
-
-    public DivisionQuestion()
+    
+    public void Generate()
     {
         Generators = new Dictionary<int, Func<string>>
         {
             { 1, GenerateEasy },
             { 2, GenerateMedium },
             { 3, GenerateHard }
-        }; 
-        Generate();
-    }
-    
-    
-    public void Generate()
-    {
+        };
         if (Generators.TryGetValue(Difficulty, out Func<string> generator))
         {
             QuestionText = generator();
@@ -587,4 +569,36 @@ public class QuadraticsQuestion : IQuestion
     }
 }
 
+public class TestEverything : IQuestion
+{
+    public string QuestionText { get; set; }
+    public Fraction Answer { get; set; }
+    public string AnswerStringFormat { get; set; }
+    public Dictionary<int, Func<string>> Generators { get; set; }
+    public int Difficulty { get; set; }
+    public void Generate()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateHard()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateMedium()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GenerateEasy()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool CheckAnswer(Fraction UserAnswer)
+    {
+        throw new NotImplementedException();
+    }
+}
 
