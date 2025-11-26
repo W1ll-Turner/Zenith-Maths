@@ -157,7 +157,7 @@ public class SubtractionQuestion : IQuestion
          int DecimalOrFraction = random.Next(0,1);
          if (DecimalOrFraction == 0)
          {
-             return operand1.StringFormat + "-" + operand2.StringFormat;
+             return operand1.StringFormat + " - " + operand2.StringFormat;
          }
          else
          {
@@ -183,7 +183,7 @@ public class SubtractionQuestion : IQuestion
         int DecimalOrFraction = random.Next(0,1);
         if (DecimalOrFraction == 0)
         {
-            return operand1.StringFormat + "-" + operand2.StringFormat;
+            return operand1.StringFormat + " - " + operand2.StringFormat;
         }
         else
         {
@@ -207,7 +207,7 @@ public class SubtractionQuestion : IQuestion
         AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
 
         //getting and returning the text for the question
-        string questionText = operand1.ToString() + "-" + operand2.ToString();
+        string questionText = operand1.ToString() + " - " + operand2.ToString();
         return questionText;
     }
 
@@ -259,15 +259,15 @@ public class MultiplicationQuestion : IQuestion
         Random random = new Random();
        
         //randomly generating the fractions
-        Fraction operand1 = new Fraction(random.Next(1,25), random.Next(1,40));
-        Fraction operand2 = new Fraction(random.Next(1,12),  random.Next(1,12));
+        Fraction operand1 = new Fraction(random.Next(1,25), random.Next(2,40));
+        Fraction operand2 = new Fraction(random.Next(1,12),  random.Next(2,12));
        
         //computing the answer and putting it into string form 
         Fraction answer = operand1 * operand2;
         Answer = answer;
         AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
        
-        return operand1.StringFormat + "*" + Convert.ToString(Answer.DecimalValue);
+        return operand1.StringFormat + " × " + Convert.ToString(Answer.DecimalValue);
     }
 
     public string GenerateMedium()
@@ -276,15 +276,15 @@ public class MultiplicationQuestion : IQuestion
        Random random = new Random();
        
        //randomly generating the fractions
-       Fraction operand1 = new Fraction(random.Next(1,12), random.Next(1,12));
-       Fraction operand2 = new Fraction(random.Next(1,12),  random.Next(1,12));
+       Fraction operand1 = new Fraction(random.Next(1,12), random.Next(2,12));
+       Fraction operand2 = new Fraction(random.Next(1,12),  random.Next(2,12));
        
        //computing the answer and putting it into string form 
        Fraction answer = operand1 * operand2;
        Answer = answer;
        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
        
-       return operand1.StringFormat + "*" + Convert.ToString(Answer.DecimalValue);
+       return operand1.StringFormat + " × " + Convert.ToString(Answer.DecimalValue);
     }
 
     public string GenerateEasy()
@@ -297,21 +297,21 @@ public class MultiplicationQuestion : IQuestion
         if(num1==1)
         {
             //randomly generating the operands
-            int operand1 =  random.Next(1, 25);
-            int operand2 = random.Next(1, 12);
+            int operand1 =  random.Next(2, 25);
+            int operand2 = random.Next(2, 12);
             
             //computing the answer
             int answer = operand1 * operand2;
             AnswerStringFormat = Convert.ToString(answer);
             
             //returning the question string 
-            return Convert.ToString(operand1) + "*" + Convert.ToString(operand2);
+            return Convert.ToString(operand1) + " × " + Convert.ToString(operand2);
         }
         else
         {
             //generating the operands for the calculation
-            int operand1 = random.Next(1, 60);
-            int operand2 = random.Next(1, 5);
+            int operand1 = random.Next(2, 60);
+            int operand2 = random.Next(2, 10);
             
             //Computing the answer, storing it and then putting it into string form
             Fraction answer = new Fraction(operand1 * operand2, 1);
@@ -319,7 +319,7 @@ public class MultiplicationQuestion : IQuestion
             AnswerStringFormat = Convert.ToString(operand1 * operand2); 
             
             //returning the question text
-            return Convert.ToString(answer) + "*" + Convert.ToString(operand2);
+            return Convert.ToString(operand1) + " × " + Convert.ToString(operand2);
         }
         
         

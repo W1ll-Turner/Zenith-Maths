@@ -23,10 +23,12 @@ public partial class QuestionAnsweringPage:ComponentBase
     private IQuestion CurrentQuestion { get; set; }
     private QuestionModels.AnsweredQuestionStack AnsweredQuestionStack { get; set; } 
     public Dictionary<string, Func<bool>> TopicsMapper { get; set; }
-    public Type QuestionType { get; set; }
+    
+    public bool StopQuestioning { get; set; } = false;
 
     private void Start()
     {
+        StopQuestioning = true;
         Console.WriteLine("started");
         //this dictionary maps the topic to the genric methods that will generate the questions, This is dependant on a topic
         TopicsMapper = new Dictionary<string, Func<bool>>()
@@ -48,7 +50,7 @@ public partial class QuestionAnsweringPage:ComponentBase
         //initilaising the question stack, if the topic cannot be found an exception will be thrown
         try
         {
-            TopicsMapper.TryGetValue("subtraction", out Func<bool>? intialiseStack);
+            TopicsMapper.TryGetValue("addition", out Func<bool>? intialiseStack);
             Console.WriteLine("dictionary one worked initilaisng the stack");
 
             AnsweredQuestionStack = new QuestionModels.AnsweredQuestionStack();
@@ -72,6 +74,7 @@ public partial class QuestionAnsweringPage:ComponentBase
 
         for (int i = 0; i < 10; i++)
         {
+            Console.WriteLine("Question made {0}", i+1);
             T question = new T();
             question.Difficulty = testdifficulty;
             question.Generate();
@@ -90,17 +93,16 @@ public partial class QuestionAnsweringPage:ComponentBase
     
     private void QuestionSequence()
     {
-        CurrentQuestion = (IQuestion)Questions.Pop(); //getting the next question off the stack
+        CurrentQuestion = Questions.Pop(); //getting the next question off the stack
        
         QuestionText = CurrentQuestion.QuestionText; //displaying the new question
 
         TimeToAnswer.Start(); //starting the timer 
     }
     
-
     public void AnswerQuestion()
     {
-        
+        Console.WriteLine("Questions answered");
         TimeToAnswer.Stop(); //stopping the timer 
         bool AnswerCorrect = false;
         
@@ -125,14 +127,18 @@ public partial class QuestionAnsweringPage:ComponentBase
         QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion(AnswerCorrect , CurrentQuestion.AnswerStringFormat , UserAnswer , CurrentQuestion.QuestionText ,TimeToAnswer.ElapsedMilliseconds);
         AnsweredQuestionStack.Push(answeredQuestion);
         Console.WriteLine(Questions.Pointer);
-        if (Questions.IsEmpty())
+        Console.WriteLine("Starting the if statement");
+        if (Questions.IsEmpty()) 
         {
-            NavigationManager.NavigateTo("/Home");
+
+            Console.WriteLine("Questions stack is now empty");
+            StopQuestioning = false;
             SendResultsToAPI(); //round of questioning has finshed time, send results to API then move user onto the summary screen 
 
         }
         else
         {
+            Console.WriteLine("Starting the Question Sequence");   
             QuestionSequence();
         }
         
@@ -140,6 +146,9 @@ public partial class QuestionAnsweringPage:ComponentBase
 
     private void  SendResultsToAPI()
     {
+      
+        
+        
         
     }
 }
