@@ -26,6 +26,9 @@ public partial class QuestionAnsweringPage:ComponentBase
     
     public bool StopQuestioning { get; set; } = false;
 
+    public int[] CorrectAnswers { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    private int questionNum = 0;
+
     private void Start()
     {
         StopQuestioning = true;
@@ -66,15 +69,19 @@ public partial class QuestionAnsweringPage:ComponentBase
         }
     }
     
-    private bool InitialiseStack<T>() where T : IQuestion, new() //used to generate a stack of questions 
+    
+    //using a generic method to initilaise a stack of questions, The type of question will depend on what it is called with from the dictionary but it will correspond to the Question topic 
+    private bool InitialiseStack<T>() where T : IQuestion, new() 
     {
-        ;
+        
         int testdifficulty = 1;
+        
         QuestionModels.QuestionStack questions = new QuestionModels.QuestionStack();
 
+        //genrating 10 quesitons and pushing them onto the stack
         for (int i = 0; i < 10; i++)
         {
-            Console.WriteLine("Question made {0}", i+1);
+            
             T question = new T();
             question.Difficulty = testdifficulty;
             question.Generate();
@@ -86,6 +93,7 @@ public partial class QuestionAnsweringPage:ComponentBase
         return true;
     }
     
+    //this is used to genrate a round of questions that pulls from every topic
     private bool TestEverything()
     {
         return true;
@@ -103,31 +111,82 @@ public partial class QuestionAnsweringPage:ComponentBase
     public void AnswerQuestion()
     {
         Console.WriteLine("Questions answered");
-        TimeToAnswer.Stop(); //stopping the timer 
+        
+        //stopping the timer 
+        TimeToAnswer.Stop(); 
+        
+        //initialisng a vairable to keep track of if the user got it right or not 
         bool AnswerCorrect = false;
-        
-        string answerPattern = "^[0-9](\\/[0-9])?$";
-        Regex answerRG = new Regex(answerPattern); //this will make sure the answer has been given withing the correct format
+       
         
         
-        if (answerRG.IsMatch(UserAnswer)) //checking the answer is appropraite to start checking
+        Console.WriteLine("user answer:" + UserAnswer);
+        //Figuiring out whether the answer is a fraction or a natural number 
+        string[] answer = UserAnswer.Split("/");
+
+        
+        //this if statement will mark the question approprialtely, whether it is a integer number or not essentially 
+        if (answer.Length == 1 && answer[0] != "" ) //if it is integer
         {
-            string[] answer = UserAnswer.Split("/"); //if the answer is a fraction it will be 
-            if (answer.Length == 1)
+            
+            Console.WriteLine("Split string" + answer[0]);
+            try
             {
-                Fraction input = new Fraction(int.Parse(answer[0]), 1);
+                //making a fraction with denominator one which will maintain the value of the natural number
+                Fraction input = new Fraction(Convert.ToInt32(answer[0]), 1);
                 AnswerCorrect = CurrentQuestion.CheckAnswer(input);
-            }else if (answer.Length == 2)
+                
+                
+                //Updating the Progress tracker on the GUI
+                CorrectAnswers[questionNum] = AnswerCorrect ? 1 : 2; //assiging an appropraite value as to whether the question was right or wrong
+                questionNum++;
+                StateHasChanged();//re-rendering the page so that the progress is updated 
+                
+            }
+            catch (Exception e)
             {
+                Console.WriteLine(e);
+                Console.WriteLine("the answer was lenth one and faile to be parsed");
+            }
+            
+        }else if (answer.Length == 2)//if it is a fraction
+        {
+            try
+            {
+                Console.WriteLine("the lenth was 2");
                 Fraction input = new Fraction(int.Parse(answer[0]), int.Parse(answer[1]));
                 AnswerCorrect = CurrentQuestion.CheckAnswer(input);
+
+                //Updating the Progress tracker on the GUI
+                CorrectAnswers[questionNum] = AnswerCorrect ? 1 : 2;
+                StateHasChanged();
+                questionNum++;
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("the answer was lenth two and faile to be parsed");
+            }
+            
+        }
+        else
+        {
+            AnswerCorrect = false;
+            Console.WriteLine("Answeer wrong format ");
+            
+            //Updating the Progress tracker on the GUI
+            questionNum++;
+            StateHasChanged();
         }
         
+        NextQuestion(AnswerCorrect);
+        
+        
+    }
+
+    private void NextQuestion(bool AnswerCorrect)
+    {
         QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion(AnswerCorrect , CurrentQuestion.AnswerStringFormat , UserAnswer , CurrentQuestion.QuestionText ,TimeToAnswer.ElapsedMilliseconds);
         AnsweredQuestionStack.Push(answeredQuestion);
-        Console.WriteLine(Questions.Pointer);
-        Console.WriteLine("Starting the if statement");
         if (Questions.IsEmpty()) 
         {
 
@@ -141,14 +200,18 @@ public partial class QuestionAnsweringPage:ComponentBase
             Console.WriteLine("Starting the Question Sequence");   
             QuestionSequence();
         }
-        
     }
 
     private void  SendResultsToAPI()
     {
-      
+        //resetting the array
+        for (int i = 0; i < 10; i++)
+        {
+            CorrectAnswers[i] = 0;
+        }
+        questionNum = 0;
         
-        
-        
+
+
     }
 }

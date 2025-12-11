@@ -94,7 +94,7 @@ public class AdditionQuestion : IQuestion
         Fraction answer = new Fraction(numerator, 1);
         
         Answer = answer;
-        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
+        AnswerStringFormat = Answer.StringFormat + " or " + Convert.ToString(Answer.DecimalValue);
         
         return operand2.ToString() + "+" + operand1 + " = ";
     }
@@ -105,10 +105,8 @@ public class AdditionQuestion : IQuestion
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 }
 
