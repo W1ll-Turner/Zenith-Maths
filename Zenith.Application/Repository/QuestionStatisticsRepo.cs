@@ -17,7 +17,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
   
     
 
-    public async Task<bool> AddQuestioningRound(QuestionModels.AnsweredQuestionStack questions, QuestionModels.RoundInfo Statistics, string studentId) 
+    public async Task<bool> AddQuestioningRound(IEnumerable<QuestionModels.AnsweredQuestion> questions, QuestionModels.RoundInfo Statistics, string studentId) 
     {
         //this will add all the information about a round of questionsing to the required tables 
         //needs to macth the topic IDs btw
@@ -29,13 +29,16 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                 //paramertarised SQL query which will add each question from the round to the question bank table
                 var AddQuestionsCommand = new NpgsqlCommand("INSERT INTO questionbank(roundid, question, answer, useranswer, correct, timetaken ) VALUES (@roundid, @question, @answer, @useranswer, @correct, @timetaken)", connection);
 
-                for (int i = 1; i < 11; i++) //This will add each question in the AnsweredQuestion Stack that has been given by the front end to the databsde,
+                int questionNum = 1;
+                Console.WriteLine("Attempting to insert into question bank");
+                //This will add each question in the AnsweredQuestion Stack that has been given by the front end to the databsde,
+                foreach (QuestionModels.AnsweredQuestion currentQuestion in questions) 
                 {
                     Console.WriteLine("Trying query");
                     AddQuestionsCommand.Parameters.Clear(); //making no paramters will conflict with previosu executions of the quersy 
-                    QuestionModels.AnsweredQuestion currentQuestion = questions.Pop();
+                   
 
-                    string roundId = studentId + "#" + i.ToString();
+                    string roundId = studentId + "#" + questions.ToString();
                     //dynamically assigning the querys parameters 
                     AddQuestionsCommand.Parameters.AddWithValue("@roundid", roundId);
                     AddQuestionsCommand.Parameters.AddWithValue("@question", currentQuestion.Question);
@@ -47,11 +50,28 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
 
                     Console.WriteLine("parameters intitialised");
                     await AddQuestionsCommand.ExecuteNonQueryAsync();
+                    questionNum++;
                 }
                 
                 //getting the summary statistics 
-                double averageTime = questions.CalculateAverageTime();
-                int score = questions.CalculateScore();
+                //calculating the avergae time 
+                double totalTime = 0;
+                foreach (QuestionModels.AnsweredQuestion question in questions)
+                {
+                    totalTime += question.TimeTaken;
+                }
+                double averageTime = totalTime / questionNum;
+                
+                //calculating the score 
+                int score = 0;
+                foreach (QuestionModels.AnsweredQuestion question in questions)
+                {
+                    if (question.Correct == true)
+                    {
+                        score++;
+                    }
+                }
+                
                 string ShortTermId = await _Hashing.GenerateShortTermStatsID(studentId); //getting the shortterm id hash for this entry in the table
                 
                 //adding the summary statistics for the round to the table  

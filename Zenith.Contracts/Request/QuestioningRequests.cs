@@ -11,7 +11,8 @@ public class QuestioningRequests
         public required string UserId { get; init; }
         public required string Topic { get; init; }
         public required string TimeCompleted { get; init; }
-        public required QuestionModels.AnsweredQuestionStack QuestionStack { get; init; }
+        public required IEnumerable<QuestionModels.AnsweredQuestion> QuestionStack { get; init; }
+        
     }
     
     

@@ -5,7 +5,7 @@ namespace Zenith.Application.Repository;
 
 public interface IQuestionStatisticsRepo
 {
-    Task<bool> AddQuestioningRound(QuestionModels.AnsweredQuestionStack questions , QuestionModels.RoundInfo statistics, string studentId);
+    Task<bool> AddQuestioningRound(IEnumerable<QuestionModels.AnsweredQuestion> questions , QuestionModels.RoundInfo statistics, string studentId);
     
     Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds();
     

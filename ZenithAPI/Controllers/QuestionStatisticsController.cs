@@ -24,16 +24,23 @@ public class QuestionStatisticsController : ControllerBase
     [HttpPost("Add")]
     public async Task<IActionResult> AddQuestioningRound(QuestioningRequests.CompletedQuestionRoundRequest request)
     {
+        Console.WriteLine("request received");
         
-        QuestionModels.AnsweredQuestionStack Questions = request.QuestionStack;
+        //getting the Answered Questions from the request 
+        IEnumerable<QuestionModels.AnsweredQuestion> Questions = request.QuestionStack;
+        //getting the user ID from the request
         string student = request.UserId;
+        
+        //getting the statitical inforamtion and putting it into it's own class
         QuestionModels.RoundInfo statistics = new QuestionModels.RoundInfo()
         {
             Difficulty = request.Difficulty,
             Topic = request.Topic,
             TimeCompleted = request.TimeCompleted,
         };
-        
+
+        Console.WriteLine("Attempting the repo");
+        //adding the infromation to the database
         bool success = await _questionStatisticsRepo.AddQuestioningRound(Questions, statistics, student);
         return success ? Ok() : BadRequest();
     }

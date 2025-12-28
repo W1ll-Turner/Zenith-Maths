@@ -1,6 +1,9 @@
 @page "/Questions"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject NavigationManager NavigationManager
 @rendermode InteractiveAuto
+@inject ProtectedSessionStorage SessionStorage
+@inject HttpClient Http
 
 
 <div class = "QuestionComponent">

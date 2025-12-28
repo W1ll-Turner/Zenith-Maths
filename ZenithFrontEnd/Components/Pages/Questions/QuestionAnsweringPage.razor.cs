@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Zenith.Contracts.Request.Account;
 using Zenith.Models.Account;
 using Zenith.Models.QuestionModels;
 
@@ -28,7 +30,11 @@ public partial class QuestionAnsweringPage:ComponentBase
 
     public int[] CorrectAnswers { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     private int questionNum = 0;
-
+    
+    
+    
+    
+    
     private void Start()
     {
         StopQuestioning = true;
@@ -51,9 +57,10 @@ public partial class QuestionAnsweringPage:ComponentBase
 
         Console.WriteLine("dictionary has been made");
         //initilaising the question stack, if the topic cannot be found an exception will be thrown
+        Topic = "addition";
         try
         {
-            TopicsMapper.TryGetValue("addition", out Func<bool>? intialiseStack);
+            TopicsMapper.TryGetValue(Topic, out Func<bool>? intialiseStack);
             Console.WriteLine("dictionary one worked initilaisng the stack");
 
             AnsweredQuestionStack = new QuestionModels.AnsweredQuestionStack();
@@ -74,7 +81,8 @@ public partial class QuestionAnsweringPage:ComponentBase
     private bool InitialiseStack<T>() where T : IQuestion, new() 
     {
         
-        int testdifficulty = 1;
+        Difficulty = 1;
+        
         
         QuestionModels.QuestionStack questions = new QuestionModels.QuestionStack();
 
@@ -83,7 +91,7 @@ public partial class QuestionAnsweringPage:ComponentBase
         {
             
             T question = new T();
-            question.Difficulty = testdifficulty;
+            question.Difficulty = Difficulty;
             question.Generate();
             questions.Push(question);
         }
@@ -185,7 +193,14 @@ public partial class QuestionAnsweringPage:ComponentBase
 
     private void NextQuestion(bool AnswerCorrect)
     {
-        QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion(AnswerCorrect , CurrentQuestion.AnswerStringFormat , UserAnswer , CurrentQuestion.QuestionText ,TimeToAnswer.ElapsedMilliseconds);
+        QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion
+        {
+            Correct = AnswerCorrect,
+            CorrectAnswer = CurrentQuestion.AnswerStringFormat,
+            UserAnswer = UserAnswer,
+            Question = CurrentQuestion.QuestionText,
+            TimeTaken = TimeToAnswer.ElapsedMilliseconds
+        };
         AnsweredQuestionStack.Push(answeredQuestion);
         if (Questions.IsEmpty()) 
         {
@@ -202,16 +217,84 @@ public partial class QuestionAnsweringPage:ComponentBase
         }
     }
 
-    private void  SendResultsToAPI()
+    private async Task  SendResultsToAPI()
     {
-        //resetting the array
+        //resetting the array keeping track of the user's answers 
+        ResetArray();
+        
+        //pulling the User ID from the session storage
+        string ID = await GetID();
+       
+        
+        //getting the current time 
+        DateTime temporaryTimeHolder = DateTime.Now;
+        string time = temporaryTimeHolder.ToString("HH:mm:ss");
+        
+        
+        //intitialising the request object to be sent to the API 
+       QuestioningRequests.CompletedQuestionRoundRequest request = new QuestioningRequests.CompletedQuestionRoundRequest()
+       {
+           Difficulty = Difficulty,
+           UserId = ID,
+           Topic = Topic,
+           TimeCompleted = time,
+           QuestionStack = MapStackToArray(AnsweredQuestionStack), //the Question Stack needs to be casted to an IEnumerbale as otherwise the data will not be properly converted to JSON 
+       };
+       
+       //sending the request to the API to store the round of questioning in the database
+       Console.WriteLine("Trying to send therequest");
+       
+       HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/Add", request);
+       Console.WriteLine(response);
+        
+
+    }
+
+
+    //this method will map the answered question stack into an IE numerable so that the information is able to serialised into JSON 
+    private IEnumerable<QuestionModels.AnsweredQuestion> MapStackToArray(QuestionModels.AnsweredQuestionStack stack)
+    {
+        QuestionModels.AnsweredQuestion[] TempArray = new QuestionModels.AnsweredQuestion[10];
+        
+        IEnumerable<QuestionModels.AnsweredQuestion> answeredQuestions;
+        
+        for (int i = 0; i < 10; i++)
+        {
+            QuestionModels.AnsweredQuestion question = stack.Pop();
+            TempArray[i] = question;
+        }
+        
+        answeredQuestions = TempArray; //putting the array into an IEnumerable 
+        return answeredQuestions; //returnng the IEnumerbale 
+    }
+
+    //this will reset the array that keeps tracks of the users results so that the user can reperat a round 
+    private void ResetArray()
+    {
         for (int i = 0; i < 10; i++)
         {
             CorrectAnswers[i] = 0;
         }
         questionNum = 0;
         
+    }
 
-
+    private async Task<string> GetID()
+    {
+        string ID;
+        try
+        {
+            ProtectedBrowserStorageResult<string> StudentID = await SessionStorage.GetAsync<string>("Id");
+            ID = StudentID.Value;
+            return ID;
+        }
+        catch (Exception e)
+        {
+            ID = "0";
+            return ID;
+        }
     }
 }
+
+
+

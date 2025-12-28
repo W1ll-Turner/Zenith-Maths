@@ -46,26 +46,18 @@ public class QuestionModels
 //all question types no matter the topic will end up as this object to be then sent to the API
     public class AnsweredQuestion
     {
-        public bool Correct { get;}
-        public string CorrectAnswer { get;}
-        public string UserAnswer { get;}
-        public string Question { get; }
-        public double TimeTaken { get; }
-
-        public AnsweredQuestion(bool correct, string correctAnswer, string userAnswer, string questionText, double timeTaken)
-        {
-            Correct = correct;
-            CorrectAnswer = correctAnswer;
-            UserAnswer = userAnswer;
-            Question = questionText;
-            TimeTaken = timeTaken;
-        }
+        public bool Correct { get; set; }
+        public string CorrectAnswer { get; set; }
+        public string UserAnswer { get; set;  }
+        public string Question { get; set; }
+        public double TimeTaken { get; set; }
+        
     
     }
     
     public class AnsweredQuestionStack
     {
-        private AnsweredQuestion[] Questions = new AnsweredQuestion[10];
+        public AnsweredQuestion[] Questions = new AnsweredQuestion[10];
         public int pointer = -1; 
         public void Push(AnsweredQuestion question)
         {
@@ -76,28 +68,7 @@ public class QuestionModels
         {
             return Questions[pointer--];
         }
-        public int CalculateScore()
-        {
-            int score = 0;
-            foreach (AnsweredQuestion question in Questions)
-            {
-                if (question.Correct == true)
-                {
-                    score++;
-                }
-            }
-            return score;
-        }
-        public double CalculateAverageTime()
-        {
-            double totalTime = 0;
-            foreach (AnsweredQuestion question in Questions)
-            {
-                totalTime += question.TimeTaken;
-            }
-
-            return totalTime / 10;
-        }
+        
     }
     public class RoundInfo
     {
