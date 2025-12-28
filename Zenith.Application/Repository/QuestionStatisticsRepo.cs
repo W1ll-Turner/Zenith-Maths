@@ -108,6 +108,8 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
     //{
     //    throw new NotImplementedException();
     //}
+    
+    
 
     public Task<bool> DeleteShortTermData()
     {
@@ -117,5 +119,13 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
     public Task<bool> DeleteLongTermData()
     {
         throw new NotImplementedException();
+    }
+
+    //this will move all of the information form the shorttterm statistics table into the longterm stats table where the stast will be calulated and the week summarised 
+    public Task<bool> AddLongTermData(string ID)
+    {
+        //This is where all of the stats calcualtaions iwll be done 
+        
+        
     }
 }

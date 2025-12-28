@@ -14,4 +14,6 @@ public interface IQuestionStatisticsRepo
     Task<bool> DeleteShortTermData();
     
     Task<bool> DeleteLongTermData();
+
+    Task<bool> AddLongTermData(string ID);
 }

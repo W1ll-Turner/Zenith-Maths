@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenith.Application", "Zenit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenith.Models", "Zenith.Models\Zenith.Models.csproj", "{629BB8BA-A0FB-49C7-9256-0153968CB107}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit testing", "Unit testing \Unit testing.csproj", "{9CB8876E-85F9-4746-A58A-96FD5621859E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{629BB8BA-A0FB-49C7-9256-0153968CB107}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{629BB8BA-A0FB-49C7-9256-0153968CB107}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{629BB8BA-A0FB-49C7-9256-0153968CB107}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CB8876E-85F9-4746-A58A-96FD5621859E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CB8876E-85F9-4746-A58A-96FD5621859E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CB8876E-85F9-4746-A58A-96FD5621859E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CB8876E-85F9-4746-A58A-96FD5621859E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4EA2D865-2C11-4600-A86E-B4ED02797109} = {551E2B06-DE1E-4A20-B520-E0A1325A8296}
