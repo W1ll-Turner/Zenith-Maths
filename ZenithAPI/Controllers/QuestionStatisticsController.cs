@@ -44,6 +44,12 @@ public class QuestionStatisticsController : ControllerBase
         bool success = await _questionStatisticsRepo.AddQuestioningRound(Questions, statistics, student);
         return success ? Ok() : BadRequest();
     }
-    
+
+    [HttpPost("AddLongTermData")]
+    public async Task<IActionResult> AddLongTermData()
+    {
+        bool success = await _questionStatisticsRepo.AddLongTermData("20");
+        return success ? Ok() : BadRequest();
+    }
     
 }

@@ -20,8 +20,8 @@ public class Hashing : IHashing
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
             Console.WriteLine("trying to run the qury ");
-            var command = new NpgsqlCommand("SELECT COUNT(*) FROM shorttermstatsbridge WHERE StudentId = @StudentId", connection); //this will get the number of entries in the shorttermstst bridge table which the current student has
-            command.Parameters.AddWithValue("StudentId", StudentId);
+            var command = new NpgsqlCommand("SELECT COUNT(*) FROM shorttermstatsbridge WHERE Studentid = @StudentId", connection); //this will get the number of entries in the shorttermstst bridge table which the current student has
+            command.Parameters.AddWithValue("@StudentId", StudentId);
 
             await using (var reader = await command.ExecuteReaderAsync()) //extracting the value the query and incrementing 
             {

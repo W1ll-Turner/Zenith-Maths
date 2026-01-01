@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Zenith.Application.Database;
 using Zenith.Application.Hashing;
 using Zenith.Application.Repository;
+using Zenith.Application.StatsCalculation;
+
 namespace Zenith.Application;
 public static class ApplicationServicesCollectionExtensions //This is used to inject the dependancies into the API, such as the data rereival code
 {
@@ -11,6 +13,7 @@ public static class ApplicationServicesCollectionExtensions //This is used to in
     {
         services.AddSingleton<IAccountRepo, AccountRepo>(); //adding the account repository
         services.AddSingleton<IQuestionStatisticsRepo, QuestionStatisticsRepo>(); //adding the question statistics repository 
+        services.AddSingleton<IStatsCalculation, StatsCalculation.StatsCalculation>();
         return services;
     }
     //adding the database to the services so it can be loosely coupled to the project
