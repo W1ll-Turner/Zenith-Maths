@@ -6,6 +6,20 @@ public class StatsCalculation : IStatsCalculation
 {
     public async Task<TopicAverages> CalculateTopicAverages(List<shorttermsstatsinfo> info)
     {
+        if (info.Count == 0)
+        {
+            TopicAverages emptyTopic = new TopicAverages()
+            {
+                averageScore = 0.0,
+                averageTime = 0.0,
+                difficulty = 0,
+                numberOfRounds = 0,
+                
+            };
+            
+            return emptyTopic;
+        }
+        
         //getting the difficulty 
         int difficulty = info[0].difficulty;
         

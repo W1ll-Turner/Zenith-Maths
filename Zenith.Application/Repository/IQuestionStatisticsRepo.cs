@@ -1,3 +1,4 @@
+using Zenith.Models.Account;
 using Zenith.Models.QuestionModels;
 
 
@@ -7,9 +8,11 @@ public interface IQuestionStatisticsRepo
 {
     Task<bool> AddQuestioningRound(IEnumerable<QuestionModels.AnsweredQuestion> questions , QuestionModels.RoundInfo statistics, string studentId);
     
-    Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds();
+    Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds(string studentId);
     
-    //Task<IEnumerable<WeeklySummary>> GetAllWeeklySummary();
+    Task<IEnumerable<WeeklySummary>> GetAllLongTermStats(string studentId);
+    
+    Task<IEnumerable<WeeklySummary>> GetMostRecentQuestionRound(string studentId);
 
     Task<bool> DeleteShortTermData();
     

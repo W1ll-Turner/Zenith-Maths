@@ -17,3 +17,13 @@ public class TopicAverages
     public int numberOfRounds { get; set; }
     public int difficulty { get; set; }
 }
+
+public class WeeklySummary
+{
+    public string weekNumber { get; set; }
+    public double averageTime { get; set; }
+    public double averageScore { get; set; }
+    public string worstTopic { get; set; }
+    public string bestTopic { get; set; }
+    public string completion { get; set; }
+}

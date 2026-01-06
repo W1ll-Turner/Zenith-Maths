@@ -111,28 +111,81 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         
     }
 
-    public Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds()
+    public Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds(string studentId)
     {
-        throw new NotImplementedException();
-    }
-    
-
-    //public Task<IEnumerable<WeeklySummary>> GetAllWeeklySummary()
-    //{
-    //    throw new NotImplementedException();
-    //}
-    
-    
-
-    public Task<bool> DeleteShortTermData()
-    {
-        throw new NotImplementedException();
+        //needs to empty out the short term stats table and the question bank table 
+        
+        
+        
     }
 
-    public Task<bool> DeleteLongTermData()
+    
+    //This method will be used to get all of the long terms statistics to the user and send them to the dashboard so that they can be displayed 
+    public async Task<IEnumerable<WeeklySummary>> GetAllLongTermStats(string studentId)
     {
+        
+        //connecting to the database
+        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            //creating the SQL query to read the data from the databse 
+            var command = new NpgsqlCommand("SELECT * FROM longtermstats WHERE longtermstatsid LIKE @studentid'%' ", connection);
+            command.Parameters.AddWithValue("@studentid", studentId);
+
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                List<WeeklySummary> weeklySummarys = new List<WeeklySummary>();
+                
+                while (await reader.ReadAsync())
+                {
+                    string ID = reader.GetString(0);
+                    string[] splitID = ID.Split('#');
+                    string weekNumber = splitID[1];
+                  
+                    string[] topicNames = new string[2];
+                    //this command will get the appropriate topic name from the topics table
+                    var getTopicCommand = new NpgsqlCommand("SELECT topicname FROM topic WHERE topicid = @topicid ", connection);
+                    //executing the command twice to get the two Topic names out 
+                    for (int i = 0; i < 2; i++)
+                    {
+                        getTopicCommand.Parameters.AddWithValue("@topicid", reader.GetString(3+i));
+                        using (NpgsqlDataReader topicReader = await getTopicCommand.ExecuteReaderAsync())
+                        {
+                            topicNames[i] = topicReader[0] as string;
+                        }
+                    }
+                    
+                    //creating the object that stores that weeks summary statistics 
+                    WeeklySummary week = new WeeklySummary()
+                    {
+                        weekNumber = weekNumber,
+                        averageTime = reader.GetDouble(1),
+                        averageScore = reader.GetDouble(2),
+                        worstTopic = topicNames[0],
+                        bestTopic = topicNames[1],
+                        completion = reader.GetString(5),
+                        
+                    };
+                    weeklySummarys.Add(week);
+                }
+                
+                //putting the list into a from that can be serialised for JSON and returning it 
+                IEnumerable<WeeklySummary> weeklySummary = weeklySummarys;
+                return weeklySummary;
+                
+            }
+        }
+    }
+
+    public async Task<IEnumerable<WeeklySummary>> GetMostRecentQuestionRound(string studentId)
+    {
+        using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            var command 
+        }
+        
         throw new NotImplementedException();
     }
+
 
     //this will move all of the information form the shorttterm statistics table into the longterm stats table where the stast will be calulated and the week summarised 
     public async Task<bool> AddLongTermData(string ID)
@@ -162,21 +215,21 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         }
 
         
-        List<shorttermsstatsinfo> Topic1 = new List<shorttermsstatsinfo>();
-        List<shorttermsstatsinfo> Topic2 = new List<shorttermsstatsinfo>();
-        List<shorttermsstatsinfo> Topic3 = new List<shorttermsstatsinfo>();
-        List<shorttermsstatsinfo> Topic4 = new List<shorttermsstatsinfo>();
-        List<shorttermsstatsinfo> Topic5 = new List<shorttermsstatsinfo>();
-        List<shorttermsstatsinfo> Topic6 = new List<shorttermsstatsinfo>();
-        List<shorttermsstatsinfo> Topic7 = new List<shorttermsstatsinfo>();
-        List<shorttermsstatsinfo> Topic8 = new List<shorttermsstatsinfo>();
-        List<shorttermsstatsinfo> Topic9 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic1 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic2 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic3 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic4 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic5 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic6 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic7 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic8 = new List<shorttermsstatsinfo>();
+        List<shorttermsstatsinfo> topic9 = new List<shorttermsstatsinfo>();
         
         //pulling all data from the shorttermstatrs table 
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
             //the query to access the data in the shorttermsats table 
-            var GetShorttermInfoCommand = new NpgsqlCommand("SELECT averagetime, score, topicid, difficulty  FROM shorttermstatsbridge WHERE shorttermid = @shorttermid", connection);
+            var GetShorttermInfoCommand = new NpgsqlCommand("SELECT averagetime, score, topicid, difficulty  FROM shorttermstats WHERE shorttermid = @shorttermid", connection);
 
             //executing the query for each key 
             foreach (var Key in Keys)
@@ -200,31 +253,31 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                         //assigning the data to a relvant list 
                         if (topicid == 1)
                         {
-                            Topic1.Add(info);
+                            topic1.Add(info);
                         }else if (topicid == 2)
                         {
-                            Topic2.Add(info);
+                            topic2.Add(info);
                         }else if (topicid == 3)
                         {
-                            Topic3.Add(info);
+                            topic3.Add(info);
                         }else if (topicid == 4)
                         {
-                            Topic4.Add(info);
+                            topic4.Add(info);
                         }else if (topicid == 5)
                         {
-                            Topic5.Add(info);
+                            topic5.Add(info);
                         }else if (topicid == 6)
                         {
-                            Topic6.Add(info);
+                            topic6.Add(info);
                         }else if (topicid == 7)
                         {
-                            Topic7.Add(info);
+                            topic7.Add(info);
                         }else if (topicid == 8)
                         {
-                            Topic8.Add(info);
+                            topic8.Add(info);
                         }else if (topicid == 9)
                         {
-                            Topic9.Add(info);
+                            topic9.Add(info);
                         }
                         
                     }
@@ -235,48 +288,40 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         }
         
         //calculating the Averages for each topic 
-        TopicAverages emptyTopic = new TopicAverages()
-        {
-            averageScore = 0.0,
-            averageTime = 0.0,
-            difficulty = 0,
-            numberOfRounds = 0,
-                
-        };
         
-        TopicAverages[] Averages =
+        
+        TopicAverages[] averages =
         [
-            await _StatsCalculation.CalculateTopicAverages(Topic1),
-            await _StatsCalculation.CalculateTopicAverages(Topic2),
-            await _StatsCalculation.CalculateTopicAverages(Topic3),
-            await _StatsCalculation.CalculateTopicAverages(Topic4),
-            await _StatsCalculation.CalculateTopicAverages(Topic5),
-            await _StatsCalculation.CalculateTopicAverages(Topic6),
-            await _StatsCalculation.CalculateTopicAverages(Topic7),
-            await _StatsCalculation.CalculateTopicAverages(Topic8),
-            await _StatsCalculation.CalculateTopicAverages(Topic9)
+            await _StatsCalculation.CalculateTopicAverages(topic1),
+            await _StatsCalculation.CalculateTopicAverages(topic2),
+            await _StatsCalculation.CalculateTopicAverages(topic3),
+            await _StatsCalculation.CalculateTopicAverages(topic4),
+            await _StatsCalculation.CalculateTopicAverages(topic5),
+            await _StatsCalculation.CalculateTopicAverages(topic6),
+            await _StatsCalculation.CalculateTopicAverages(topic7),
+            await _StatsCalculation.CalculateTopicAverages(topic8),
+            await _StatsCalculation.CalculateTopicAverages(topic9),
         ];
         
         //calculting the completion for each topic 
         double[] CompletionResults = new double[9];
         for (int i = 0; i < CompletionResults.Length; i++)
         {
-            
-            CompletionResults[i] = await _StatsCalculation.CalculateTopicCompletion(Averages[i]);
+            CompletionResults[i] = await _StatsCalculation.CalculateTopicCompletion(averages[i]);
         }
         
         //initialising the variables that will be added to the database  
         double completion = await _StatsCalculation.CalclulateOverallCompletion(CompletionResults);
         int worstTopicId = await _StatsCalculation.GetWorstTopicID(CompletionResults);
         int bestTopicId = await _StatsCalculation.GetBestTopicID(CompletionResults);
-        double[] averges = await _StatsCalculation.CalculateAverageTimeAndScore(Averages);
+        double[] averges = await _StatsCalculation.CalculateAverageTimeAndScore(averages);
         //getting the primary key for the table 
         string longTermsStatsId = await _Hashing.GenerateLongTermStatsID(ID);
         
         //opening the databse connection so the entry can be added to the table 
         using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            var AddToLongTermStats = new NpgsqlCommand("INSERT INTO longtermstat(longtermstatid, averagetime, averagescore, worsttopicid, besttopicid, completion) VALUES(@key, @averagetime, @averagescore, @worsttopic, @besttopic, @completion )", connection);
+            var AddToLongTermStats = new NpgsqlCommand("INSERT INTO longtermstats(longtermstatid, averagetime, averagescore, worsttopicid, besttopicid, completion) VALUES(@key, @averagetime, @averagescore, @worsttopicid, @besttopicid, @completion )", connection);
             AddToLongTermStats.Parameters.AddWithValue("@key", longTermsStatsId);
             AddToLongTermStats.Parameters.AddWithValue("@averagetime", averges[1]);
             AddToLongTermStats.Parameters.AddWithValue("@averagescore", averges[0]);
@@ -291,5 +336,15 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
 
     }
     
+    
+    public Task<bool> DeleteShortTermData()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteLongTermData()
+    {
+        throw new NotImplementedException();
+    }
    
 }

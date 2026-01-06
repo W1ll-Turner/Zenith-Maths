@@ -21,7 +21,7 @@ public class QuestionStatisticsController : ControllerBase
     }
     
     
-    [HttpPost("Add")]
+    [HttpPost("AddShortTermData")]
     public async Task<IActionResult> AddQuestioningRound(QuestioningRequests.CompletedQuestionRoundRequest request)
     {
         Console.WriteLine("request received");
@@ -48,7 +48,7 @@ public class QuestionStatisticsController : ControllerBase
     [HttpPost("AddLongTermData")]
     public async Task<IActionResult> AddLongTermData()
     {
-        bool success = await _questionStatisticsRepo.AddLongTermData("20");
+        bool success = await _questionStatisticsRepo.AddLongTermData("21");
         return success ? Ok() : BadRequest();
     }
     
