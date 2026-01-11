@@ -27,3 +27,13 @@ public class WeeklySummary
     public string bestTopic { get; set; }
     public string completion { get; set; }
 }
+
+public class CompletedRoundOfQuestioning
+{
+    public double averageTime { get; set; }
+    public int score { get; set; }
+    public string topic { get; set; }
+    public int difficulty { get; set; }
+    
+    public IEnumerable<QuestionModels.QuestionModels.AnsweredQuestion>  answeredQuestions { get; set; }
+}

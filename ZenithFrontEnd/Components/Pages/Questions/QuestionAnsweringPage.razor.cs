@@ -23,7 +23,7 @@ public partial class QuestionAnsweringPage:ComponentBase
     
     private QuestionModels.QuestionStack Questions { get; set; } = new QuestionModels.QuestionStack();
     private IQuestion CurrentQuestion { get; set; }
-    private QuestionModels.AnsweredQuestionStack AnsweredQuestionStack { get; set; } 
+    private List<QuestionModels.AnsweredQuestion> AnsweredQuestions = new List<QuestionModels.AnsweredQuestion>(); 
     public Dictionary<string, Func<bool>> TopicsMapper { get; set; }
     
     public bool StopQuestioning { get; set; } = false;
@@ -62,10 +62,7 @@ public partial class QuestionAnsweringPage:ComponentBase
         {
             TopicsMapper.TryGetValue(Topic, out Func<bool>? intialiseStack);
             Console.WriteLine("dictionary one worked initilaisng the stack");
-
-            AnsweredQuestionStack = new QuestionModels.AnsweredQuestionStack();
             intialiseStack!();
-            
             return;
         }
         catch (Exception e)
@@ -118,25 +115,18 @@ public partial class QuestionAnsweringPage:ComponentBase
     
     public void AnswerQuestion()
     {
-        Console.WriteLine("Questions answered");
-        
         //stopping the timer 
         TimeToAnswer.Stop(); 
         
         //initialisng a vairable to keep track of if the user got it right or not 
         bool AnswerCorrect = false;
-       
         
-        
-        Console.WriteLine("user answer:" + UserAnswer);
         //Figuiring out whether the answer is a fraction or a natural number 
         string[] answer = UserAnswer.Split("/");
-
         
-        //this if statement will mark the question approprialtely, whether it is a integer number or not essentially 
+        //this if statement will mark the question approprialtely, whether it is an integer or not essentially 
         if (answer.Length == 1 && answer[0] != "" ) //if it is integer
         {
-            
             Console.WriteLine("Split string" + answer[0]);
             try
             {
@@ -144,11 +134,10 @@ public partial class QuestionAnsweringPage:ComponentBase
                 Fraction input = new Fraction(Convert.ToInt32(answer[0]), 1);
                 AnswerCorrect = CurrentQuestion.CheckAnswer(input);
                 
-                
                 //Updating the Progress tracker on the GUI
                 CorrectAnswers[questionNum] = AnswerCorrect ? 1 : 2; //assiging an appropraite value as to whether the question was right or wrong
                 questionNum++;
-                StateHasChanged();//re-rendering the page so that the progress is updated 
+                StateHasChanged();//re-rendering the page so that the progress bar is updated 
                 
             }
             catch (Exception e)
@@ -179,7 +168,8 @@ public partial class QuestionAnsweringPage:ComponentBase
         else
         {
             AnswerCorrect = false;
-            Console.WriteLine("Answeer wrong format ");
+            Console.WriteLine("Answer wrong format ");
+            UserAnswer = "Not Answered";
             
             //Updating the Progress tracker on the GUI
             questionNum++;
@@ -199,9 +189,11 @@ public partial class QuestionAnsweringPage:ComponentBase
             CorrectAnswer = CurrentQuestion.AnswerStringFormat,
             UserAnswer = UserAnswer,
             Question = CurrentQuestion.QuestionText,
-            TimeTaken = TimeToAnswer.ElapsedMilliseconds
+            TimeTaken = TimeToAnswer.ElapsedMilliseconds/1000.0 //converting the milliseconds into seconds 
         };
-        AnsweredQuestionStack.Push(answeredQuestion);
+        AnsweredQuestions.Add(answeredQuestion);
+        TimeToAnswer.Reset();
+        
         if (Questions.IsEmpty()) 
         {
 
@@ -216,7 +208,7 @@ public partial class QuestionAnsweringPage:ComponentBase
             QuestionSequence();
         }
     }
-
+    
     private async Task  SendResultsToAPI()
     {
         //resetting the array keeping track of the user's answers 
@@ -230,44 +222,29 @@ public partial class QuestionAnsweringPage:ComponentBase
         DateTime temporaryTimeHolder = DateTime.Now;
         string time = temporaryTimeHolder.ToString("HH:mm:ss");
         
+        //putting the list of answered questions into an IEnumerbale 
         
-        //intitialising the request object to be sent to the API 
+        //intitialising the request object to be sent to the API putting fake test data in for now 
        QuestioningRequests.CompletedQuestionRoundRequest request = new QuestioningRequests.CompletedQuestionRoundRequest()
        {
-           Difficulty = Difficulty,
-           UserId = ID,
-           Topic = Topic,
+           Difficulty = 1,
+           UserId = "820",
+           Topic = "addition",
            TimeCompleted = time,
-           QuestionStack = MapStackToArray(AnsweredQuestionStack), //the Question Stack needs to be casted to an IEnumerbale as otherwise the data will not be properly converted to JSON 
+           questions =  AnsweredQuestions
        };
+       
+       
        
        //sending the request to the API to store the round of questioning in the database
        Console.WriteLine("Trying to send therequest");
        
-       HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/Add", request);
+       HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/AddShortTermData", request);
        Console.WriteLine(response);
         
 
     }
-
-
-    //this method will map the answered question stack into an IE numerable so that the information is able to serialised into JSON 
-    private IEnumerable<QuestionModels.AnsweredQuestion> MapStackToArray(QuestionModels.AnsweredQuestionStack stack)
-    {
-        QuestionModels.AnsweredQuestion[] TempArray = new QuestionModels.AnsweredQuestion[10];
-        
-        IEnumerable<QuestionModels.AnsweredQuestion> answeredQuestions;
-        
-        for (int i = 0; i < 10; i++)
-        {
-            QuestionModels.AnsweredQuestion question = stack.Pop();
-            TempArray[i] = question;
-        }
-        
-        answeredQuestions = TempArray; //putting the array into an IEnumerable 
-        return answeredQuestions; //returnng the IEnumerbale 
-    }
-
+    
     //this will reset the array that keeps tracks of the users results so that the user can reperat a round 
     private void ResetArray()
     {

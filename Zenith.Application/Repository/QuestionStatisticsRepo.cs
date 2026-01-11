@@ -4,10 +4,7 @@ using Zenith.Application.Database;
 using Zenith.Application.Hashing;
 using Zenith.Application.StatsCalculation;
 using Zenith.Models.QuestionModels;
-using Zenith.Models.QuestionModels;
-using Zenith.Models;
 using Zenith.Models.Account;
-
 namespace Zenith.Application.Repository;
 
 public class QuestionStatisticsRepo : IQuestionStatisticsRepo
@@ -35,17 +32,23 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                 
                 //paramertarised SQL query which will add each question from the round to the question bank table
                 var AddQuestionsCommand = new NpgsqlCommand("INSERT INTO questionbank(roundid, question, answer, useranswer, correct, timetaken ) VALUES (@roundid, @question, @answer, @useranswer, @correct, @timetaken)", connection);
-
+                
+                //Getting the short terms ID so that the priimary key for each entry in the question bank can be generated 
+                string ShortTermId = await _Hashing.GenerateShortTermStatsID(studentId); //getting the shortterm id hash for this entry in the table
+                //this will keep trakc of which question is going to be put into the solution 
                 int questionNum = 1;
                 Console.WriteLine("Attempting to insert into question bank");
+                
                 //This will add each question in the AnsweredQuestion Stack that has been given by the front end to the databsde,
                 foreach (QuestionModels.AnsweredQuestion currentQuestion in questions) 
                 {
                     Console.WriteLine("Trying query"); 
-                    AddQuestionsCommand.Parameters.Clear(); //making no paramters will conflict with previosu executions of the quersy 
+                    //clearing the paramters out from the query so that when the next quesion is added no paramters conflict 
+                    AddQuestionsCommand.Parameters.Clear(); 
                    
 
-                    string roundId = studentId + "#" + questions.ToString();
+                    string roundId = ShortTermId + "#" + questionNum;
+                    questionNum++;
                     //dynamically assigning the querys parameters 
                     AddQuestionsCommand.Parameters.AddWithValue("@roundid", roundId);
                     AddQuestionsCommand.Parameters.AddWithValue("@question", currentQuestion.Question);
@@ -57,7 +60,6 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
 
                     Console.WriteLine("parameters intitialised");
                     await AddQuestionsCommand.ExecuteNonQueryAsync();
-                    questionNum++;
                 }
                 
                 //getting the summary statistics 
@@ -79,11 +81,10 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                     }
                 }
                 
-                string ShortTermId = await _Hashing.GenerateShortTermStatsID(studentId); //getting the shortterm id hash for this entry in the table
                 
                 //adding the summary statistics for the round to the table  
                 //paramertised SQL query working across the shorttermstats table and the topics table to store the relevant data
-                var AddStatistcsCommand = new NpgsqlCommand("INSERT INTO shorttermstats(shorttermid, averagetime, score, topicid, difficulty, timecompleted) VALUES (@shorttermid, @averagetime, @score, SELECT topicid FROM topic WHERE topicname = 'addition' , @difficulty, @timecompleted)");
+                var AddStatistcsCommand = new NpgsqlCommand("INSERT INTO shorttermstats(shorttermid, averagetime, score, topicid, difficulty, timecompleted) SELECT @shorttermid, @averagetime, @score, topicid , @difficulty, @timecompleted FROM topic WHERE topicname = 'addition'", connection);
                 AddStatistcsCommand.Parameters.AddWithValue("@shorttermid", ShortTermId);
                 AddStatistcsCommand.Parameters.AddWithValue("@averagetime", averageTime);
                 AddStatistcsCommand.Parameters.AddWithValue("@score", score);
@@ -95,6 +96,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                 var AddRelationCommand = new NpgsqlCommand("INSERT INTO shorttermstatsbridge(studentid, shorttermid) VALUES (@studentid, @shorttermid)", connection);
                 AddRelationCommand.Parameters.AddWithValue("@studentid", studentId);
                 AddRelationCommand.Parameters.AddWithValue("@shorttermid", ShortTermId);
+                await AddRelationCommand.ExecuteNonQueryAsync();
             }
             return true;
 
@@ -116,7 +118,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         //needs to empty out the short term stats table and the question bank table 
         
         
-        
+        throw new NotImplementedException();
     }
 
     
@@ -176,14 +178,79 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         }
     }
 
-    public async Task<IEnumerable<WeeklySummary>> GetMostRecentQuestionRound(string studentId)
+    public async Task<CompletedRoundOfQuestioning> GetMostRecentQuestionRound(string studentId)
     {
-        using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            var command 
+            //This will get the shorterm ID of all the rounds of queastiopning recently answered by that students 
+            var command = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid ORDER BY shorttermid DESC;", connection);
+            command.Parameters.AddWithValue("@studentid", studentId);
+
+            string Id;
+            //Getting only the most recent shorttermt id 
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                Id = reader.GetString(0);
+            }
+            
+            //Getting the information from the shortterms stats that corresponds with the most recently asnwered question
+            var getRoundStatisticsCommand = new NpgsqlCommand("SELECT averagetime, score , topicid , difficulty FROM shorttermstats WHERE shorttermid = @shorttermid", connection);
+            getRoundStatisticsCommand.Parameters.AddWithValue("@shorttermid", Id);
+            
+            using (var reader = await getRoundStatisticsCommand.ExecuteReaderAsync())
+            {
+                
+                var getQuestionsCommand = new NpgsqlCommand("SELECT * FROM questionbank WHERE roundid LIKE @shorttermid", connection);
+                //This will get all the entries as it will be the shorttermid followed by the quesiton number 
+                getQuestionsCommand.Parameters.AddWithValue("@shorttermid", Id + "%");
+                
+                
+                List<QuestionModels.AnsweredQuestion> questions = new List<QuestionModels.AnsweredQuestion>();
+                using (var questionReader = await getQuestionsCommand.ExecuteReaderAsync())
+                {
+                    while (await questionReader.ReadAsync())
+                    {
+                        QuestionModels.AnsweredQuestion question = new QuestionModels.AnsweredQuestion()
+                        {
+                            Correct = questionReader.GetBoolean(4),
+                            CorrectAnswer = questionReader.GetString(2),
+                            UserAnswer = questionReader.GetString(3),
+                            Question = questionReader.GetString(1),
+                            TimeTaken = questionReader.GetDouble(5),
+                        };
+                        
+                        questions.Add(question);
+                    }
+                    
+                    
+                }
+                
+                //getting the topic 
+                var GetTopicCommand = new NpgsqlCommand("SELECT * FROM topic WHERE topicid = @topicid", connection);
+                GetTopicCommand.Parameters.AddWithValue("@topicid", reader.GetInt32(2));
+                string topic;
+                using (var topicReader = await GetTopicCommand.ExecuteReaderAsync())
+                {
+                    topic = topicReader[0] as string;
+                }
+                
+                //creating the return object 
+                CompletedRoundOfQuestioning round = new CompletedRoundOfQuestioning()
+                {
+                    averageTime = reader.GetDouble(0),
+                    score = reader.GetInt32(1),
+                    topic = topic,
+                    difficulty = reader.GetInt32(3),
+                    
+                    answeredQuestions = questions
+                };
+
+                return round;
+            }
+            
         }
         
-        throw new NotImplementedException();
+        
     }
 
 

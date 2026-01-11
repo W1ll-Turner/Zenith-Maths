@@ -4,16 +4,6 @@ namespace Zenith.Models.QuestionModels;
 
 public class QuestionModels
 {
-
-    class CompletedQuestionRound //This is a model to store a completed round of questions as well as all ascociated data
-    {
-        public string Topic {get; set;}
-        public string TimeCompleted {get; set;}
-        public int Score {get; set;}
-        public AnsweredQuestionStack Questions { get; set; }
-        
-    }
-    
     public class QuestionStack
     {
         //This is a stack of 10 questions 
@@ -55,21 +45,6 @@ public class QuestionModels
     
     }
     
-    public class AnsweredQuestionStack
-    {
-        public AnsweredQuestion[] Questions = new AnsweredQuestion[10];
-        public int pointer = -1; 
-        public void Push(AnsweredQuestion question)
-        {
-            pointer++;
-            Questions[pointer] = question;
-        }
-        public AnsweredQuestion Pop()
-        {
-            return Questions[pointer--];
-        }
-        
-    }
     public class RoundInfo
     {
 
