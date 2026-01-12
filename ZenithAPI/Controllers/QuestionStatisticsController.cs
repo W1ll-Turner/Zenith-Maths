@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Zenith.Application.Repository;
 using Zenith.Contracts.Request.Account;
+using Zenith.Contracts.Response;
 using Zenith.Models.Account;
 using Zenith.Models.QuestionModels;
 
@@ -59,12 +60,31 @@ public class QuestionStatisticsController : ControllerBase
     }
     
     //this needs to changing to put the ID into the root 
-    [HttpGet("GetMostRecentQuestionRound")]
-    public async Task<IActionResult> GetMostRecentQuestionRound(QuestioningRequests.GetMostRecentQuestionRoundRequest request)
+    [HttpGet("GetMostRecentQuestionRound/{id}")]
+    public async Task<IActionResult> GetMostRecentQuestionRound([FromRoute] string  Id)
     {
-        CompletedRoundOfQuestioning QuestionRound= await _questionStatisticsRepo.GetMostRecentQuestionRound(request.UserId);
+        Console.WriteLine("received request");
+        CompletedRoundOfQuestioning questionRound= await _questionStatisticsRepo.GetMostRecentQuestionRound(Id);
+
+        QuestionStatisticResponses.MostRecentQuestionRoundResponse response = new QuestionStatisticResponses.MostRecentQuestionRoundResponse()
+            {
+                averageTime = Convert.ToString(questionRound.averageTime),
+                score = Convert.ToString(questionRound.score),
+                topic = questionRound.topic,
+                difficulty = Convert.ToString(questionRound.difficulty),
+                
+                Questions = questionRound.answeredQuestions
+            };
         
-        throw new NotImplementedException();
+        return Ok(response);
+    }
+
+    [HttpGet("GetAllweeklySummarys/{studentid}")]
+    public async Task<IActionResult> GetAllWeeklySummarys([FromRoute] string studentid)
+    {
+        IEnumerable<WeeklySummary> Summaries = await _questionStatisticsRepo.GetAllLongTermStats(studentid);
+        
+        return Ok(Summaries);
     }
     
     

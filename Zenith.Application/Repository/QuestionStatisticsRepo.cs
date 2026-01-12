@@ -156,7 +156,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                         }
                     }
                     
-                    //creating the object that stores that weeks summary statistics 
+                    //creating the object that stores that weekly summary statistics 
                     WeeklySummary week = new WeeklySummary()
                     {
                         weekNumber = weekNumber,
