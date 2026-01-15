@@ -13,10 +13,6 @@ public interface IQuestionStatisticsRepo
     Task<IEnumerable<WeeklySummary>> GetAllLongTermStats(string studentId);
     
     Task<CompletedRoundOfQuestioning> GetMostRecentQuestionRound(string studentId);
-
-    Task<bool> DeleteShortTermData();
     
-    Task<bool> DeleteLongTermData();
-
     Task<bool> AddLongTermData(string ID);
 }

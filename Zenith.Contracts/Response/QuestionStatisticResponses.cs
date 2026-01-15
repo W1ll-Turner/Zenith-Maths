@@ -6,11 +6,11 @@ public class QuestionStatisticResponses
 {
     public class MostRecentQuestionRoundResponse
     {
-        public string averageTime;
-        public string score;
-        public string topic;
-        public string difficulty;
-        public IEnumerable<QuestionModels.AnsweredQuestion>  Questions;
+        public string averageTime {get; set;}
+        public string score {get; set;}
+        public string topic {get; set;}
+        public string difficulty {get; set;}
+        public IEnumerable<QuestionModels.AnsweredQuestion>  Questions {get; set;}
     }
     
     

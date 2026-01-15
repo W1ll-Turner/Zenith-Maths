@@ -75,6 +75,7 @@ public class QuestionStatisticsController : ControllerBase
                 
                 Questions = questionRound.answeredQuestions
             };
+        Console.WriteLine(response.averageTime);
         
         return Ok(response);
     }
@@ -86,6 +87,7 @@ public class QuestionStatisticsController : ControllerBase
         
         return Ok(Summaries);
     }
+    
     
     
 }

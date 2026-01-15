@@ -18,9 +18,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         _Hashing = Hashing;
         _StatsCalculation = statsCalculation;
     }
-  
     
-
     public async Task<bool> AddQuestioningRound(IEnumerable<QuestionModels.AnsweredQuestion> questions, QuestionModels.RoundInfo Statistics, string studentId) 
     {
         //this will add all the information about a round of questionsing to the required tables 
@@ -130,31 +128,18 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
             //creating the SQL query to read the data from the databse 
-            var command = new NpgsqlCommand("SELECT * FROM longtermstats WHERE longtermstatsid LIKE @studentid'%' ", connection);
-            command.Parameters.AddWithValue("@studentid", studentId);
-
+            var command = new NpgsqlCommand("SELECT lst.longtermstatid, lst.averagetime, lst.averagescore , lst.completion,  wst.topicname , bst.topicname FROM longtermstats lst JOIN topic wst ON wst.topicid = lst.worsttopicid JOIN topic bst ON bst.topicid = lst.besttopicid WHERE lst.longtermstatid LIKE @studentId ; ", connection);
+            command.Parameters.AddWithValue("@studentid", studentId + "%");
+            
+            
+            List<WeeklySummary> weeklySummarys = new List<WeeklySummary>();
             using (var reader = await command.ExecuteReaderAsync())
             {
-                List<WeeklySummary> weeklySummarys = new List<WeeklySummary>();
-                
                 while (await reader.ReadAsync())
                 {
                     string ID = reader.GetString(0);
                     string[] splitID = ID.Split('#');
                     string weekNumber = splitID[1];
-                  
-                    string[] topicNames = new string[2];
-                    //this command will get the appropriate topic name from the topics table
-                    var getTopicCommand = new NpgsqlCommand("SELECT topicname FROM topic WHERE topicid = @topicid ", connection);
-                    //executing the command twice to get the two Topic names out 
-                    for (int i = 0; i < 2; i++)
-                    {
-                        getTopicCommand.Parameters.AddWithValue("@topicid", reader.GetString(3+i));
-                        using (NpgsqlDataReader topicReader = await getTopicCommand.ExecuteReaderAsync())
-                        {
-                            topicNames[i] = topicReader[0] as string;
-                        }
-                    }
                     
                     //creating the object that stores that weekly summary statistics 
                     WeeklySummary week = new WeeklySummary()
@@ -162,9 +147,9 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                         weekNumber = weekNumber,
                         averageTime = reader.GetDouble(1),
                         averageScore = reader.GetDouble(2),
-                        worstTopic = topicNames[0],
-                        bestTopic = topicNames[1],
-                        completion = reader.GetString(5),
+                        worstTopic = reader.GetString(4),
+                        bestTopic = reader.GetString(5),
+                        completion = Convert.ToString(reader.GetDouble(3)),
                         
                     };
                     weeklySummarys.Add(week);
@@ -182,71 +167,94 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
     {
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
+            //removing any white space from the string
+            studentId = studentId.Trim();
+            Console.WriteLine(studentId);
             //This will get the shorterm ID of all the rounds of queastiopning recently answered by that students 
             var command = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid ORDER BY shorttermid DESC;", connection);
             command.Parameters.AddWithValue("@studentid", studentId);
 
-            string Id;
+            string Id = "";
             //Getting only the most recent shorttermt id 
             using (var reader = await command.ExecuteReaderAsync())
             {
-                Id = reader.GetString(0);
+                while (await reader.ReadAsync())
+                {
+                    Id = reader.GetString(0);
+                    break;
+                }
+                
             }
+
+            Console.WriteLine("got short term ID");
             
             //Getting the information from the shortterms stats that corresponds with the most recently asnwered question
             var getRoundStatisticsCommand = new NpgsqlCommand("SELECT averagetime, score , topicid , difficulty FROM shorttermstats WHERE shorttermid = @shorttermid", connection);
             getRoundStatisticsCommand.Parameters.AddWithValue("@shorttermid", Id);
-            
+            double averageTime = 0;
+            int Score = 0;
+            int difficulty = 0;
+            int topicId = 0;
             using (var reader = await getRoundStatisticsCommand.ExecuteReaderAsync())
             {
-                
-                var getQuestionsCommand = new NpgsqlCommand("SELECT * FROM questionbank WHERE roundid LIKE @shorttermid", connection);
-                //This will get all the entries as it will be the shorttermid followed by the quesiton number 
-                getQuestionsCommand.Parameters.AddWithValue("@shorttermid", Id + "%");
-                
-                
-                List<QuestionModels.AnsweredQuestion> questions = new List<QuestionModels.AnsweredQuestion>();
-                using (var questionReader = await getQuestionsCommand.ExecuteReaderAsync())
+                while (await reader.ReadAsync())
                 {
-                    while (await questionReader.ReadAsync())
-                    {
-                        QuestionModels.AnsweredQuestion question = new QuestionModels.AnsweredQuestion()
-                        {
-                            Correct = questionReader.GetBoolean(4),
-                            CorrectAnswer = questionReader.GetString(2),
-                            UserAnswer = questionReader.GetString(3),
-                            Question = questionReader.GetString(1),
-                            TimeTaken = questionReader.GetDouble(5),
-                        };
-                        
-                        questions.Add(question);
-                    }
-                    
-                    
+                    averageTime = reader.GetDouble(0);
+                    Score = reader.GetInt32(1);
+                    topicId = reader.GetInt32(2);
+                    difficulty = reader.GetInt32(3);
+                    break;
                 }
-                
-                //getting the topic 
-                var GetTopicCommand = new NpgsqlCommand("SELECT * FROM topic WHERE topicid = @topicid", connection);
-                GetTopicCommand.Parameters.AddWithValue("@topicid", reader.GetInt32(2));
-                string topic;
-                using (var topicReader = await GetTopicCommand.ExecuteReaderAsync())
+               
+            }
+            //getting the topic 
+            string topic = "";
+            var GetTopicCommand = new NpgsqlCommand("SELECT * FROM topic WHERE topicid = @topicid", connection);
+            GetTopicCommand.Parameters.AddWithValue("@topicid", topicId);
+            using (var topicReader = await GetTopicCommand.ExecuteReaderAsync())
+            {
+                while (await topicReader.ReadAsync())
                 {
                     topic = topicReader[0] as string;
+                    break;
                 }
                 
+            }
+            
+            
+            var getQuestionsCommand = new NpgsqlCommand("SELECT * FROM questionbank WHERE roundid LIKE @shorttermid", connection);
+            getQuestionsCommand.Parameters.AddWithValue("@shorttermid", Id + "%");
+            List<QuestionModels.AnsweredQuestion> questions = new List<QuestionModels.AnsweredQuestion>();
+            using (var questionReader = await getQuestionsCommand.ExecuteReaderAsync())
+            {
+                while (await questionReader.ReadAsync())
+                {
+                    QuestionModels.AnsweredQuestion question = new QuestionModels.AnsweredQuestion()
+                    {
+                        Correct = questionReader.GetBoolean(4),
+                        CorrectAnswer = questionReader.GetString(2),
+                        UserAnswer = questionReader.GetString(3),
+                        Question = questionReader.GetString(1),
+                        TimeTaken = questionReader.GetDouble(5),
+                    };
+                        
+                    questions.Add(question);
+                }
                 //creating the return object 
                 CompletedRoundOfQuestioning round = new CompletedRoundOfQuestioning()
                 {
-                    averageTime = reader.GetDouble(0),
-                    score = reader.GetInt32(1),
+                    averageTime = averageTime,
+                    score = Score,
                     topic = topic,
-                    difficulty = reader.GetInt32(3),
+                    difficulty = difficulty,
                     
                     answeredQuestions = questions
                 };
-
-                return round;
+                
+                    
+                return round; 
             }
+            
             
         }
         
@@ -402,16 +410,4 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         return true;
 
     }
-    
-    
-    public Task<bool> DeleteShortTermData()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> DeleteLongTermData()
-    {
-        throw new NotImplementedException();
-    }
-   
 }
