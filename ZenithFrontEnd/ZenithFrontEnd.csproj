@@ -19,4 +19,8 @@
       <_ContentIncludedByDefault Remove="Components\Pages\Questions\Topic Components\Addition.razor" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Components\Pages\Dashboard\" />
+    </ItemGroup>
+
 </Project>

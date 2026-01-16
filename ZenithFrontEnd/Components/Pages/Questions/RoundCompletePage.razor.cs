@@ -14,7 +14,9 @@ namespace ZenithFrontEnd.Components.Pages.Questions;
 
 public partial class RoundCompletePage : ComponentBase
 {
-
+    public IEnumerable<QuestionModels.AnsweredQuestion> Questions {get; set;}
+    
+    
     protected override async Task OnInitializedAsync()
     {
         Task<string> UserId =  GetId();
@@ -22,7 +24,8 @@ public partial class RoundCompletePage : ComponentBase
         string Address = "http://localhost:5148/api/Questions/GetMostRecentQuestionRound/" + Convert.ToString(UserId);
         Console.WriteLine(Address);
         HttpResponseMessage response = await Http.GetAsync(Address); 
-        
+        QuestionStatisticResponses.MostRecentQuestionRoundResponse? body = await response.Content.ReadFromJsonAsync<QuestionStatisticResponses.MostRecentQuestionRoundResponse>();
+        Questions = body.Questions;
         
     }
 
