@@ -1,0 +1,40 @@
+.AnsweredQuestion{
+    
+    border: 1px solid black;
+    display : flex;
+    flex-direction: column;
+    width: 50vw;
+    margin: 1vw;
+    border-radius: 20px;
+    padding : 5px;
+}
+
+.RoundCompletePage{
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    align-content: center; 
+    align-items: center;
+    justify-content: center;
+}
+
+.SecondaryInfo{
+    justify-content: center;
+    align-items: center;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid black;
+    
+}
+
+.PrimaryInfo{
+    font-weight: bold;
+    font-size: larger;
+    justify-content: center;
+    align-items: center;
+    min-height: 5vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    
+    
+}

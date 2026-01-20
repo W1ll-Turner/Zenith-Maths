@@ -18,6 +18,7 @@ public class Program
             .AddInteractiveServerComponents();
         builder.Services.AddHttpClient(); //used for requestin the API 
         builder.Services.AddBlazoredLocalStorage(); // used for sotring the authorsation token in the browser storage
+        builder.Services.AddBlazorBootstrap();
 
         
         
@@ -32,6 +33,7 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseStaticFiles();
 
         app.UseAntiforgery();
 

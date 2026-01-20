@@ -2,27 +2,36 @@
 @using Zenith.Models.QuestionModels
 @inject ProtectedSessionStorage SessionStorage
 @inject HttpClient Http
-@page "/RoundComplete"
 
 
-<div class="RoundCompletePage">
-    
-    <h1> Round Complete!!!!! </h1>
-    
-    
-    
-    @foreach (QuestionModels.AnsweredQuestion Question in Questions)
-    {
-        int i = 0;
-        <p>@i</p>
-        <p>@Question.Question</p>
-        <p>@Question.CorrectAnswer</p>
-        <p>@Question.TimeTaken</p>
-        <p>@Question.Correct</p>
-        <p>@Question.UserAnswer</p>
-        i++;
 
-    }
+@if (readyToDisplay)
+{
+    <div class="RoundCompletePage">
+
+        <h1> Round Complete!!!!! </h1>
+        
+        @foreach (QuestionModels.AnsweredQuestion Question in Questions)
+        {
+            <div class="AnsweredQuestion">
+                <div class="SecondaryInfo">
+                    <p>Answer: @Question.CorrectAnswer</p>
+                    <p>TimeTaken: @Question.TimeTaken</p>
+                    <p>Correct: @Question.Correct</p>
+                </div>
+                
+                <div class="PrimaryInfo">
+                    <p>@Question.Question</p>
+                    <p>Your Answer: @Question.UserAnswer</p>
+                </div>
+            </div>
+        }
+
+    </div>
     
     
-</div>
+}
+else
+{
+    <h1>Loading</h1>
+}

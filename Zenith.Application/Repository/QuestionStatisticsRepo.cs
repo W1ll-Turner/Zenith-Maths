@@ -111,10 +111,16 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         
     }
 
-    public Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds(string studentId)
+    public async Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds(string studentId)
     {
         //needs to empty out the short term stats table and the question bank table 
-        
+        List<string> Keys = new List<string>();
+        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            var GetKeysCommand = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid");
+
+
+        }
         
         throw new NotImplementedException();
     }
@@ -149,7 +155,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                         averageScore = reader.GetDouble(2),
                         worstTopic = reader.GetString(4),
                         bestTopic = reader.GetString(5),
-                        completion = Convert.ToString(reader.GetDouble(3)),
+                        completion = reader.GetDouble(3),
                         
                     };
                     weeklySummarys.Add(week);

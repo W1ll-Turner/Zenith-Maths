@@ -12,15 +12,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Blazor.Bootstrap" Version="3.5.0" />
       <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     </ItemGroup>
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Pages\Questions\Topic Components\Addition.razor" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Components\Pages\Dashboard\" />
     </ItemGroup>
 
 </Project>

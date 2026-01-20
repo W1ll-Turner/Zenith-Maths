@@ -1,0 +1,48 @@
+@using BlazorBootstrap
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Zenith.Models.QuestionModels
+@inject ProtectedSessionStorage SessionStorage
+@inject HttpClient Http
+@page "/DashBoard"
+
+@if (FinishedRendering)
+{
+    
+
+    <div class="StudentDashboard">
+        <div class="UpperSection">
+            <div class="ProgressGraph">
+                <h1>graph </h1>
+
+                <div class="container-fluid overflow-x-auto">
+                    <LineChart @ref="lineChart" Width="800"/>
+                </div>
+                
+                <h1>stop</h1>
+            </div>
+
+
+            <div class="RecentRoundsOfQuestioning">
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <div class="LowerSection">
+
+
+
+
+        </div>
+
+    </div>
+}
+else
+{
+    <h1>Loading??</h1>
+}
+
