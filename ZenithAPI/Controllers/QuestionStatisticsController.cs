@@ -80,6 +80,15 @@ public class QuestionStatisticsController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("GetAllQuestioningRounds/{studentId}")]
+    public async Task<IActionResult> GetAllQuestioningRounds([FromRoute] string studentId)
+    {
+        IEnumerable<CompletedRoundOfQuestioning> Response = await _questionStatisticsRepo.GetAllQuestionRounds(studentId);
+        
+        return Ok(Response);
+    }
+    
+
     [HttpGet("GetAllweeklySummarys/{studentid}")]
     public async Task<IActionResult> GetAllWeeklySummarys([FromRoute] string studentid)
     {

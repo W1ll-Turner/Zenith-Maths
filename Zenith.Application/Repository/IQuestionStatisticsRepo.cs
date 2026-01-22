@@ -8,7 +8,7 @@ public interface IQuestionStatisticsRepo
 {
     Task<bool> AddQuestioningRound(IEnumerable<QuestionModels.AnsweredQuestion> questions , QuestionModels.RoundInfo statistics, string studentId);
     
-    Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds(string studentId);
+    Task<IEnumerable<CompletedRoundOfQuestioning>> GetAllQuestionRounds(string studentId);
     
     Task<IEnumerable<WeeklySummary>> GetAllLongTermStats(string studentId);
     

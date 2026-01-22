@@ -111,18 +111,34 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         
     }
 
-    public async Task<IEnumerable<QuestionModels>> GetAllRecentQuestionRounds(string studentId)
+    public async Task<IEnumerable<CompletedRoundOfQuestioning>> GetAllQuestionRounds(string studentId)
     {
         //needs to empty out the short term stats table and the question bank table 
         List<string> Keys = new List<string>();
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            var GetKeysCommand = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid");
-
+            var GetKeysCommand = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid", connection);
+            GetKeysCommand.Parameters.AddWithValue("@studentid", studentId);
+            using (var reader = await GetKeysCommand.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    Keys.Add(reader.GetString(0));
+                }
+            }
 
         }
         
-        throw new NotImplementedException();
+        List<CompletedRoundOfQuestioning> completedRounds = new List<CompletedRoundOfQuestioning>();
+        foreach (var key in Keys)
+        {
+            completedRounds.Add(await GetRoundOfQuestioning(key));
+        }
+        
+        
+        IEnumerable<CompletedRoundOfQuestioning> AllQuestioningRounds = completedRounds;
+        return AllQuestioningRounds;
+        
     }
 
     
@@ -194,7 +210,18 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
 
             Console.WriteLine("got short term ID");
             
-            //Getting the information from the shortterms stats that corresponds with the most recently asnwered question
+            return await GetRoundOfQuestioning(Id);
+            
+        }
+        
+        
+    }
+
+
+    private async Task<CompletedRoundOfQuestioning> GetRoundOfQuestioning(string Id)
+    {
+        using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
             var getRoundStatisticsCommand = new NpgsqlCommand("SELECT averagetime, score , topicid , difficulty FROM shorttermstats WHERE shorttermid = @shorttermid", connection);
             getRoundStatisticsCommand.Parameters.AddWithValue("@shorttermid", Id);
             double averageTime = 0;
@@ -211,8 +238,9 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                     difficulty = reader.GetInt32(3);
                     break;
                 }
-               
+
             }
+
             //getting the topic 
             string topic = "";
             var GetTopicCommand = new NpgsqlCommand("SELECT * FROM topic WHERE topicid = @topicid", connection);
@@ -224,10 +252,10 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                     topic = topicReader[0] as string;
                     break;
                 }
-                
+
             }
-            
-            
+
+
             var getQuestionsCommand = new NpgsqlCommand("SELECT * FROM questionbank WHERE roundid LIKE @shorttermid", connection);
             getQuestionsCommand.Parameters.AddWithValue("@shorttermid", Id + "%");
             List<QuestionModels.AnsweredQuestion> questions = new List<QuestionModels.AnsweredQuestion>();
@@ -243,9 +271,10 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                         Question = questionReader.GetString(1),
                         TimeTaken = questionReader.GetDouble(5),
                     };
-                        
+
                     questions.Add(question);
                 }
+
                 //creating the return object 
                 CompletedRoundOfQuestioning round = new CompletedRoundOfQuestioning()
                 {
@@ -253,21 +282,19 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                     score = Score,
                     topic = topic,
                     difficulty = difficulty,
-                    
+
                     answeredQuestions = questions
                 };
-                
-                    
-                return round; 
+
+
+                return round;
             }
-            
-            
+
         }
-        
-        
     }
-
-
+    
+    
+    
     //this will move all of the information form the shorttterm statistics table into the longterm stats table where the stast will be calulated and the week summarised 
     public async Task<bool> AddLongTermData(string ID)
     {

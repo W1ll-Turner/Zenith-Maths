@@ -14,8 +14,8 @@ public partial class StudentDashboard : ComponentBase
 
     protected async override Task OnInitializedAsync()
     {
-        string Address = "http://localhost:5148/api/Questions/GetAllweeklySummarys/" + "20";
-        HttpResponseMessage response = await Http.GetAsync(Address);
+        string WeeklySummariesAddress = "http://localhost:5148/api/Questions/GetAllweeklySummarys/" + "20";
+        HttpResponseMessage response = await Http.GetAsync(WeeklySummariesAddress);
         IEnumerable<WeeklySummary> Summaries = await response.Content.ReadFromJsonAsync<IEnumerable<WeeklySummary>>();
         
         
