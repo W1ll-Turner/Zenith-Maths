@@ -47,11 +47,8 @@ public partial class QuestionAnsweringPage:ComponentBase
             { "subtraction", InitialiseStack<SubtractionQuestion> },
             { "multiplication", InitialiseStack<MultiplicationQuestion> },
             { "division", InitialiseStack<DivisionQuestion> },
-            { "differentiation", InitialiseStack<DifferentiationQuestion> },
-            { "integration", InitialiseStack<IntegrationQuestion> },
-            { "quadratics", InitialiseStack<QuadraticsQuestion> },
             { "collectingterms", InitialiseStack<CollectingTermsQuestion> },
-            { "everything", InitialiseStack<TestEverything> }
+            
 
         };
 
@@ -78,7 +75,7 @@ public partial class QuestionAnsweringPage:ComponentBase
     private bool InitialiseStack<T>() where T : IQuestion, new() 
     {
         
-        Difficulty = 1;
+        Difficulty = 2;
         
         
         QuestionModels.QuestionStack questions = new QuestionModels.QuestionStack();

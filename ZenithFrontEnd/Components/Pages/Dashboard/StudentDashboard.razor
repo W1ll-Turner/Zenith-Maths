@@ -1,9 +1,11 @@
 @using BlazorBootstrap
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Zenith.Contracts.Request.Account
+@using Zenith.Models.Account
 @using Zenith.Models.QuestionModels
 @inject ProtectedSessionStorage SessionStorage
 @inject HttpClient Http
-@page "/DashBoard"
+@page "/"
 
 @if (FinishedRendering)
 {
@@ -12,18 +14,27 @@
     <div class="StudentDashboard">
         <div class="UpperSection">
             <div class="ProgressGraph">
-                <h1>graph </h1>
+                
+                <h2>Progress</h2>
 
                 <div class="container-fluid overflow-x-auto">
-                    <LineChart @ref="lineChart" Width="800"/>
+                    <LineChart @ref="lineChart" Width="700"/>
                 </div>
-                
-                <h1>stop</h1>
             </div>
 
 
             <div class="RecentRoundsOfQuestioning">
+                <h2>Recent Question Rounds</h2>
+                @foreach (CompletedRoundOfQuestioning round in QuestioningRounds)
+                {
+                    <div class="CompletedQuestionRound">
+                        <p>Score: @round.score</p>
+                        <p>Topic: @round.topic</p>
+                        <p>Difficulty: @round.difficulty</p>
+                        <p>AverageTime: @round.averageTime</p>
+                    </div>
 
+                }
 
 
             </div>
@@ -34,10 +45,28 @@
 
         <div class="LowerSection">
             <div class="StatButtons">
+                <div class="StatButton">
+                    <p>Best Topic: @MostRecentStats.bestTopic</p>
+                </div>
+                <div class="StatButton">
+                    <p>Average Time: @MostRecentStats.averageTime </p>
+                </div>
+                <div class="StatButton">
+                    <p>Current Difficulty: Bear with pls</p>
+                </div>
+                <div class="StatButton">
+                    <p>Worst Topic: @MostRecentStats.worstTopic</p> 
+                </div>
+                <div class="StatButton">
+                    <p>Average Score: @MostRecentStats.averageScore</p>
+                </div>
+                <div class="StatButton">
+                    <p>Current Completion; @MostRecentStats.completion</p>
+                </div>
                 
             </div>
             <div>
-                
+                <button>Continue to Questions</button>
             </div>
 
 

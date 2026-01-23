@@ -3,3 +3,49 @@
     display: grid;
     grid-template-rows: 2fr 1fr;
 }
+
+.UpperSection{
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    
+    
+}
+
+.RecentRoundsOfQuestioning{
+    padding-right:15px;
+    border: 1px solid black;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.CompletedQuestionRound{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 10px;
+    border: 1px solid black;
+    border-radius: 20px;
+    
+    
+}
+
+.LowerSection{
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    
+}
+
+.StatButtons{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.StatButton{
+    padding: 8px;
+    margin: 8px;
+    border: 1px solid black;
+    border-radius: 20px;
+    background: rgba(255,113,21,0.95);
+}

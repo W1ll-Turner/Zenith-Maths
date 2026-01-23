@@ -435,72 +435,6 @@ public class DivisionQuestion : IQuestion
     }
 }
 
-public class DifferentiationQuestion : IQuestion
-{
-    public string QuestionText { get; set; }
-    public Fraction Answer { get; set; }
-    public string AnswerStringFormat { get; set; }
-    public Dictionary<int, Func<string>> Generators { get; set; }
-    public int Difficulty { get; set; }
-    public void Generate()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateHard()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateMedium()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateEasy()
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool CheckAnswer(Fraction UserAnswer)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-public class IntegrationQuestion : IQuestion
-{
-    public string QuestionText { get; set; }
-    public Fraction Answer { get; set; }
-    public string AnswerStringFormat { get; set; }
-    public Dictionary<int, Func<string>> Generators { get; set; }
-    public int Difficulty { get; set; }
-    public void Generate()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateHard()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateMedium()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateEasy()
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool CheckAnswer(Fraction UserAnswer)
-    {
-        throw new NotImplementedException();
-    }
-}
-
 public class CollectingTermsQuestion : IQuestion
 {
     public string QuestionText { get; set; }
@@ -515,83 +449,26 @@ public class CollectingTermsQuestion : IQuestion
 
     public string GenerateHard()
     {
+        //2 to 3 varibales easy fracions 
         throw new NotImplementedException();
     }
 
     public string GenerateMedium()
     {
+        //three to 5 vraibles whole numbers
         throw new NotImplementedException();
     }
 
     public string GenerateEasy()
     {
+        //two variables, whole numbers
+        
+        //generate coeffecitnt 
+        //group togterh howver keep each on separte, have a loop for each one 
+        //figure out answer onject later 
+        Random random = new Random();
         throw new NotImplementedException();
-    }
 
-    public bool CheckAnswer(Fraction UserAnswer)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-public class QuadraticsQuestion : IQuestion
-{
-    public string QuestionText { get; set; }
-    public Fraction Answer { get; set; }
-    public string AnswerStringFormat { get; set; }
-    public Dictionary<int, Func<string>> Generators { get; set; }
-    public int Difficulty { get; set; }
-    public void Generate()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateHard()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateMedium()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateEasy()
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool CheckAnswer(Fraction UserAnswer)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-public class TestEverything : IQuestion
-{
-    public string QuestionText { get; set; }
-    public Fraction Answer { get; set; }
-    public string AnswerStringFormat { get; set; }
-    public Dictionary<int, Func<string>> Generators { get; set; }
-    public int Difficulty { get; set; }
-    public void Generate()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateHard()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateMedium()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateEasy()
-    {
-        throw new NotImplementedException();
     }
 
     public bool CheckAnswer(Fraction UserAnswer)
