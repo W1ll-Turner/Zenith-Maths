@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Zenith.Contracts.Request.Account;
@@ -8,8 +7,7 @@ using Zenith.Models.QuestionModels;
 
 namespace ZenithFrontEnd.Components.Pages.Questions;
 
-
-public partial class QuestionAnsweringPage:ComponentBase
+public partial class ComplexQuestionAnsweringPage : ComponentBase
 {
     [Parameter]
     public int Difficulty { get; set; }
@@ -20,8 +18,8 @@ public partial class QuestionAnsweringPage:ComponentBase
     private string UserAnswer { get; set; } = "";
     private Stopwatch TimeToAnswer { get; set; } = new Stopwatch();
     
-    private QuestionModels.QuestionStack<Fraction> Questions { get; set; } = new QuestionModels.QuestionStack<Fraction>();
-    private IQuestion<Fraction> CurrentQuestion { get; set; }
+    private QuestionModels.QuestionStack<string> Questions { get; set; } = new QuestionModels.QuestionStack<string>();
+    private IQuestion<string> CurrentQuestion { get; set; }
     private List<QuestionModels.AnsweredQuestion> AnsweredQuestions = new List<QuestionModels.AnsweredQuestion>(); 
     public Dictionary<string, Func<bool>> TopicsMapper { get; set; }
     
@@ -30,10 +28,6 @@ public partial class QuestionAnsweringPage:ComponentBase
     public int[] CorrectAnswers { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     private int questionNum = 0;
     
-    
-    
-    
-    
     private void Start()
     {
         StopQuestioning = true;
@@ -41,19 +35,12 @@ public partial class QuestionAnsweringPage:ComponentBase
         //this dictionary maps the topic to the genric methods that will generate the questions, This is dependant on a topic
         TopicsMapper = new Dictionary<string, Func<bool>>()
         {
-            //the key is the topic and the vlue is a function call that will call the Intitlaise stack method using the appropiate question type 
-            { "addition", InitialiseQuestionStack<AdditionQuestion> },
-            { "subtraction", InitialiseQuestionStack<SubtractionQuestion> },
-            { "multiplication", InitialiseQuestionStack<MultiplicationQuestion> },
-            { "division", InitialiseQuestionStack<DivisionQuestion> },
+            {"quadratic", InitialiseQuestionStack<QuadraticQuestion>},
+            { "collectingterms", InitialiseQuestionStack<CollectingTermsQuestion> },
             
-            
-
         };
-
-        Console.WriteLine("dictionary has been made");
-        //initilaising the question stack, if the topic cannot be found an exception will be thrown
-        Topic = "addition";
+        
+        Topic = "quadratic";
         try
         {
             TopicsMapper.TryGetValue(Topic, out Func<bool>? intialiseStack);
@@ -68,16 +55,14 @@ public partial class QuestionAnsweringPage:ComponentBase
             
         }
     }
-    
-    
-    //using a generic method to initilaise a stack of questions, The type of question will depend on what it is called with from the dictionary but it will correspond to the Question topic 
-    private bool InitialiseQuestionStack<TQuestion>() where TQuestion : IQuestion<Fraction>, new()
+
+    private bool InitialiseQuestionStack<TQuestion>() where TQuestion : IQuestion<string>, new()
     {
         
         Difficulty = 2;
         
         
-        QuestionModels.QuestionStack<Fraction> questions = new QuestionModels.QuestionStack<Fraction>();
+        QuestionModels.QuestionStack<string> questions = new QuestionModels.QuestionStack<string>();
 
         //genrating 10 quesitons and pushing them onto the stack
         for (int i = 0; i < 10; i++)
@@ -103,74 +88,25 @@ public partial class QuestionAnsweringPage:ComponentBase
         TimeToAnswer.Start(); //starting the timer 
     }
     
+    
     public void AnswerQuestion()
     {
         //stopping the timer 
         TimeToAnswer.Stop(); 
         
         //initialisng a vairable to keep track of if the user got it right or not 
-        bool AnswerCorrect = false;
+       
         
-        //Figuiring out whether the answer is a fraction or a natural number 
-        string[] answer = UserAnswer.Split("/");
-        
-        //this if statement will mark the question approprialtely, whether it is an integer or not essentially 
-        if (answer.Length == 1 && answer[0] != "" ) //if it is integer
-        {
-            Console.WriteLine("Split string" + answer[0]);
-            try
-            {
-                //making a fraction with denominator one which will maintain the value of the natural number
-                Fraction input = new Fraction(Convert.ToInt32(answer[0]), 1);
-                AnswerCorrect = CurrentQuestion.CheckAnswer(input);
-                
-                //Updating the Progress tracker on the GUI
-                CorrectAnswers[questionNum] = AnswerCorrect ? 1 : 2; //assiging an appropraite value as to whether the question was right or wrong
-                questionNum++;
-                StateHasChanged();//re-rendering the page so that the progress bar is updated 
-                
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                Console.WriteLine("the answer was lenth one and faile to be parsed");
-            }
-            
-        }else if (answer.Length == 2)//if it is a fraction
-        {
-            try
-            {
-                Console.WriteLine("the lenth was 2");
-                Fraction input = new Fraction(int.Parse(answer[0]), int.Parse(answer[1]));
-                AnswerCorrect = CurrentQuestion.CheckAnswer(input);
-
-                //Updating the Progress tracker on the GUI
-                CorrectAnswers[questionNum] = AnswerCorrect ? 1 : 2;
-                StateHasChanged();
-                questionNum++;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("the answer was lenth two and faile to be parsed");
-            }
-            
-        }
-        else
-        {
-            AnswerCorrect = false;
-            Console.WriteLine("Answer wrong format ");
-            UserAnswer = "Not Answered";
-            
-            //Updating the Progress tracker on the GUI
-            questionNum++;
-            StateHasChanged();
-        }
-        
-        NextQuestion(AnswerCorrect);
+        //add some code to chekc the answers
+        bool answerCorrect = CurrentQuestion.CheckAnswer(UserAnswer);
+        CorrectAnswers[questionNum] = answerCorrect? 1:2;
+        questionNum++;
+        StateHasChanged();
+        NextQuestion(answerCorrect);
         
         
     }
-
+    
     private void NextQuestion(bool AnswerCorrect)
     {
         QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion
@@ -215,27 +151,26 @@ public partial class QuestionAnsweringPage:ComponentBase
         //putting the list of answered questions into an IEnumerbale 
         
         //intitialising the request object to be sent to the API putting fake test data in for now 
-       QuestioningRequests.CompletedQuestionRoundRequest request = new QuestioningRequests.CompletedQuestionRoundRequest()
-       {
-           Difficulty = 1,
-           UserId = "820",
-           Topic = "addition",
-           TimeCompleted = time,
-           questions =  AnsweredQuestions
-       };
+        QuestioningRequests.CompletedQuestionRoundRequest request = new QuestioningRequests.CompletedQuestionRoundRequest()
+        {
+            Difficulty = 1,
+            UserId = "820",
+            Topic = "addition",
+            TimeCompleted = time,
+            questions =  AnsweredQuestions
+        };
        
        
        
-       //sending the request to the API to store the round of questioning in the database
-       Console.WriteLine("Trying to send therequest");
+        //sending the request to the API to store the round of questioning in the database
+        Console.WriteLine("Trying to send therequest");
        
-       HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/AddShortTermData", request);
-       Console.WriteLine(response);
+        HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/AddShortTermData", request);
+        Console.WriteLine(response);
         
 
     }
     
-    //this will reset the array that keeps tracks of the users results so that the user can reperat a round 
     private void ResetArray()
     {
         for (int i = 0; i < 10; i++)
@@ -261,7 +196,6 @@ public partial class QuestionAnsweringPage:ComponentBase
             return ID;
         }
     }
+    
 }
-
-
 

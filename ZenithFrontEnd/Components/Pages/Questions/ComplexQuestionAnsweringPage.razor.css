@@ -1,0 +1,65 @@
+.ProgressCell{
+    height: 40px;
+    width: 40px;
+    border: 1px solid slategray;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.Green{
+    background-color: rgba(41,255,34,0.95);
+
+}
+
+.Red{
+    background-color: rgba(255,5,0,0.95)
+
+}
+
+.Grey{
+    background-color: slategray;
+}
+
+.ProgressBar{
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.QuestionComponent{
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+}
+
+.QuestionAnsweringBox{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.InfoBubble{
+    background: none ;
+    color: inherit;
+    border: none;
+    padding: 3px;
+    font: inherit;
+    outline: inherit;
+    width: 7vw;
+    border-radius: 30px;
+    background-color: #38b6ff;
+    margin: 2vw
+
+}
+.InformationBar{
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 1fr ;
+
+
+
+}

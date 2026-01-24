@@ -3,7 +3,7 @@ using Zenith.Models.Account;
 
 namespace Zenith.Models.QuestionModels;
 
-public class AdditionQuestion : IQuestion 
+public class AdditionQuestion : IQuestion<Fraction>
 {
     public string QuestionText { get; set; }
     public Fraction Answer { get; set; } //this is the version of the answer that will be used to chekv if the user got it right
@@ -110,7 +110,7 @@ public class AdditionQuestion : IQuestion
     }
 }
 
-public class SubtractionQuestion : IQuestion
+public class SubtractionQuestion : IQuestion<Fraction>
 {
     public string QuestionText { get; set; }
     public Fraction Answer { get; set; }
@@ -224,7 +224,7 @@ public class SubtractionQuestion : IQuestion
 
 
 
-public class MultiplicationQuestion : IQuestion
+public class MultiplicationQuestion : IQuestion<Fraction>
 {
     public string QuestionText { get; set; }
     public Fraction Answer { get; set; }
@@ -339,7 +339,7 @@ public class MultiplicationQuestion : IQuestion
 
 
 
-public class DivisionQuestion : IQuestion
+public class DivisionQuestion : IQuestion<Fraction>
 {
     public string QuestionText { get; set; }
     public Fraction Answer { get; set; }
@@ -435,10 +435,95 @@ public class DivisionQuestion : IQuestion
     }
 }
 
-public class CollectingTermsQuestion : IQuestion
+public class QuadraticQuestion : IQuestion<string>
 {
     public string QuestionText { get; set; }
-    public Fraction Answer { get; set; }
+    public string Answer { get; set; }
+    public string AnswerStringFormat { get; set; }
+    public Dictionary<int, Func<string>> Generators { get; set; }
+    public int Difficulty { get; set; }
+    public void Generate()
+    {
+        Generators = new Dictionary<int, Func<string>>
+        {
+            { 1, GenerateEasy },
+            { 2, GenerateMedium },
+            { 3, GenerateHard }
+        };
+        if (Generators.TryGetValue(Difficulty, out Func<string> generator))
+        {
+            QuestionText = generator();
+        }
+        else
+        {
+            throw new KeyNotFoundException();
+        }
+    }
+
+    public string GenerateHard()
+    {
+        Random random = new Random();
+        int solution1 = random.Next(1,12);
+        int solution2 = random.Next(1,12);
+        int coefficient = random.Next(1,5);
+        
+        int sumOfRoots = (solution1 + solution2) * -coefficient;
+        int productOfRoots = (solution1 * solution2) * coefficient;
+
+        string QuestionText = coefficient + "x² + " + sumOfRoots + "bx + " + productOfRoots + " = 0";
+        Answer = Convert.ToString(solution1) + " " + Convert.ToString(solution2);
+        
+        return QuestionText;
+    }
+
+    public string GenerateMedium()
+    {
+        Random random = new Random();
+        int solution1 = random.Next(1,10);
+        int solution2 = random.Next(1,10);
+        int coefficient = random.Next(1,3);
+        
+        int sumOfRoots = (solution1 + solution2) * -coefficient;
+        int productOfRoots = (solution1 * solution2) * coefficient;
+
+        string QuestionText = coefficient + "x² + " + sumOfRoots + "bx + " + productOfRoots + " = 0";
+        Answer = Convert.ToString(solution1) + " " + Convert.ToString(solution2);
+        
+        return QuestionText;
+    }
+
+    public string GenerateEasy()
+    {
+        Random random = new Random();
+        int solution1 = random.Next(1,5);
+        int solution2 = random.Next(1,5);
+        
+        int sumOfRoots = solution1 + solution2;
+        int productOfRoots = solution1 * solution2;
+
+        string QuestionText = "x² + " + sumOfRoots + "bx + " + productOfRoots + " = 0";
+        Answer = Convert.ToString(solution1) + " " + Convert.ToString(solution2);
+        
+        return QuestionText;
+    }
+
+    public bool CheckAnswer(string UserAnswer)
+    {
+        if (UserAnswer == Answer)
+        {
+            return true;
+        }
+        
+        return false;
+    }
+}
+
+
+
+public class CollectingTermsQuestion : IQuestion<string>
+{
+    public string QuestionText { get; set; }
+    public string Answer { get; set; }
     public string AnswerStringFormat { get; set; }
     public Dictionary<int, Func<string>> Generators { get; set; }
     public int Difficulty { get; set; }
@@ -471,7 +556,7 @@ public class CollectingTermsQuestion : IQuestion
 
     }
 
-    public bool CheckAnswer(Fraction UserAnswer)
+    public bool CheckAnswer(string UserAnswer)
     {
         throw new NotImplementedException();
     }

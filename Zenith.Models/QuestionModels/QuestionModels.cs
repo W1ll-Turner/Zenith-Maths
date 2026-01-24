@@ -4,20 +4,20 @@ namespace Zenith.Models.QuestionModels;
 
 public class QuestionModels
 {
-    public class QuestionStack
+    public class QuestionStack<TAnswer> 
     {
         //This is a stack of 10 questions 
         public int Pointer = -1;
-        public IQuestion[] Questions = new IQuestion[10]; //using the IQuestion interace so it can store all classes whhc inherited from it
+        public IQuestion<TAnswer>[] Questions = new IQuestion<TAnswer>[10]; //using the IQuestion interace so it can store all classes whhc inherited from it
     
     
-        public void Push(IQuestion question)
+        public void Push(IQuestion<TAnswer> question)
         {
             Pointer++;
             Questions[Pointer] = question;
         }
 
-        public IQuestion Pop()
+        public IQuestion<TAnswer> Pop()
         {
             return Questions[Pointer--];
         }
