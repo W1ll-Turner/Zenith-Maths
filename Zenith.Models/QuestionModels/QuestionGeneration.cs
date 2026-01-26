@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Net.Mail;
 using Zenith.Models.Account;
 
 namespace Zenith.Models.QuestionModels;
@@ -463,15 +464,39 @@ public class QuadraticQuestion : IQuestion<string>
     public string GenerateHard()
     {
         Random random = new Random();
-        int solution1 = random.Next(1,12);
-        int solution2 = random.Next(1,12);
+        int solution1 = random.Next(-12,12);
+        int solution2 = random.Next(-12,12);
         int coefficient = random.Next(1,5);
         
         int sumOfRoots = (solution1 + solution2) * -coefficient;
         int productOfRoots = (solution1 * solution2) * coefficient;
 
-        string QuestionText = coefficient + "x² + " + sumOfRoots + "bx + " + productOfRoots + " = 0";
+        string coefficientString = null;
+        if (coefficient == 1)
+        {
+            coefficientString = "";
+        }else if (coefficient != 2)
+        {
+            coefficientString = Convert.ToString(coefficient);
+        }
+        
+        if (sumOfRoots < 0 && productOfRoots < 0)
+        { 
+            QuestionText = coefficientString + "x² " + sumOfRoots + "x " + productOfRoots + " = 0";
+        }else if (sumOfRoots < 0)
+        {
+            QuestionText = coefficientString + "x² " + sumOfRoots + "x + " + productOfRoots + " = 0";
+        }else if (productOfRoots < 0)
+        {
+            QuestionText = coefficientString +  "x² + " + sumOfRoots + "x " + productOfRoots + " = 0";
+        }
+        else
+        {
+            QuestionText = coefficient + "x² + " + sumOfRoots + "x + " + productOfRoots + " = 0";
+        }
+        
         Answer = Convert.ToString(solution1) + " " + Convert.ToString(solution2);
+        AnswerStringFormat = Answer;
         
         return QuestionText;
     }
@@ -479,30 +504,75 @@ public class QuadraticQuestion : IQuestion<string>
     public string GenerateMedium()
     {
         Random random = new Random();
-        int solution1 = random.Next(1,10);
-        int solution2 = random.Next(1,10);
+        int solution1 = random.Next(-10,10);
+        int solution2 = random.Next(-10,10);
         int coefficient = random.Next(1,3);
+        Console.WriteLine(coefficient);
+        string QuestionText;
         
         int sumOfRoots = (solution1 + solution2) * -coefficient;
         int productOfRoots = (solution1 * solution2) * coefficient;
 
-        string QuestionText = coefficient + "x² + " + sumOfRoots + "bx + " + productOfRoots + " = 0";
-        Answer = Convert.ToString(solution1) + " " + Convert.ToString(solution2);
+        string coefficientString = null;
+        if (coefficient == 1)
+        {
+            coefficientString = "";
+        }else
+        {
+            coefficientString = Convert.ToString(coefficient);
+        }
+
+        if (sumOfRoots < 0 && productOfRoots < 0)
+        { 
+            QuestionText = coefficientString + "x² " + sumOfRoots + "x " + productOfRoots + " = 0";
+        }else if (sumOfRoots < 0)
+        {
+            QuestionText = coefficientString + "x² " + sumOfRoots + "x + " + productOfRoots + " = 0";
+        }else if (productOfRoots < 0)
+        {
+            QuestionText = coefficientString +  "x² + " + sumOfRoots + "x " + productOfRoots + " = 0";
+        }
+        else
+        {
+            QuestionText = coefficientString + "x² + " + sumOfRoots + "x + " + productOfRoots + " = 0";
+        }
         
+        Answer = Convert.ToString(solution1) + " " + Convert.ToString(solution2);
+        AnswerStringFormat = Answer;
+
+
+        Console.WriteLine(Answer);
+        Console.WriteLine(QuestionText);
         return QuestionText;
     }
 
     public string GenerateEasy()
     {
         Random random = new Random();
-        int solution1 = random.Next(1,5);
-        int solution2 = random.Next(1,5);
+        int solution1 = random.Next(-5,5);
+        int solution2 = random.Next(-5,5);
         
-        int sumOfRoots = solution1 + solution2;
+        int sumOfRoots = -(solution1 + solution2);
         int productOfRoots = solution1 * solution2;
+        
 
-        string QuestionText = "x² + " + sumOfRoots + "bx + " + productOfRoots + " = 0";
+        if (sumOfRoots < 0 && productOfRoots < 0)
+        { 
+            QuestionText = "x² " + sumOfRoots + "x " + productOfRoots + " = 0";
+        }else if (sumOfRoots < 0)
+        {
+            QuestionText = "x² " + sumOfRoots + "x + " + productOfRoots + " = 0";
+        }else if (productOfRoots < 0)
+        {
+            QuestionText = "x² + " + sumOfRoots + "x " + productOfRoots + " = 0";
+        }
+        else
+        {
+            QuestionText = "x² + " + sumOfRoots + "x + " + productOfRoots + " = 0";
+        }
+        
         Answer = Convert.ToString(solution1) + " " + Convert.ToString(solution2);
+        AnswerStringFormat = Answer;
         
         return QuestionText;
     }
