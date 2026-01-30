@@ -151,7 +151,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
             //creating the SQL query to read the data from the databse 
-            var command = new NpgsqlCommand("SELECT lst.longtermstatid, lst.averagetime, lst.averagescore , lst.completion,  wst.topicname , bst.topicname FROM longtermstats lst JOIN topic wst ON wst.topicid = lst.worsttopicid JOIN topic bst ON bst.topicid = lst.besttopicid WHERE lst.longtermstatid LIKE @studentId ; ", connection);
+            var command = new NpgsqlCommand("SELECT lst.longtermstatid, lst.averagetime, lst.averagescore , lst.completion,  wst.topicname , bst.topicname, lst.averagedifficulty FROM longtermstats lst JOIN topic wst ON wst.topicid = lst.worsttopicid JOIN topic bst ON bst.topicid = lst.besttopicid WHERE lst.longtermstatid LIKE @studentId ; ", connection);
             command.Parameters.AddWithValue("@studentid", studentId + "%");
             
             
@@ -173,6 +173,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                         worstTopic = reader.GetString(4),
                         bestTopic = reader.GetString(5),
                         completion = reader.GetDouble(3),
+                        difficulty = reader.GetString(6),
                         
                     };
                     weeklySummarys.Add(week);
@@ -315,7 +316,6 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                     Keys.Add(reader.GetString(0));
                 }
             }
-            
         }
         
         //this is a 2D array to store each list of objects for whihc the topic which is in

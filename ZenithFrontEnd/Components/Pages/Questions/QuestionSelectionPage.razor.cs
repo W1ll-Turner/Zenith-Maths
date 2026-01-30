@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Zenith.Models.QuestionModels;
 
 namespace ZenithFrontEnd.Components.Pages.Questions;
 
@@ -20,4 +21,47 @@ public partial class QuestionSelectionPage : ComponentBase
             StateHasChanged();
         }
     }
+
+
+
+
+
+    private void RouteAddition()
+    {
+        NavigationManager.NavigateTo($"/Questions/addition");
+        
+    }
+
+    private void RouteSubtraction()
+    {
+        NavigationManager.NavigateTo($"/Questions/subtraction");
+        
+    }
+
+    private void RouteMultiplication()
+    {
+        NavigationManager.NavigateTo($"/Questions/multiplication");
+    }
+
+    private void RouteDivision()
+    {
+        NavigationManager.NavigateTo($"/Questions/division");
+        
+    }
+    
+    private void RouteQuadratic()
+    {
+        NavigationManager.NavigateTo($"/Questions/quadratic");
+    }
+
+    private void RouteCollectingTerms()
+    {
+        NavigationManager.NavigateTo($"/Questions/collectingterms");
+    }
+    
+    
+    
+    
+    
+    
 }

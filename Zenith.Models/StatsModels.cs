@@ -25,6 +25,7 @@ public class WeeklySummary
     public double averageScore { get; set; }
     public string worstTopic { get; set; }
     public string bestTopic { get; set; }
+    public string difficulty { get; set; }
     public double completion { get; set; }
 }
 

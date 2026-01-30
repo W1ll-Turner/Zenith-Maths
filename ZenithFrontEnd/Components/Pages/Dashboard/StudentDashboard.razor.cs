@@ -19,11 +19,11 @@ public partial class StudentDashboard : ComponentBase
     {
         Task.Delay(100);
         
-        string weeklySummariesAddress = "http://localhost:5148/api/Questions/GetAllweeklySummarys/" + "20";
+        string weeklySummariesAddress = "http://localhost:5148/api/Questions/GetAllweeklySummarys/" + "70";
         HttpResponseMessage summariesResponse = await Http.GetAsync(weeklySummariesAddress);
         Summaries = await summariesResponse.Content.ReadFromJsonAsync<IEnumerable<WeeklySummary>>();
         
-        string questioningRoundsAddress = "http://localhost:5148/api/Questions/GetAllQuestioningRounds/" + "20";
+        string questioningRoundsAddress = "http://localhost:5148/api/Questions/GetAllQuestioningRounds/" + "70";
         HttpResponseMessage questionRoundsResponse = await Http.GetAsync(questioningRoundsAddress);
         QuestioningRounds = await questionRoundsResponse.Content.ReadFromJsonAsync<IEnumerable<CompletedRoundOfQuestioning>>();
 

@@ -11,11 +11,16 @@ namespace ZenithFrontEnd.Components.Pages.Questions;
 
 public partial class QuestionAnsweringPage:ComponentBase
 {
+    public QuestionAnsweringPage(string topic)
+    {
+        Topic = topic;
+    }
+
     [Parameter]
     public int Difficulty { get; set; }
     
     [Parameter]
-    public string Topic { get; set; } = null!;
+    public string Topic { get; set; } 
     private string QuestionText { get; set; } = "";
     private string UserAnswer { get; set; } = "";
     private Stopwatch TimeToAnswer { get; set; } = new Stopwatch();
@@ -34,8 +39,10 @@ public partial class QuestionAnsweringPage:ComponentBase
     
     
     
-    private void Start()
+    private void Start(int difficulty)
     {
+        Difficulty = difficulty;
+        
         StopQuestioning = true;
         Console.WriteLine("started");
         //this dictionary maps the topic to the genric methods that will generate the questions, This is dependant on a topic
@@ -73,8 +80,6 @@ public partial class QuestionAnsweringPage:ComponentBase
     //using a generic method to initilaise a stack of questions, The type of question will depend on what it is called with from the dictionary but it will correspond to the Question topic 
     private bool InitialiseQuestionStack<TQuestion>() where TQuestion : IQuestion<Fraction>, new()
     {
-        
-        Difficulty = 2;
         
         
         QuestionModels.QuestionStack<Fraction> questions = new QuestionModels.QuestionStack<Fraction>();

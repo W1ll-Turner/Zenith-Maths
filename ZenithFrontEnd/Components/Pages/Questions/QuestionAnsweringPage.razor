@@ -1,4 +1,4 @@
-@page "/Questions"
+@page "/Questions/{Topic}"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject NavigationManager NavigationManager
 @rendermode InteractiveAuto
@@ -63,7 +63,12 @@
     }
     else
     {
-        <button @onclick="Start">Start</button>
+        <h2>Select your difficulty</h2>
+        
+        
+        <button @onclick="() => Start(1)">1</button>
+        <button @onclick="() => Start(2)">2</button>
+        <button @onclick="() => Start(3)">3</button>
     }
 </div>
 
