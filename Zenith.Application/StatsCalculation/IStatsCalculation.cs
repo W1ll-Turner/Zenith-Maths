@@ -6,9 +6,9 @@ public interface IStatsCalculation
 {
     Task<TopicAverages> CalculateTopicAverages(List<shorttermsstatsinfo> info);
     Task<double> CalculateTopicCompletion(TopicAverages average);
-    Task<double> CalclulateOverallCompletion(double [] values);
-    Task<int> GetBestTopicID(double[] values);
-    Task<int> GetWorstTopicID(double[] values);
+    Task<double> CalclulateOverallCompletion(Dictionary<int, double> completion);
+    Task<int> GetBestTopicID(Dictionary<int, double> completion);
+    Task<int> GetWorstTopicID(Dictionary<int, double> completion);
 
-    Task<double[]> CalculateAverageTimeAndScore(TopicAverages[] averages);
+    Task<double[]> CalculateOverallAverageTimeAndScore(Dictionary<int, TopicAverages> averages);
 }

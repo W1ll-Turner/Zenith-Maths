@@ -15,7 +15,7 @@ public class TopicAverages
     public double averageTime { get; set; }
     public double averageScore { get; set; }
     public int numberOfRounds { get; set; }
-    public int difficulty { get; set; }
+    public double difficulty { get; set; }
 }
 
 public class WeeklySummary

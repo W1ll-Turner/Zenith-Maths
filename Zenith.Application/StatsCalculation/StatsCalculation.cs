@@ -20,15 +20,15 @@ public class StatsCalculation : IStatsCalculation
             return emptyTopic;
         }
         
-        //getting the difficulty 
-        int difficulty = info[0].difficulty;
         
         //calucltuin the averges using the arithmetic mean 
+        int totalDifficulty = 0;
         double totalTime = 0;
         int Totalscore = 0;
         int numberOfRounds = 0;
         foreach (var item in info)
         {
+            totalDifficulty += item.difficulty;
             totalTime += item.averagetime;
             Totalscore += item.score;
             numberOfRounds++;
@@ -37,93 +37,99 @@ public class StatsCalculation : IStatsCalculation
         //initialising the averges class and adding the value to it
         TopicAverages Averages = new TopicAverages()
         {
-            averageTime = totalTime/numberOfRounds,
-            averageScore = Totalscore/numberOfRounds,
+            averageTime = (double)totalTime/numberOfRounds,
+            averageScore = (double)Totalscore/numberOfRounds,
             numberOfRounds = numberOfRounds,
-            difficulty = difficulty
+            difficulty = (double)totalDifficulty/numberOfRounds,
         };
         return Averages;
     }
 
     public async Task<double> CalculateTopicCompletion(TopicAverages averages)
     {
-        int difficulty = averages.difficulty;
+        double difficulty = averages.difficulty;
         int RoundsCompleted = averages.numberOfRounds;
-        double AverageScore = averages.averageTime;
-        double AverageTime = averages.averageScore;
+        double AverageScore = averages.averageScore;
+        double AverageTime = averages.averageTime;
         
         //using the mathjemtical functions to code the summary statistics to a value between 0 and 1 
         double AverageScoreSigmoidValue = StatisticalFunctions.SigmoidAverageScore(AverageScore);
         double AverageTimeSigmoidValue = StatisticalFunctions.SigmoidAverageTime(AverageTime);
-        double CodedDifficulty = difficulty / 3.0;
-        double CodedRoundsCompleted = RoundsCompleted / 10;
+        double CodedDifficulty = (double)difficulty / 3.0;
+        double CodedRoundsCompleted = (double)RoundsCompleted / 10.0;
         
         //finsding the geometric mean of those values
         double[] Values = new double[]{AverageScoreSigmoidValue, AverageTimeSigmoidValue, CodedDifficulty, CodedRoundsCompleted};
-        double CompletionScore = StatisticalFunctions.GeometricMean(Values) * 100;
+        double CompletionScore = StatisticalFunctions.GeometricMean(Values) ;
 
         //returng the vcompletions 
         return CompletionScore;
     }
     
     
-    public async Task<double> CalclulateOverallCompletion(double[] values)
+    public async Task<double> CalclulateOverallCompletion(Dictionary<int, double> completion)
     {
+        double[] values = new double[completion.Count];
+        int counter = 0;
+        foreach (int Key in completion.Keys)
+        {
+            values[counter]  = completion[Key];
+            counter++;
+        }
+        
         double CompletionScore = StatisticalFunctions.GeometricMean(values);
         return CompletionScore;
     }
 
-    public async Task<int> GetBestTopicID(double[] values)
+    public async Task<int> GetBestTopicID(Dictionary<int, double> completion)
     {
-        double highest = Math.Max(values[0], values[1]);
-        bool found = false;
-        int i = 0;
-        //linear search to find where the best topic is, and therfore the topic its, must be linear as the index number of each item relates to the topic in which it changed
-        while (true)
+        double largestValue = 0;
+        int largestValueKey = 0;
+            
+        foreach (int Key in completion.Keys)
         {
-            if (values[i] == highest)
+            if (completion[Key] > largestValue)
             {
-                break;
+                largestValue = completion[Key];
+                largestValueKey = Key;;
             }
-            
-            i++;
-            
         }
-
-        return i + 1;
+        
+        return largestValueKey;
     }
-    public async Task<int> GetWorstTopicID(double[] values)
+    public async Task<int> GetWorstTopicID(Dictionary<int, double> completion)
     {
-        double lowest = Math.Min(values[0], values[1]);
-        bool found = false;
-        int i = 0;
-        //linear search to find where the best topic is, and therfore the topic its, must be linear as the index number of each item relates to the topic in which it changed
-        while (true)
-        {
-            if (values[i] == lowest)
-            {
-                break;
-            }
-            
-            i++;
-            
-        }
+        double lowestValue = 2.0;
+        int lowestValueKey = 0;
 
-        return i + 1;
+        foreach (int Key in completion.Keys)
+        {
+            if (completion[Key] < lowestValue)
+            {
+                lowestValue = completion[Key];
+                lowestValueKey = Key;
+            }
+        }
+        
+        return lowestValueKey;
     }
 
-    public async Task<double[]> CalculateAverageTimeAndScore(TopicAverages[] averages)
+    public async Task<double[]> CalculateOverallAverageTimeAndScore(Dictionary<int, TopicAverages> averages)
     {
         double TotalScore = 0;
         double TotalTime = 0;
+        double TotalDifficulty = 0;
+        int counter = 0;
         
-        foreach (TopicAverages average in averages)
+        foreach (int Key  in averages.Keys)
         {
-            TotalScore += average.averageScore;
-            TotalTime += average.averageTime;
+            TotalScore += averages[Key].averageScore;
+            TotalTime += averages[Key].averageTime;
+            TotalDifficulty += averages[Key].difficulty;
+            counter++;
         }
 
-        double[] values = [TotalScore/9 , TotalTime/9];
+        double[] values = [(double)TotalScore/counter, (double)TotalTime/counter,(double)TotalDifficulty/counter];
         return values;
     }
 }
