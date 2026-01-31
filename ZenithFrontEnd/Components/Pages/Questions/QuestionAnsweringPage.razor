@@ -5,73 +5,82 @@
 @inject ProtectedSessionStorage SessionStorage
 @inject HttpClient Http
 
+@if (authenticated)
+{
 
-<div class = "QuestionComponent">
-    <h1>Welcome to the Question page</h1>
-    
-    @if (StopQuestioning)
-    {
-        <div class="InformationBar">
-            <div class = "InfoBubble">
-                <p>Topic: @Topic</p>
-            </div>
-            <div class="InfoBubble">
-                <p>Difficulty: @Difficulty</p>
-            </div>
-            
-            <div class="ProgressBar">
-                @for (int i = 0; i < 10; i++)
-                {
-                    @if (CorrectAnswers[i] == 1)
+
+
+
+    <div class="QuestionComponent">
+        <h1>Welcome to the Question page</h1>
+
+        @if (StopQuestioning)
+        {
+            <div class="InformationBar">
+                <div class="InfoBubble">
+                    <p>Topic: @Topic</p>
+                </div>
+                <div class="InfoBubble">
+                    <p>Difficulty: @Difficulty</p>
+                </div>
+
+                <div class="ProgressBar">
+                    @for (int i = 0; i < 10; i++)
                     {
-                        <div class="ProgressCell Green">
+                        @if (CorrectAnswers[i] == 1)
+                        {
+                            <div class="ProgressCell Green">
 
-                        </div>
+                            </div>
+                        }
+                        else if (CorrectAnswers[i] == 2)
+                        {
+                            <div class="ProgressCell Red">
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="ProgressCell Grey">
+
+                            </div>
+                        }
+
                     }
-                    else if (CorrectAnswers[i] == 2)
-                    {
-                        <div class="ProgressCell Red">
 
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="ProgressCell Grey">
-
-                        </div>
-                    }
-
-                }
+                </div>
+                <div class="InfoBubble">
+                    <p>Q: @questionNum/10</p>
+                </div>
 
             </div>
-            <div class="InfoBubble">
-                <p>Q: @questionNum/10</p>
+
+
+            <div class="QuestionAnsweringBox">
+
+                <h3 >@QuestionText</h3>
+
+                <input type="text" @bind:event="oninput" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class="AnswerBox"></input>
+                <button @onclick="AnswerQuestion">Submit</button>
+
             </div>
 
-        </div>
-        
-        
-        <div class="QuestionAnsweringBox">
-            
-            <h3 >@QuestionText</h3>
-        
-            <input type="text" @bind:event="oninput" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class = "AnswerBox"></input> 
-            <button @onclick="AnswerQuestion" >Submit</button>
-            
-        </div>
-        
-    }
-    else
-    {
-        <h2>Select your difficulty</h2>
-        
-        
-        <button @onclick="() => Start(1)">1</button>
-        <button @onclick="() => Start(2)">2</button>
-        <button @onclick="() => Start(3)">3</button>
-    }
-</div>
+        }
+        else
+        {
+            <h2>Select your difficulty</h2>
 
+
+            <button @onclick="() => Start(1)">1</button>
+            <button @onclick="() => Start(2)">2</button>
+            <button @onclick="() => Start(3)">3</button>
+        }
+    </div>
+}
+else
+{
+    <h2>Please log in First</h2>
+}
 
 @code{
     //method to handle the event of if the enter key is entered 

@@ -27,6 +27,7 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
 
     public int[] CorrectAnswers { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     private int questionNum = 0;
+    private bool authenticated = false;
     
     private void Start()
     {
@@ -142,7 +143,15 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
         
         //pulling the User ID from the session storage
         string ID = await GetID();
-       
+
+        if (ID =="0")
+        {
+            authenticated = false;
+        }
+        else
+        {
+            authenticated = true;
+        }
         
         //getting the current time 
         DateTime temporaryTimeHolder = DateTime.Now;

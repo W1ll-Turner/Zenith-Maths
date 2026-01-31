@@ -31,6 +31,8 @@ public partial class QuestionAnsweringPage:ComponentBase
     public int[] CorrectAnswers { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     private int questionNum = 0;
     
+    private bool authenticated = false;
+    
     
     
     
@@ -206,6 +208,14 @@ public partial class QuestionAnsweringPage:ComponentBase
         
         //pulling the User ID from the session storage
         string ID = await GetID();
+        if (ID == "0")
+        {
+            authenticated = false;
+        }
+        else
+        {
+            authenticated = true;
+        }
        
         
         //getting the current time 
