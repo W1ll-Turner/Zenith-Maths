@@ -88,9 +88,10 @@ public class StatsCalculation : IStatsCalculation
         {
             return newCompletion;
         }
-        double temp = currentCompletion * newCompletion * 1.25;
+        double temp = currentCompletion * newCompletion * 1.2;
         double completion = Math.Sqrt(temp);
                 
+        completion = Math.Min(1.0, completion);
         return completion;
                     
         

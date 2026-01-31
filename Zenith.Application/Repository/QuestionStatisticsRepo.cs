@@ -423,8 +423,16 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
 
         using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            var DeleteShortTermDataCommand = new NpgsqlCommand("DELETE FROM shorttermstats WHERE studentid = @studentid", connection);
-            DeleteShortTermDataCommand.Parameters.AddWithValue("@studentid", ID);
+            var DeleteShortTermRelationships = new NpgsqlCommand("DELETE FROM shorttermstatsbridge WHERE studentid = @studentid", connection);
+            DeleteShortTermRelationships.Parameters.AddWithValue("@studentid", ID);
+            
+            DeleteShortTermRelationships.ExecuteNonQuery();
+        }
+        
+        using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            var DeleteShortTermDataCommand = new NpgsqlCommand("DELETE FROM shorttermstats WHERE shorttermid LIKE @studentid", connection);
+            DeleteShortTermDataCommand.Parameters.AddWithValue("@studentid", ID + "%");
             
             DeleteShortTermDataCommand.ExecuteNonQuery();
         }
