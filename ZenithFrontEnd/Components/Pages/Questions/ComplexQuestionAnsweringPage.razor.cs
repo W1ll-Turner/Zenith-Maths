@@ -166,7 +166,8 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
         Console.WriteLine("Trying to send therequest");
        
         HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/AddShortTermData", request);
-        Console.WriteLine(response);
+ 
+        NavigationManager.NavigateTo("/RoundComplete");
         
 
     }

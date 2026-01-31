@@ -171,8 +171,8 @@ public class SubtractionQuestion : IQuestion<Fraction>
         int[] acceptableDenominators = new int[] { 2, 3, 4, 5, 8, 10}; //the list of accepatbale denominators for the fractions being used 
         
         //randomly generating the fracions for the questions 
-        Fraction operand1 = new Fraction(random.Next(1,12), acceptableDenominators[random.Next(0, acceptableDenominators.Length - 1)]);
-        Fraction operand2 = new Fraction(random.Next(1,12),  acceptableDenominators[random.Next(0, acceptableDenominators.Length - 1)]);
+        Fraction operand1 = new Fraction(random.Next(1,12), acceptableDenominators[random.Next(1, acceptableDenominators.Length - 1)]);
+        Fraction operand2 = new Fraction(random.Next(1,12),  acceptableDenominators[random.Next(1, acceptableDenominators.Length - 1)]);
         
         //computing the answer the to the question and putting it into the string format
         Answer = operand1 - operand2;

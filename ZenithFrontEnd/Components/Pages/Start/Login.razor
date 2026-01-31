@@ -4,25 +4,36 @@
 @inject HttpClient Http
 @inject ProtectedSessionStorage SessionStorage
 @inject NavigationManager NavigationManager
-<h3 class="Title">Login</h3>
 
 
 
-@if (Error) @*This is displaying the error messaghe when the username or password are incorrect, they did not match the regex or did not validate  by the API*@
+@if (authenticated)
 {
-    <p style="color:#b32121">Wrong username or password</p>
+    <h2>You are already logged in</h2>
 }
+else
+{
+    <h3 class="Title">Login</h3>
 
-<form @onsubmit="Submit">
-    <div class="LogInInputs"> @*This is the forms taking the username and password to log in *@
-        
-        <input class="Input" @bind="Username" placeholder="Username" />
-        <input class="Input" @bind="Password" placeholder="Password"/>
-    </div>
-    <div>
-        <div class="LinkButton">
-            <button type="submit" class="Button">Login</button>
+
+
+    @if (Error) @*This is displaying the error messaghe when the username or password are incorrect, they did not match the regex or did not validate  by the API*@
+    {
+        <p style="color:#b32121">Wrong username or password</p>
+    }
+
+    <form @onsubmit="Submit">
+        <div class="LogInInputs"> @*This is the forms taking the username and password to log in *@
+
+            <input class="Input" @bind="Username" placeholder="Username" />
+            <input class="Input" @bind="Password" placeholder="Password"/>
         </div>
-    </div>
+        <div>
+            <div class="LinkButton">
+                <button type="submit" class="Button">Login</button>
+            </div>
+        </div>
+
+    </form>
     
-</form>
+}

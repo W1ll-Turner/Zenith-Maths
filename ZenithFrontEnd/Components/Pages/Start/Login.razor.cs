@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Zenith.Contracts.Request;
 using Zenith.Contracts.Request.Account;
 
@@ -11,6 +12,8 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
     public required string Username { get; set; } = ""; 
     public required string Password { get; set; } = "";
     public bool Error { get; set; } = false;
+    
+    public bool authenticated = false;
 
     private async Task Submit()
     {
@@ -61,17 +64,37 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
             return;
         }
         
-        
-        
-        
-        
-        
-        
-        
-        
+    }
+
+
+    protected override Task OnInitializedAsync()
+    {
+        Task<string> Id = GetID();
+        string id = Id.Result;
+        if (id == "0")
+        {
+            return base.OnInitializedAsync();
+        }
+        authenticated = true;
+        return base.OnInitializedAsync();
         
     }
 
+    private async Task<string> GetID()
+    {
+        string ID;
+        try
+        {
+            ProtectedBrowserStorageResult<string> StudentID = await SessionStorage.GetAsync<string>("Id");
+            ID = StudentID.Value;
+            return ID;
+        }
+        catch (Exception e)
+        {
+            ID = "0";
+            return ID;
+        }
+    }
     
     
 }

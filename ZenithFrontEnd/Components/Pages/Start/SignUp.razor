@@ -1,38 +1,48 @@
 ﻿@page "/SignUp"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject HttpClient http
 @inject NavigationManager NavigationManager
-<div class="page signUpPage">
-    <h3 class="Title">SignUp</h3>
-    @if (Error == true)
-    {
-        <p>Credentials incorrect, check your passwords match, is it a valid email address</p>
-    }
-    <form @onsubmit="Submit" class="UserInfoInput">
-        <div class ="SignUpInputs"> @*This is thr form taking all the information to create an account*@
-            <input class="Input" type="Text" @bind="Email" placeholder="Email"/>
+@inject ProtectedSessionStorage SessionStorage
+
+
+
+@if (authenticated)
+{
+    <h2>You are already logged in</h2>
+}
+else
+{
+    <div class="page signUpPage">
+        <h3 class="Title">SignUp</h3>
+        @if (Error == true)
+        {
+            <p>Credentials incorrect, check your passwords match, is it a valid email address</p>
+        }
+        <form @onsubmit="Submit" class="UserInfoInput">
+            <div class ="SignUpInputs"> @*This is thr form taking all the information to create an account*@
+                <input class="Input" type="Text" @bind="Email" placeholder="Email"/>
             
-            <div class="Names">
-                <input class="NameInput" type="text" @bind="FirstName" placeholder="FirstName"/>
-                <input  class="NameInput" type="text" @bind="LastName" placeholder="LastName"/>
-            </div>
+                <div class="Names">
+                    <input class="NameInput" type="text" @bind="FirstName" placeholder="FirstName"/>
+                    <input  class="NameInput" type="text" @bind="LastName" placeholder="LastName"/>
+                </div>
             
-            <input class="Input"type="text" @bind="Username" placeholder="Username"/>
-            <input class="Input"type="password" @bind="Password" placeholder="Password"/>
-            <input class="Input"type="password" @bind="ConfirmPassword" placeholder="ConfirmPassword"/>
-            <input class="Input"type="text" @bind="ClassCode" placeholder="ClassCode"/>
-        </div>
-        
-        <div class = "NavButtons">
-            <div class="LinkButton">
-                <button style="align-items: center; justify-content: center; text-align: center" type="submit" class="Button">Sign up</button>
+                <input class="Input"type="text" @bind="Username" placeholder="Username"/>
+                <input class="Input"type="password" @bind="Password" placeholder="Password"/>
+                <input class="Input"type="password" @bind="ConfirmPassword" placeholder="ConfirmPassword"/>
+                <input class="Input"type="text" @bind="ClassCode" placeholder="ClassCode"/>
             </div>
-        </div>
         
+            <div class = "NavButtons">
+                <div class="LinkButton">
+                    <button style="align-items: center; justify-content: center; text-align: center" type="submit" class="Button">Sign up</button>
+                </div>
+            </div>
     
-        
+        </form>
     
     
-    </form>
+    </div>
+
     
-    
-</div>
+}

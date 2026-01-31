@@ -18,6 +18,16 @@
     
     
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr ;
     grid-template-rows: 1fr 1fr;
+}
+
+.SelectionPage{
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    
 }

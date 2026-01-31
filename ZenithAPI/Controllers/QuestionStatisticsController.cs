@@ -52,15 +52,15 @@ public class QuestionStatisticsController : ControllerBase
         return Ok();
     }
 
-    [HttpPost("AddLongTermData")]
-    public async Task<IActionResult> AddLongTermData()
+    [HttpPost("AddLongTermData/{Id}")]
+    public async Task<IActionResult> AddLongTermData([FromRoute] string Id)
     {
-        bool success = await _questionStatisticsRepo.AddLongTermData("70");
+        bool success = await _questionStatisticsRepo.AddLongTermData(Id);
         return success ? Ok() : BadRequest();
     }
     
     //this needs to changing to put the ID into the root 
-    [HttpGet("GetMostRecentQuestionRound/{id}")]
+    [HttpGet("GetMostRecentQuestionRound/{Id}")]
     public async Task<IActionResult> GetMostRecentQuestionRound([FromRoute] string  Id)
     {
         Console.WriteLine("received request");

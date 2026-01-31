@@ -362,6 +362,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
             
         }
         
+        
         //calculating the Averages for each topic 
         int count = 0;
         Dictionary<int, TopicAverages> topicAverages = new Dictionary<int, TopicAverages>();
@@ -379,10 +380,12 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
             completionResults.Add(key, await _StatsCalculation.CalculateTopicCompletion(topicAverages[key]));
             
         }
+
+        double CurrentCompletion = await GetCurrentCompletion(ID);
         
         //initialising the variables that will be added to the database  
-        
-        double completion = await _StatsCalculation.CalclulateOverallCompletion(completionResults);
+        double Newcompletion = await _StatsCalculation.CalclulateOverallCompletion(completionResults);
+        double completion = await _StatsCalculation.CompoundCompletion(CurrentCompletion, Newcompletion);
         int worstTopicId = await _StatsCalculation.GetWorstTopicID(completionResults);
         int bestTopicId = await _StatsCalculation.GetBestTopicID(completionResults);
         
@@ -413,10 +416,75 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         {
             var AddLongTermRelation = new NpgsqlCommand("INSERT INTO longtermstatsbridge(longtermstatsid, studentid) VALUES(@longtermstatsid, @studentid)", connection);
             AddLongTermRelation.Parameters.AddWithValue("@longtermstatsid", longTermsStatsId);
+            AddLongTermRelation.Parameters.AddWithValue("@studentid", ID);
             
+            AddLongTermRelation.ExecuteNonQuery();
+        }
+
+        using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            var DeleteShortTermDataCommand = new NpgsqlCommand("DELETE FROM shorttermstats WHERE studentid = @studentid", connection);
+            DeleteShortTermDataCommand.Parameters.AddWithValue("@studentid", ID);
             
+            DeleteShortTermDataCommand.ExecuteNonQuery();
+        }
+
+        using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
+            var DeleteQuestionBankCommand = new NpgsqlCommand("Delete FROM questionbank WHERE roundid LIKE @studentid", connection);
+            DeleteQuestionBankCommand.Parameters.AddWithValue("@studentid", ID + "%");
+            
+            DeleteQuestionBankCommand.ExecuteNonQuery();
         }
         return true;
 
+    }
+
+    private async Task<double> GetCurrentCompletion(string ID)
+    {
+        //will try to get the old completion score out the database, if there isn't one an excpetion will be thrown and so it will return 0
+        try
+        {
+            double CurrentCompletion = 0;
+            using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+            {
+                var GetRelationCommand =
+                    new NpgsqlCommand("SELECT longtermstatsid FROM longtermstatsbridge WHERE studentid = @studentid ORDER BY longtermstatsid DESC", connection);
+                GetRelationCommand.Parameters.AddWithValue("@studentid", ID);
+
+                string Key = null;
+                using (var reader = await GetRelationCommand.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Key = reader.GetString(0);
+                        break;
+                    }
+                }
+
+                var GetCompletionCommand =
+                    new NpgsqlCommand("SELECT completion FROM longtermstats WHERE longtermstatid = @longtermstatid",
+                        connection);
+                GetCompletionCommand.Parameters.AddWithValue("@longtermstatid", Key);
+                using (var reader = await GetCompletionCommand.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        CurrentCompletion = reader.GetDouble(0);
+                    }
+                }
+            }
+
+            return CurrentCompletion;
+            
+        }
+        catch (Exception e)
+        {
+            double completion = double.NaN;
+            return completion;
+        }
+        
+        
+        
     }
 }

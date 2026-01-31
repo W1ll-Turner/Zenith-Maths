@@ -81,6 +81,22 @@ public class StatsCalculation : IStatsCalculation
         return CompletionScore;
     }
 
+    public async Task<double> CompoundCompletion(double currentCompletion, double newCompletion)
+    {
+        //meaning there is no crrent completion score and so simply return the one that has just been calculated
+        if (double.IsNaN(currentCompletion))
+        {
+            return newCompletion;
+        }
+        double temp = currentCompletion * newCompletion * 1.25;
+        double completion = Math.Sqrt(temp);
+                
+        return completion;
+                    
+        
+        
+    }
+
     public async Task<int> GetBestTopicID(Dictionary<int, double> completion)
     {
         double largestValue = 0;
@@ -132,4 +148,7 @@ public class StatsCalculation : IStatsCalculation
         double[] values = [(double)TotalScore/counter, (double)TotalTime/counter,(double)TotalDifficulty/counter];
         return values;
     }
+    
+    
+    
 }

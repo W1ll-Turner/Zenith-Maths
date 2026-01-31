@@ -11,10 +11,6 @@ namespace ZenithFrontEnd.Components.Pages.Questions;
 
 public partial class QuestionAnsweringPage:ComponentBase
 {
-    public QuestionAnsweringPage(string topic)
-    {
-        Topic = topic;
-    }
 
     [Parameter]
     public int Difficulty { get; set; }
@@ -60,7 +56,6 @@ public partial class QuestionAnsweringPage:ComponentBase
 
         Console.WriteLine("dictionary has been made");
         //initilaising the question stack, if the topic cannot be found an exception will be thrown
-        Topic = "addition";
         try
         {
             TopicsMapper.TryGetValue(Topic, out Func<bool>? intialiseStack);
@@ -237,7 +232,7 @@ public partial class QuestionAnsweringPage:ComponentBase
        HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/AddShortTermData", request);
        Console.WriteLine(response);
         
-
+        NavigationManager.NavigateTo("/RoundComplete");
     }
     
     //this will reset the array that keeps tracks of the users results so that the user can reperat a round 

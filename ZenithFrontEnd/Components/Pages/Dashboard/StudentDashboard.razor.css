@@ -43,9 +43,57 @@
 }
 
 .StatButton{
+    display: flex;
+    padding: 8px;
+    margin: 8px;
+    border: 1px solid black;
+    border-radius: 30px;
+    background: rgba(255,113,21,0.95);
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.ContinueButton{
     padding: 8px;
     margin: 8px;
     border: 1px solid black;
     border-radius: 20px;
-    background: rgba(255,113,21,0.95);
+    background: #38b6ff;
+}
+
+
+.QuestionRoundDisplay{
+    position: absolute;
+    left: 25vw;
+    top: 40px;
+    display: grid;
+    width: 50vw;
+    min-height: 10vh;
+    background: whitesmoke;
+    border:1px solid black;
+    border-radius: 20px;
+    
+    
+}
+
+.SecondaryInfo{
+    justify-content: center;
+    align-items: center;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid black;
+
+}
+
+.PrimaryInfo{
+    font-weight: bold;
+    font-size: larger;
+    justify-content: center;
+    align-items: center;
+    min-height: 5vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+
 }

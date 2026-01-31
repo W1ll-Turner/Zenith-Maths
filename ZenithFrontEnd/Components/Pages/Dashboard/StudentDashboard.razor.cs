@@ -1,20 +1,33 @@
+using System.Net.WebSockets;
 using BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
 using Zenith.Models.Account;
+using Zenith.Models.QuestionModels;
 
 namespace ZenithFrontEnd.Components.Pages.Dashboard;
 
 public partial class StudentDashboard : ComponentBase
 {
     
-    
+    //these are the properties required for the graph to be duisplayed 
     private LineChart lineChart = default!;
     private LineChartOptions lineChartOptions = default!;
     private ChartData chartData = default!;
+    
+    //will make sure the page does not try to redner without the required information first, prevenmting a null exception being thrown 
     public bool FinishedRendering = false;
+    
+    //stores the most recent stat so they cna be displayed in more detial 
     WeeklySummary MostRecentStats {get; set;}
+    
+    //stores every collection of long terms stats
     private IEnumerable<WeeklySummary>? Summaries { get; set; }
-    private IEnumerable<CompletedRoundOfQuestioning>? QuestioningRounds { get; set; }
+    //stores all of the recently answered rounds of questioning 
+    private List<CompletedRoundOfQuestioning>? QuestioningRounds { get; set; }
+    //stores the round of questioning the user would like to see in more detial 
+    private IEnumerable<QuestionModels.AnsweredQuestion> CurrentQuestioningRound {get; set;}
+    //tracks whether to open the window that will track the most recent round of quesitoning
+    private bool displayQuestionRound = false;
     protected async override Task OnInitializedAsync()
     {
         Task.Delay(100);
@@ -23,11 +36,22 @@ public partial class StudentDashboard : ComponentBase
         HttpResponseMessage summariesResponse = await Http.GetAsync(weeklySummariesAddress);
         Summaries = await summariesResponse.Content.ReadFromJsonAsync<IEnumerable<WeeklySummary>>();
         
-        string questioningRoundsAddress = "http://localhost:5148/api/Questions/GetAllQuestioningRounds/" + "70";
+        string questioningRoundsAddress = "http://localhost:5148/api/Questions/GetAllQuestioningRounds/" + "820";
         HttpResponseMessage questionRoundsResponse = await Http.GetAsync(questioningRoundsAddress);
-        QuestioningRounds = await questionRoundsResponse.Content.ReadFromJsonAsync<IEnumerable<CompletedRoundOfQuestioning>>();
+        QuestioningRounds = await questionRoundsResponse.Content.ReadFromJsonAsync<List<CompletedRoundOfQuestioning>>();
 
         MostRecentStats = Summaries.Last();
+
+        foreach (CompletedRoundOfQuestioning round in QuestioningRounds)
+        {
+            Console.WriteLine("Question????");
+            IEnumerable<QuestionModels.AnsweredQuestion> answeredQuestions = round.answeredQuestions;
+            foreach (QuestionModels.AnsweredQuestion answeredQuestion in answeredQuestions)
+            {
+                Console.WriteLine("Data please");
+                Console.WriteLine(answeredQuestion.Question);
+            }
+        }
         
         InitialiseGraph();
     }
@@ -93,8 +117,26 @@ public partial class StudentDashboard : ComponentBase
         
         
     }
-    
-    
+
+    private void DisplayRoundOfQuestioning(int roundIndex)
+    {
+        Console.WriteLine(roundIndex);
+        CurrentQuestioningRound = QuestioningRounds[roundIndex].answeredQuestions;
+        displayQuestionRound = true;
+        
+        StateHasChanged();
+    }
+
+    private void NavigateToSelection()
+    {
+        NavigationManager.NavigateTo($"/QuestionSelection");
+    }
+
+    private void Close()
+    {
+        displayQuestionRound = false;
+        StateHasChanged();
+    }
     
     
     

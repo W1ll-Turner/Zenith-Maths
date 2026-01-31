@@ -5,6 +5,7 @@
 @using Zenith.Models.QuestionModels
 @inject ProtectedSessionStorage SessionStorage
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 @page "/Dashboard"
 
 @if (FinishedRendering)
@@ -25,13 +26,16 @@
 
             <div class="RecentRoundsOfQuestioning">
                 <h2>Recent Question Rounds</h2>
-                @foreach (CompletedRoundOfQuestioning round in QuestioningRounds)
+                @for(int i =0; i < QuestioningRounds.Count; i++)
                 {
+                    var index = i;
+                    
                     <div class="CompletedQuestionRound">
-                        <p>Score: @round.score</p>
-                        <p>Topic: @round.topic</p>
-                        <p>Difficulty: @round.difficulty</p>
-                        <p>AverageTime: @round.averageTime</p>
+                        <p>Score: @QuestioningRounds[i].score</p>
+                        <p>Topic: @QuestioningRounds[i].topic</p>
+                        <p>Difficulty: @QuestioningRounds[i].difficulty</p>
+                        <p>AverageTime: @QuestioningRounds[i].averageTime</p>
+                        <button @onclick="() => DisplayRoundOfQuestioning(index)">View</button>
                     </div>
 
                 }
@@ -61,18 +65,41 @@
                     <p>Average Score: @MostRecentStats.averageScore</p>
                 </div>
                 <div class="StatButton">
-                    <p>Current Completion; @MostRecentStats.completion</p>
+                    <p>Current Completion: @MostRecentStats.completion</p>
                 </div>
                 
             </div>
-            <div>
-                <button>Continue to Questions</button>
+            <div >
+                <button @onclick="NavigateToSelection " class="ContinueButton">Continue to Questions</button>
             </div>
 
 
         </div>
 
     </div>
+    
+    @if (displayQuestionRound)
+    {
+        <div  class="QuestionRoundDisplay">
+            <button @onclick="Close" >Close</button>
+            @foreach (QuestionModels.AnsweredQuestion Question in CurrentQuestioningRound)
+            {
+                <div class="AnsweredQuestion">
+                    <div class="SecondaryInfo">
+                        <p>Answer: @Question.CorrectAnswer</p>
+                        <p>TimeTaken: @Question.TimeTaken</p>
+                        <p>Correct: @Question.Correct</p>
+                    </div>
+
+                    <div class="PrimaryInfo">
+                        <p>@Question.Question</p>
+                        <p>Your Answer: @Question.UserAnswer</p>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
 }
 else
 {
