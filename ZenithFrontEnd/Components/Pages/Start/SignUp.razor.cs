@@ -32,7 +32,7 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
             Error = true;
         }
         
-        if (Match == true && Password == ConfirmPassword)
+        if (Match && Password == ConfirmPassword)
         {
             SignUpRequest request = new SignUpRequest()
             {
@@ -47,11 +47,15 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
             Console.WriteLine("sending request");
             
             HttpResponseMessage response = await http.PostAsJsonAsync("http://localhost:5148/api/Account/SignUp", request);
-            Console.WriteLine(response);
             
             if (response.IsSuccessStatusCode)
             {
                 NavigationManager.NavigateTo("/Login");
+            }
+            else
+            {
+                //this will mean that their details were duplicate, or coul;ntt be added to the databse 
+                Error = true;
             }
         }
         else

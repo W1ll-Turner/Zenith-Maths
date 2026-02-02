@@ -46,19 +46,13 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
                Console.WriteLine(id);
                await SessionStorage.SetAsync("Id", id);
                
-               NavigationManager.NavigateTo("/Questions");
+               NavigationManager.NavigateTo("/QuestionSelection");
             }
             else
             {
                 Console.WriteLine("Log in failed ");
                 Error = true; // username or password were incorrect
             }
-
-
-
-
-
-
         }
         else //This will display the message that they have given an invalid username and password
         {

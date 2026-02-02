@@ -18,10 +18,24 @@ public class AccountRepo : IAccountRepo //inheritance, this is the implmentation
     {
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            
+            var command = new NpgsqlCommand("SELECT COUNT(*) FROM students WHERE username = @username", connection);
+            command.Parameters.AddWithValue("@username", account.Username);
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                await reader.ReadAsync();
+                int id = reader.GetInt32(0);
+                if (id > 0)
+                {
+                    return false;
+                }
+            }
+        }
+        
+        await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
+        {
             try
             {
-                Console.WriteLine("querying");
                 var command = new NpgsqlCommand("INSERT INTO students (studentid, email, username, fullname, password, classcode) VALUES ( @student, @email,  @username,  @fullname, @password, @classcode)", connection);
                 int id = await CreateId();
                 
