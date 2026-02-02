@@ -40,7 +40,7 @@ public partial class StudentDashboard : ComponentBase
             return;
         }
 
-        string Id = await GetId();
+        string? Id = await GetId();
         if (Id == null)
         {
             authenticated = false;
@@ -145,9 +145,9 @@ public partial class StudentDashboard : ComponentBase
         StateHasChanged();
     }
     
-    private async Task<string> GetId()
+    private async Task<string?> GetId()
     {
-        ProtectedBrowserStorageResult<string> Id = await SessionStorage.GetAsync<string>("Id");
+        ProtectedBrowserStorageResult<string?> Id = await SessionStorage.GetAsync<string>("Id");
         if (Id.Success)
         {
             return Id.Value;

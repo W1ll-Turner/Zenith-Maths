@@ -46,6 +46,7 @@ public partial class QuestionAnsweringPage:ComponentBase
             }
             else
             {
+                UserId = Id;
                 authenticated = true;
             }
 
@@ -222,21 +223,16 @@ public partial class QuestionAnsweringPage:ComponentBase
         //resetting the array keeping track of the user's answers 
         ResetArray();
         
-        //pulling the User ID from the session storage
-       
-        
         //getting the current time 
         DateTime temporaryTimeHolder = DateTime.Now;
         string time = temporaryTimeHolder.ToString("HH:mm:ss");
-        
-        //putting the list of answered questions into an IEnumerbale 
-        
+
         //intitialising the request object to be sent to the API putting fake test data in for now 
        QuestioningRequests.CompletedQuestionRoundRequest request = new QuestioningRequests.CompletedQuestionRoundRequest()
        {
            Difficulty = 1,
            UserId = UserId,
-           Topic = "addition",
+           Topic = Topic,
            TimeCompleted = time,
            questions =  AnsweredQuestions
        };
@@ -244,12 +240,11 @@ public partial class QuestionAnsweringPage:ComponentBase
        
        
        //sending the request to the API to store the round of questioning in the database
-       Console.WriteLine("Trying to send therequest");
+       Console.WriteLine("Trying to send therequest UserID: " + UserId);
        
        HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/AddShortTermData", request);
-       Console.WriteLine(response);
-        
-        NavigationManager.NavigateTo("/RoundComplete");
+       
+       NavigationManager.NavigateTo("/RoundComplete");
     }
     
     //this will reset the array that keeps tracks of the users results so that the user can reperat a round 
@@ -260,7 +255,6 @@ public partial class QuestionAnsweringPage:ComponentBase
             CorrectAnswers[i] = 0;
         }
         questionNum = 0;
-        
     }
 
     private async Task<string> GetId()
@@ -275,6 +269,3 @@ public partial class QuestionAnsweringPage:ComponentBase
         return null;
     }
 }
-
-
-
