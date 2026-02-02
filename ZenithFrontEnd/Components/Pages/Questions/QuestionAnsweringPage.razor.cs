@@ -32,10 +32,26 @@ public partial class QuestionAnsweringPage:ComponentBase
     private int questionNum = 0;
     
     private bool authenticated = false;
-    
-    
-    
-    
+    private string UserId;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
+    {
+        if (firstRender)
+        {
+            string Id = await GetId();
+            Console.WriteLine(Id);
+            if (Id == null)
+            {
+                authenticated = false;
+            }
+            else
+            {
+                authenticated = true;
+            }
+
+            StateHasChanged();
+        }
+    }
     
     private void Start(int difficulty)
     {
@@ -207,15 +223,6 @@ public partial class QuestionAnsweringPage:ComponentBase
         ResetArray();
         
         //pulling the User ID from the session storage
-        string ID = await GetID();
-        if (ID == "0")
-        {
-            authenticated = false;
-        }
-        else
-        {
-            authenticated = true;
-        }
        
         
         //getting the current time 
@@ -256,20 +263,16 @@ public partial class QuestionAnsweringPage:ComponentBase
         
     }
 
-    private async Task<string> GetID()
+    private async Task<string> GetId()
     {
-        string ID;
-        try
+        ProtectedBrowserStorageResult<string> Id = await SessionStorage.GetAsync<string>("Id");
+        if (Id.Success)
         {
-            ProtectedBrowserStorageResult<string> StudentID = await SessionStorage.GetAsync<string>("Id");
-            ID = StudentID.Value;
-            return ID;
+            Console.WriteLine("There is an ID");
+            return Id.Value;
         }
-        catch (Exception e)
-        {
-            ID = "0";
-            return ID;
-        }
+        
+        return null;
     }
 }
 

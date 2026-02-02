@@ -151,7 +151,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
             //creating the SQL query to read the data from the databse 
-            var command = new NpgsqlCommand("SELECT lst.longtermstatid, lst.averagetime, lst.averagescore , lst.completion,  wst.topicname , bst.topicname, lst.averagedifficulty FROM longtermstats lst JOIN topic wst ON wst.topicid = lst.worsttopicid JOIN topic bst ON bst.topicid = lst.besttopicid WHERE lst.longtermstatid LIKE @studentId ; ", connection);
+            var command = new NpgsqlCommand("SELECT lst.longtermstatid, lst.averagetime, lst.averagescore , lst.completion,  wst.topicname , bst.topicname, lst.averagedifficulty FROM longtermstats lst JOIN topic wst ON wst.topicid = lst.worsttopicid JOIN topic bst ON bst.topicid = lst.besttopicid WHERE lst.longtermstatid LIKE @studentid ", connection);
             command.Parameters.AddWithValue("@studentid", studentId + "%");
             
             
@@ -407,7 +407,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
             AddToLongTermStats.Parameters.AddWithValue("@worsttopicid", worstTopicId);
             AddToLongTermStats.Parameters.AddWithValue("@besttopicid", bestTopicId);
             AddToLongTermStats.Parameters.AddWithValue("@completion", completion);
-            AddToLongTermStats.Parameters.AddWithValue("@averagedifficulty", averges[2]);
+            AddToLongTermStats.Parameters.AddWithValue("@averagedifficulty", Convert.ToString(averges[2]));
             
             AddToLongTermStats.ExecuteNonQuery();
         }

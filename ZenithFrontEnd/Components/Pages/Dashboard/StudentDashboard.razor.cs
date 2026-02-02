@@ -1,6 +1,8 @@
 using System.Net.WebSockets;
 using BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Zenith.Models.Account;
 using Zenith.Models.QuestionModels;
 
@@ -28,9 +30,23 @@ public partial class StudentDashboard : ComponentBase
     private IEnumerable<QuestionModels.AnsweredQuestion> CurrentQuestioningRound {get; set;}
     //tracks whether to open the window that will track the most recent round of quesitoning
     private bool displayQuestionRound = false;
-    protected async override Task OnInitializedAsync()
+    private bool authenticated = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Task.Delay(100);
+        
+        if (!firstRender)
+        {
+            return;
+        }
+
+        string Id = await GetId();
+        if (Id == null)
+        {
+            authenticated = false;
+            return;
+        }
+        authenticated = true;
         
         string weeklySummariesAddress = "http://localhost:5148/api/Questions/GetAllweeklySummarys/" + "70";
         HttpResponseMessage summariesResponse = await Http.GetAsync(weeklySummariesAddress);
@@ -54,17 +70,8 @@ public partial class StudentDashboard : ComponentBase
         }
         
         InitialiseGraph();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
         
         
-        if (!firstRender)
-        {
-            return;
-        }
-
         await Task.Delay(500);
 
         await lineChart.InitializeAsync(chartData, lineChartOptions);
@@ -138,6 +145,15 @@ public partial class StudentDashboard : ComponentBase
         StateHasChanged();
     }
     
-    
+    private async Task<string> GetId()
+    {
+        ProtectedBrowserStorageResult<string> Id = await SessionStorage.GetAsync<string>("Id");
+        if (Id.Success)
+        {
+            return Id.Value;
+        }
+        
+        return null;
+    }
     
 }

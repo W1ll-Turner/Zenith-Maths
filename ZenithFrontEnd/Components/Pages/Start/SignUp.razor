@@ -8,10 +8,6 @@
 
 @if (authenticated)
 {
-    <h2>You are already logged in</h2>
-}
-else
-{
     <div class="page signUpPage">
         <h3 class="Title">SignUp</h3>
         @if (Error == true)
@@ -40,9 +36,9 @@ else
             </div>
     
         </form>
-    
-    
     </div>
-
-    
+}
+else
+{
+    <h2>You are already logged in</h2>
 }

@@ -4,34 +4,40 @@
 @inject HttpClient Http
 @page "/RoundComplete"
 
-
-@if (readyToDisplay)
+@if (authenticated)
 {
-    <div class="RoundCompletePage">
+    @if (readyToDisplay)
+    {
+        <div class="RoundCompletePage">
 
-        <h1> Round Complete!!!!! </h1>
-        
-        @foreach (QuestionModels.AnsweredQuestion Question in Questions)
-        {
-            <div class="AnsweredQuestion">
-                <div class="SecondaryInfo">
-                    <p>Answer: @Question.CorrectAnswer</p>
-                    <p>TimeTaken: @Question.TimeTaken</p>
-                    <p>Correct: @Question.Correct</p>
-                </div>
-                
-                <div class="PrimaryInfo">
-                    <p>@Question.Question</p>
-                    <p>Your Answer: @Question.UserAnswer</p>
-                </div>
-            </div>
-        }
+            <h1> Round Complete!!!!! </h1>
 
-    </div>
-    
-    
+            @foreach (QuestionModels.AnsweredQuestion Question in Questions)
+            {
+                <div class="AnsweredQuestion">
+                    <div class="SecondaryInfo">
+                        <p>Answer: @Question.CorrectAnswer</p>
+                        <p>TimeTaken: @Question.TimeTaken</p>
+                        <p>Correct: @Question.Correct</p>
+                    </div>
+
+                    <div class="PrimaryInfo">
+                        <p>@Question.Question</p>
+                        <p>Your Answer: @Question.UserAnswer</p>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+
+    }
+    else
+    {
+        <h1>Loading, Please make sure you have first completed at least one round of questioning</h1>
+    }
 }
 else
 {
-    <h1>Loading</h1>
+    <h1>Please log in</h1>
 }

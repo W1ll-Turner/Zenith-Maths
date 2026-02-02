@@ -1,28 +1,45 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Zenith.Models.QuestionModels;
 
 namespace ZenithFrontEnd.Components.Pages.Questions;
 
 public partial class QuestionSelectionPage : ComponentBase
 {
-    public string Id { get; set; }
+
     private bool authenticated  = false;
     
     protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
     {
         if (firstRender)
         {
-            //getting the ID of the user fromffffnc<string>("Id")).Value ??"";
-            authenticated = Id != "" ;
+            string Id = await GetId();
             Console.WriteLine(Id);
-            
-            
-            
+            if (Id == null)
+            {
+                authenticated = false;
+            }
+            else
+            {
+                authenticated = true;
+            }
+
             StateHasChanged();
         }
     }
 
 
+    
+    private async Task<string> GetId()
+    {
+        ProtectedBrowserStorageResult<string> Id = await SessionStorage.GetAsync<string>("Id");
+        if (Id.Success)
+        {
+            return Id.Value;
+        }
+        
+        return null;
+    }
 
 
 
@@ -58,8 +75,7 @@ public partial class QuestionSelectionPage : ComponentBase
     {
         NavigationManager.NavigateTo($"/Questions/collectingterms");
     }
-    
-    
+
     
     
     

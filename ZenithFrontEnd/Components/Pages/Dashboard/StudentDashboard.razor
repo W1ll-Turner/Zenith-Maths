@@ -1,108 +1,113 @@
-@using BlazorBootstrap
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@using Zenith.Contracts.Request.Account
-@using Zenith.Models.Account
 @using Zenith.Models.QuestionModels
 @inject ProtectedSessionStorage SessionStorage
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @page "/Dashboard"
 
-@if (FinishedRendering)
+
+@if (authenticated)
 {
-    
 
-    <div class="StudentDashboard">
-        <div class="UpperSection">
-            <div class="ProgressGraph">
-                
-                <h2>Progress</h2>
+    @if (FinishedRendering)
+    {
 
-                <div class="container-fluid overflow-x-auto">
-                    <LineChart @ref="lineChart" Width="700"/>
+
+        <div class="StudentDashboard">
+            <div class="UpperSection">
+                <div class="ProgressGraph">
+
+                    <h2>Progress</h2>
+
+                    <div class="container-fluid overflow-x-auto">
+                        <LineChart @ref="lineChart" Width="700"/>
+                    </div>
                 </div>
+
+
+                <div class="RecentRoundsOfQuestioning">
+                    <h2>Recent Question Rounds</h2>
+                    @for (int i = 0; i < QuestioningRounds.Count; i++)
+                    {
+                        var index = i;
+
+                        <div class="CompletedQuestionRound">
+                            <p>Score: @QuestioningRounds[i].score</p>
+                            <p>Topic: @QuestioningRounds[i].topic</p>
+                            <p>Difficulty: @QuestioningRounds[i].difficulty</p>
+                            <p>AverageTime: @QuestioningRounds[i].averageTime</p>
+                            <button @onclick="() => DisplayRoundOfQuestioning(index)">View</button>
+                        </div>
+
+                    }
+
+
+                </div>
+
             </div>
 
 
-            <div class="RecentRoundsOfQuestioning">
-                <h2>Recent Question Rounds</h2>
-                @for(int i =0; i < QuestioningRounds.Count; i++)
-                {
-                    var index = i;
-                    
-                    <div class="CompletedQuestionRound">
-                        <p>Score: @QuestioningRounds[i].score</p>
-                        <p>Topic: @QuestioningRounds[i].topic</p>
-                        <p>Difficulty: @QuestioningRounds[i].difficulty</p>
-                        <p>AverageTime: @QuestioningRounds[i].averageTime</p>
-                        <button @onclick="() => DisplayRoundOfQuestioning(index)">View</button>
+
+            <div class="LowerSection">
+                <div class="StatButtons">
+                    <div class="StatButton">
+                        <p>Best Topic: @MostRecentStats.bestTopic</p>
+                    </div>
+                    <div class="StatButton">
+                        <p>Average Time: @MostRecentStats.averageTime </p>
+                    </div>
+                    <div class="StatButton">
+                        <p>Current Difficulty: @MostRecentStats.difficulty</p>
+                    </div>
+                    <div class="StatButton">
+                        <p>Worst Topic: @MostRecentStats.worstTopic</p>
+                    </div>
+                    <div class="StatButton">
+                        <p>Average Score: @MostRecentStats.averageScore</p>
+                    </div>
+                    <div class="StatButton">
+                        <p>Current Completion: @MostRecentStats.completion</p>
                     </div>
 
+                </div>
+                <div >
+                    <button @onclick="NavigateToSelection" class="ContinueButton">Continue to Questions</button>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        @if (displayQuestionRound)
+        {
+            <div class="QuestionRoundDisplay">
+                <button @onclick="Close">Close</button>
+                @foreach (QuestionModels.AnsweredQuestion Question in CurrentQuestioningRound)
+                {
+                    <div class="AnsweredQuestion">
+                        <div class="SecondaryInfo">
+                            <p>Answer: @Question.CorrectAnswer</p>
+                            <p>TimeTaken: @Question.TimeTaken</p>
+                            <p>Correct: @Question.Correct</p>
+                        </div>
+
+                        <div class="PrimaryInfo">
+                            <p>@Question.Question</p>
+                            <p>Your Answer: @Question.UserAnswer</p>
+                        </div>
+                    </div>
                 }
 
-
             </div>
-
-        </div>
-
-
-
-        <div class="LowerSection">
-            <div class="StatButtons">
-                <div class="StatButton">
-                    <p>Best Topic: @MostRecentStats.bestTopic</p>
-                </div>
-                <div class="StatButton">
-                    <p>Average Time: @MostRecentStats.averageTime </p>
-                </div>
-                <div class="StatButton">
-                    <p>Current Difficulty: @MostRecentStats.difficulty</p>
-                </div>
-                <div class="StatButton">
-                    <p>Worst Topic: @MostRecentStats.worstTopic</p> 
-                </div>
-                <div class="StatButton">
-                    <p>Average Score: @MostRecentStats.averageScore</p>
-                </div>
-                <div class="StatButton">
-                    <p>Current Completion: @MostRecentStats.completion</p>
-                </div>
-                
-            </div>
-            <div >
-                <button @onclick="NavigateToSelection " class="ContinueButton">Continue to Questions</button>
-            </div>
-
-
-        </div>
-
-    </div>
-    
-    @if (displayQuestionRound)
+        }
+    }
+    else
     {
-        <div  class="QuestionRoundDisplay">
-            <button @onclick="Close" >Close</button>
-            @foreach (QuestionModels.AnsweredQuestion Question in CurrentQuestioningRound)
-            {
-                <div class="AnsweredQuestion">
-                    <div class="SecondaryInfo">
-                        <p>Answer: @Question.CorrectAnswer</p>
-                        <p>TimeTaken: @Question.TimeTaken</p>
-                        <p>Correct: @Question.Correct</p>
-                    </div>
-
-                    <div class="PrimaryInfo">
-                        <p>@Question.Question</p>
-                        <p>Your Answer: @Question.UserAnswer</p>
-                    </div>
-                </div>
-            }
-
-        </div>
+        <h1>Loading??</h1>
     }
 }
 else
 {
-    <h1>Loading??</h1>
+    <h1>Please log in</h1>
 }
-

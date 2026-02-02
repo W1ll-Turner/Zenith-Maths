@@ -17,6 +17,7 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
 
     private async Task Submit()
     {
+        Console.WriteLine("BVutton pressed");
         string usernamePattern = "[a-zA-Z_0-9]+";   //Regex to match a Username, (Any combination of a-z 0-9 with an underscore, no spaces)
         string passwordPattern = "[a-zA-Z0-9]+";// regex to match a Password. This is any combination of a-z 0-9 however with no spaces or underscores
         
@@ -49,6 +50,7 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
             }
             else
             {
+                Console.WriteLine("Log in failed ");
                 Error = true; // username or password were incorrect
             }
 
@@ -60,6 +62,7 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         }
         else //This will display the message that they have given an invalid username and password
         {
+            Console.WriteLine("Log in failed ");
             Error = true;
             return;
         }
@@ -67,33 +70,37 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
     }
 
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
     {
-        Task<string> Id = GetID();
-        string id = Id.Result;
-        if (id == "0")
+        if (firstRender)
         {
-            return base.OnInitializedAsync();
+            string Id = await GetId();
+            Console.WriteLine(Id);
+            if (Id == null)
+            {
+                authenticated = false;
+            }
+            else
+            {
+                authenticated = true;
+            }
+
+            StateHasChanged();
         }
-        authenticated = true;
-        return base.OnInitializedAsync();
-        
     }
 
-    private async Task<string> GetID()
+    private async Task<string> GetId()
     {
-        string ID;
-        try
+        ProtectedBrowserStorageResult<string> Id = await SessionStorage.GetAsync<string>("Id");
+        if (Id.Success)
         {
-            ProtectedBrowserStorageResult<string> StudentID = await SessionStorage.GetAsync<string>("Id");
-            ID = StudentID.Value;
-            return ID;
+            return Id.Value;
         }
-        catch (Exception e)
+        else
         {
-            ID = "0";
-            return ID;
+            return null;
         }
+        
     }
     
     

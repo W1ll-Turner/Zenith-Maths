@@ -91,34 +91,39 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
 
     }
     
-    
-    protected override Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
     {
-        Task<string> Id = GetID();
-        string id = Id.Result;
-        if (id == "0")
+        if (firstRender)
         {
-            return base.OnInitializedAsync();
+            string Id = await GetId();
+            Console.WriteLine(Id);
+            if (Id == null)
+            {
+                authenticated = false;
+            }
+            else
+            {
+                authenticated = true;
+            }
+
+            StateHasChanged();
         }
-        authenticated = true;
-        return base.OnInitializedAsync();
-        
     }
 
-    private async Task<string> GetID()
+    
+
+    private async Task<string> GetId()
     {
-        string ID;
-        try
+        ProtectedBrowserStorageResult<string> Id = await SessionStorage.GetAsync<string>("Id");
+        if (Id.Success)
         {
-            ProtectedBrowserStorageResult<string> StudentID = await SessionStorage.GetAsync<string>("Id");
-            ID = StudentID.Value;
-            return ID;
+            return Id.Value;
         }
-        catch (Exception e)
+        else
         {
-            ID = "0";
-            return ID;
+            return null;
         }
+        
     }
 
 }
