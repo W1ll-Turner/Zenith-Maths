@@ -235,7 +235,7 @@ public partial class QuestionAnsweringPage:ComponentBase
        QuestioningRequests.CompletedQuestionRoundRequest request = new QuestioningRequests.CompletedQuestionRoundRequest()
        {
            Difficulty = 1,
-           UserId = "820",
+           UserId = UserId,
            Topic = "addition",
            TimeCompleted = time,
            questions =  AnsweredQuestions

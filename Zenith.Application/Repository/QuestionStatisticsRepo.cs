@@ -195,22 +195,27 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
             studentId = studentId.Trim();
             Console.WriteLine(studentId);
             //This will get the shorterm ID of all the rounds of queastiopning recently answered by that students 
-            var command = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid ORDER BY shorttermid DESC;", connection);
+            var command = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid ORDER BY shorttermid DESC LIMIT 1;", connection);
             command.Parameters.AddWithValue("@studentid", studentId);
 
             string Id = "";
             //Getting only the most recent shorttermt id 
             using (var reader = await command.ExecuteReaderAsync())
             {
-                while (await reader.ReadAsync())
+                try
                 {
+                    reader.Read();
                     Id = reader.GetString(0);
-                    break;
+                }catch(Exception ex)
+                {
+                    return null;
                 }
                 
             }
 
             Console.WriteLine("got short term ID");
+            Console.WriteLine(Id);
+            Console.WriteLine("that was the ID");
             
             return await GetRoundOfQuestioning(Id);
             

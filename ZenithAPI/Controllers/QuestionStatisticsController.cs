@@ -66,6 +66,11 @@ public class QuestionStatisticsController : ControllerBase
         Console.WriteLine("received request");
         CompletedRoundOfQuestioning questionRound= await _questionStatisticsRepo.GetMostRecentQuestionRound(Id);
 
+        if (questionRound == null)
+        {
+            return NotFound();
+        }
+        
         QuestionStatisticResponses.MostRecentQuestionRoundResponse response = new QuestionStatisticResponses.MostRecentQuestionRoundResponse()
             {
                 averageTime = Convert.ToString(questionRound.averageTime),
