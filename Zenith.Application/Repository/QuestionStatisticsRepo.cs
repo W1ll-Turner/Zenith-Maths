@@ -1,5 +1,3 @@
-using System.Collections;
-using Microsoft.AspNetCore.Http;
 using Npgsql;
 using Zenith.Application.Database;
 using Zenith.Application.Hashing;
@@ -8,69 +6,68 @@ using Zenith.Models.QuestionModels;
 using Zenith.Models.Account;
 namespace Zenith.Application.Repository;
 
+//inheriting from the Interface so the class can be properly implemted
 public class QuestionStatisticsRepo : IQuestionStatisticsRepo
 {
     private readonly IDBConnectionFactory _dbConnection;
-    private readonly IHashing _Hashing;
-    private readonly IStatsCalculation _StatsCalculation;
-    public QuestionStatisticsRepo(IDBConnectionFactory dbConnection, IHashing Hashing, IStatsCalculation statsCalculation) //loosely coupling the databse connection system and the hasing algorithms 
+    private readonly IHashing _hashing;
+    private readonly IStatsCalculation _statsCalculation;
+    
+    //loosely coupling the required modules, Hashing, stats calculation and dbconnection
+    public QuestionStatisticsRepo(IDBConnectionFactory dbConnection, IHashing hashing, IStatsCalculation statsCalculation) 
     {
         _dbConnection = dbConnection;
-        _Hashing = Hashing;
-        _StatsCalculation = statsCalculation;
+        _hashing = hashing;
+        _statsCalculation = statsCalculation;
     }
     
+    //this will add rounds of questioning the user has just completed to the rounds 
     public async Task<bool> AddQuestioningRound(IEnumerable<QuestionModels.AnsweredQuestion> questions, QuestionModels.RoundInfo Statistics, string studentId) 
     {
-        //this will add all the information about a round of questionsing to the required tables 
-        //needs to macth the topic IDs btw
+        //putting the while method into expception handling so that if a quiery fails a valid retrun is still given 
         try
         {
+            //connecting to the database 
             await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
             {
+                //This query will add each question from the request to the questionbank
+                var addQuestionsCommand = new NpgsqlCommand("INSERT INTO questionbank(roundid, question, answer, useranswer, correct, timetaken ) VALUES (@roundid, @question, @answer, @useranswer, @correct, @timetaken)", connection);
                 
-                //paramertarised SQL query which will add each question from the round to the question bank table
-                var AddQuestionsCommand = new NpgsqlCommand("INSERT INTO questionbank(roundid, question, answer, useranswer, correct, timetaken ) VALUES (@roundid, @question, @answer, @useranswer, @correct, @timetaken)", connection);
+                //getting the primary key for both tables
+                string shortTermId = await _hashing.GenerateShortTermStatsId(studentId);
                 
-                //Getting the short terms ID so that the priimary key for each entry in the question bank can be generated 
-                string ShortTermId = await _Hashing.GenerateShortTermStatsID(studentId); //getting the shortterm id hash for this entry in the table
-                //this will keep trakc of which question is going to be put into the solution 
+                //this will keep track of which question is going to be put into the solution 
                 int questionNum = 1;
-                Console.WriteLine("Attempting to insert into question bank");
-                
-                //This will add each question in the AnsweredQuestion Stack that has been given by the front end to the databsde,
+               
+                //This loop will add each indiviual question to the question bank table
                 foreach (QuestionModels.AnsweredQuestion currentQuestion in questions) 
                 {
-                    Console.WriteLine("Trying query"); 
-                    //clearing the paramters out from the query so that when the next quesion is added no paramters conflict 
-                    AddQuestionsCommand.Parameters.Clear(); 
-                   
-
-                    string roundId = ShortTermId + "#" + questionNum;
+                    //clearing the paramters out from the query so that when the next question is added, no parameters conflict 
+                    addQuestionsCommand.Parameters.Clear(); 
+                    
+                    //creating the primary key for the table 
+                    string roundId = shortTermId + "#" + questionNum;
                     questionNum++;
-                    //dynamically assigning the querys parameters 
-                    AddQuestionsCommand.Parameters.AddWithValue("@roundid", roundId);
-                    AddQuestionsCommand.Parameters.AddWithValue("@question", currentQuestion.Question);
-                    AddQuestionsCommand.Parameters.AddWithValue("@answer", currentQuestion.CorrectAnswer);
-                    AddQuestionsCommand.Parameters.AddWithValue("@useranswer", currentQuestion.UserAnswer);
-                    AddQuestionsCommand.Parameters.AddWithValue("@correct", currentQuestion.Correct);
-                    AddQuestionsCommand.Parameters.AddWithValue("@timetaken", currentQuestion.TimeTaken);
+                    
+                    //dynamically assigning the query's parameters 
+                    addQuestionsCommand.Parameters.AddWithValue("@roundid", roundId);
+                    addQuestionsCommand.Parameters.AddWithValue("@question", currentQuestion.Question);
+                    addQuestionsCommand.Parameters.AddWithValue("@answer", currentQuestion.CorrectAnswer);
+                    addQuestionsCommand.Parameters.AddWithValue("@useranswer", currentQuestion.UserAnswer);
+                    addQuestionsCommand.Parameters.AddWithValue("@correct", currentQuestion.Correct);
+                    addQuestionsCommand.Parameters.AddWithValue("@timetaken", currentQuestion.TimeTaken);
 
-
-                    Console.WriteLine("parameters intitialised");
-                    await AddQuestionsCommand.ExecuteNonQueryAsync();
+                    //executing the query
+                    await addQuestionsCommand.ExecuteNonQueryAsync();
                 }
-                
-                //getting the summary statistics 
-                //calculating the avergae time 
+                //calculating the average time 
                 double totalTime = 0;
                 foreach (QuestionModels.AnsweredQuestion question in questions)
                 {
                     totalTime += question.TimeTaken;
                 }
                 double averageTime = totalTime / questionNum;
-                
-                //calculating the score 
+                //calculating the average score 
                 int score = 0;
                 foreach (QuestionModels.AnsweredQuestion question in questions)
                 {
@@ -79,74 +76,80 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                         score++;
                     }
                 }
+                //cross parameterised SQL query working to add the information to the shortterm stats table, works acrss the topic and shorttermstats table 
+                var addStatistcsCommand = new NpgsqlCommand("INSERT INTO shorttermstats(shorttermid, averagetime, score, topicid, difficulty, timecompleted) SELECT @shorttermid, @averagetime, @score, topicid , @difficulty, @timecompleted FROM topic WHERE topicname = 'addition'", connection);
+                //assgingin the parameters 
+                addStatistcsCommand.Parameters.AddWithValue("@shorttermid", shortTermId);
+                addStatistcsCommand.Parameters.AddWithValue("@averagetime", averageTime);
+                addStatistcsCommand.Parameters.AddWithValue("@score", score);
+                addStatistcsCommand.Parameters.AddWithValue("@difficulty", Statistics.Difficulty);
+                addStatistcsCommand.Parameters.AddWithValue("@timecompleted", Statistics.TimeCompleted);
+                //executing the query 
+                await addStatistcsCommand.ExecuteNonQueryAsync();
                 
-                
-                //adding the summary statistics for the round to the table  
-                //paramertised SQL query working across the shorttermstats table and the topics table to store the relevant data
-                var AddStatistcsCommand = new NpgsqlCommand("INSERT INTO shorttermstats(shorttermid, averagetime, score, topicid, difficulty, timecompleted) SELECT @shorttermid, @averagetime, @score, topicid , @difficulty, @timecompleted FROM topic WHERE topicname = 'addition'", connection);
-                AddStatistcsCommand.Parameters.AddWithValue("@shorttermid", ShortTermId);
-                AddStatistcsCommand.Parameters.AddWithValue("@averagetime", averageTime);
-                AddStatistcsCommand.Parameters.AddWithValue("@score", score);
-                AddStatistcsCommand.Parameters.AddWithValue("@difficulty", Statistics.Difficulty);
-                AddStatistcsCommand.Parameters.AddWithValue("@timecompleted", Statistics.TimeCompleted);
-                await AddStatistcsCommand.ExecuteNonQueryAsync();
-                
-                //adding this relation to the shortterterms stast bridge so it can be accessed properly later
-                var AddRelationCommand = new NpgsqlCommand("INSERT INTO shorttermstatsbridge(studentid, shorttermid) VALUES (@studentid, @shorttermid)", connection);
-                AddRelationCommand.Parameters.AddWithValue("@studentid", studentId);
-                AddRelationCommand.Parameters.AddWithValue("@shorttermid", ShortTermId);
-                await AddRelationCommand.ExecuteNonQueryAsync();
+                //adding the relation to the shortterterms stast bridge so it can be accessed properly later
+                var addRelationCommand = new NpgsqlCommand("INSERT INTO shorttermstatsbridge(studentid, shorttermid) VALUES (@studentid, @shorttermid)", connection);
+                //assigning parameters
+                addRelationCommand.Parameters.AddWithValue("@studentid", studentId);
+                addRelationCommand.Parameters.AddWithValue("@shorttermid", shortTermId);
+                //executing query
+                await addRelationCommand.ExecuteNonQueryAsync();
             }
             return true;
-
         }
-        catch (Exception ex) // excpetion handling the qury, if somehting goes wrong it will return false to say it did not work
+        catch (Exception ex) 
         {
-            Console.WriteLine(ex);
+            //writing the messsage so it can be used for review
             Console.WriteLine(ex.Message);
-            Console.WriteLine("repo failed");
             return false;
         }
-        
-        
-        
     }
 
+    //this will get all of the recent question rounds answered by a particular user
     public async Task<IEnumerable<CompletedRoundOfQuestioning>> GetAllQuestionRounds(string studentId)
     {
-        //needs to empty out the short term stats table and the question bank table 
-        List<string> Keys = new List<string>();
+        //initialsing a list of primary keys that will be used to access the data 
+        List<string> keys = new List<string>();
+        
+        //intitialisng databse conneciton 
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            var GetKeysCommand = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid", connection);
-            GetKeysCommand.Parameters.AddWithValue("@studentid", studentId);
-            using (var reader = await GetKeysCommand.ExecuteReaderAsync())
+            //this query will get all of the keys related to the user's recent round of questions that have been answered
+            var getKeysCommand = new NpgsqlCommand("SELECT shorttermid FROM shorttermstatsbridge WHERE studentid = @studentid", connection);
+            //adding parameters 
+            getKeysCommand.Parameters.AddWithValue("@studentid", studentId);
+            //executing the command and reading all the keys that have been returned
+            using (var reader = await getKeysCommand.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    Keys.Add(reader.GetString(0));
+                    keys.Add(reader.GetString(0));
+                }
+                //if no keys where found the method should stop running
+                if (keys.Count == 0)
+                {
+                    return null;
                 }
             }
-
         }
-        
+        //initialsing a list of question rounds 
         List<CompletedRoundOfQuestioning> completedRounds = new List<CompletedRoundOfQuestioning>();
-        foreach (var key in Keys)
+        //will execute the method to get a round of questioning for each key in the list
+        foreach (var key in keys)
         {
+            //adding a round of questioing to the list 
             completedRounds.Add(await GetRoundOfQuestioning(key));
         }
         
-        
+        //Serialising to an IEnumerable for easier data transmission
         IEnumerable<CompletedRoundOfQuestioning> AllQuestioningRounds = completedRounds;
         return AllQuestioningRounds;
         
     }
-
     
     //This method will be used to get all of the long terms statistics to the user and send them to the dashboard so that they can be displayed 
     public async Task<IEnumerable<WeeklySummary>> GetAllLongTermStats(string studentId)
     {
-        
         //connecting to the database
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
@@ -373,7 +376,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         Dictionary<int, TopicAverages> topicAverages = new Dictionary<int, TopicAverages>();
         foreach (int key in topicData.Keys)
         {
-            TopicAverages topicAverage =  await _StatsCalculation.CalculateTopicAverages(topicData[key]);
+            TopicAverages topicAverage =  await _statsCalculation.CalculateTopicAverages(topicData[key]);
             
             topicAverages.Add(key , topicAverage);
         }
@@ -382,25 +385,25 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
         Dictionary<int, double>completionResults = new Dictionary<int, double>();
         foreach (int key in topicAverages.Keys)
         {
-            completionResults.Add(key, await _StatsCalculation.CalculateTopicCompletion(topicAverages[key]));
+            completionResults.Add(key, await _statsCalculation.CalculateTopicCompletion(topicAverages[key]));
             
         }
 
         double CurrentCompletion = await GetCurrentCompletion(ID);
         
         //initialising the variables that will be added to the database  
-        double Newcompletion = await _StatsCalculation.CalclulateOverallCompletion(completionResults);
-        double completion = await _StatsCalculation.CompoundCompletion(CurrentCompletion, Newcompletion);
-        int worstTopicId = await _StatsCalculation.GetWorstTopicID(completionResults);
-        int bestTopicId = await _StatsCalculation.GetBestTopicID(completionResults);
+        double Newcompletion = await _statsCalculation.CalclulateOverallCompletion(completionResults);
+        double completion = await _statsCalculation.CompoundCompletion(CurrentCompletion, Newcompletion);
+        int worstTopicId = await _statsCalculation.GetWorstTopicID(completionResults);
+        int bestTopicId = await _statsCalculation.GetBestTopicID(completionResults);
         
         
         //collecting all of the topic averages into one single average to be stored in the datbase
-        double[] averges = await _StatsCalculation.CalculateOverallAverageTimeAndScore(topicAverages);
+        double[] averges = await _statsCalculation.CalculateOverallAverageTimeAndScore(topicAverages);
         
         
         //getting the primary key for the table 
-        string longTermsStatsId = await _Hashing.GenerateLongTermStatsID(ID);
+        string longTermsStatsId = await _hashing.GenerateLongTermStatsId(ID);
         
         //opening the databse connection so the entry can be added to the table 
         using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())

@@ -4,6 +4,7 @@ using Zenith.Application.Database;
 
 namespace Zenith.Application.Hashing;
 
+//inheriting from the interface so that it can be properly implemented
 public class Hashing : IHashing
 {
     private readonly IDBConnectionFactory _dbConnection;
@@ -13,38 +14,42 @@ public class Hashing : IHashing
         _dbConnection = dbConnection;
     }
     
-    public async Task<string> GenerateShortTermStatsID(string StudentId)
+    //this methdod generates the hash for the shorttermid table 
+    public async Task<string> GenerateShortTermStatsId(string studentId)
     {
-        Console.WriteLine("starting to hash");
-        int Entries = 1;
+        int entries;
+        //creating database connection, automatically closes when statement ends
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
-            Console.WriteLine("trying to run the qury ");
-            var command = new NpgsqlCommand("SELECT COUNT(*) FROM shorttermstatsbridge WHERE Studentid = @StudentId", connection); //this will get the number of entries in the shorttermstst bridge table which the current student has
-            command.Parameters.AddWithValue("@StudentId", StudentId);
+            //Query to get the number of entries already linked to that student ID in the table
+            var command = new NpgsqlCommand("SELECT COUNT(*) FROM shorttermstatsbridge WHERE Studentid = @StudentId", connection);
+            command.Parameters.AddWithValue("@StudentId", studentId); //adding queriy paramters
 
-            await using (var reader = await command.ExecuteReaderAsync()) //extracting the value the query and incrementing 
+            //extracting the value the query and incrementing 
+            await using (var reader = await command.ExecuteReaderAsync())  
             {
-                reader.ReadAsync();
-                Entries = reader.GetInt32(0) + 1; 
-                
+                await reader.ReadAsync();
+                entries = reader.GetInt32(0) + 1; //adding 1 so it can be used for the hash
             }
         }
-        
-        string Hash = StudentId + "#" + Entries.ToString();  //making the hash by putting the student id and number of entries together  
-        return Hash;
+        //making the hash by putting the student id and number of entries together 
+        string hash = studentId + "#" + entries.ToString();   
+        return hash;
     }
     
-
-    public async Task<string> GenerateLongTermStatsID(string StudentId) //will generate the primary key for the LongTermStatistics table 
+    //this will generate the hash for the long terms stats tabele
+    public async Task<string> GenerateLongTermStatsId(string studentId) 
     {
-        Calendar Calendar = CultureInfo.InvariantCulture.Calendar; //instantiating the calendar class from the inbuilt collections
-        DateTime date = DateTime.Today; //getting today's date
+        //getting today's date 
+        Calendar calendar = CultureInfo.InvariantCulture.Calendar; 
+        DateTime date = DateTime.Today; 
         int year = date.Year;  
-        int WeekNum = Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, date.DayOfWeek); //getting the number of which the week in the week in year resides: if it is 1st of january it is week 1
+        
+        //getting the week number 
+        int weekNum = calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, date.DayOfWeek); 
 
-        string Hash = StudentId + "#"  + WeekNum + "#" + year; //Putting the hash together
-        return Hash;
-
+        //Putting the hash together
+        string hash = studentId + "#"  + weekNum + "#" + year; 
+        return hash;
     }
 }
