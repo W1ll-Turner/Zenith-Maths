@@ -1,13 +1,11 @@
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Zenith.Application.Repository;
 using Zenith.Contracts.Request;
-using Zenith.Contracts.Request.Account;
 using Zenith.Models.Account;
 using ZenithAPI.ContractMapping;
 using LoginRequest = Zenith.Contracts.Request.LoginRequest;
-
 namespace ZenithAPI.Controllers;
+
 [ApiController]
 [Route("api/Account")]
 public class AccountController : ControllerBase //inhertiance from the ASP.NET Framework to enable the controller functionalilty 
@@ -20,7 +18,6 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
         _accountRepo = accountRepo;
     }
 
-
     [HttpPost("SignUp")]
     public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
     {
@@ -30,7 +27,6 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
         bool success = await _accountRepo.CreateAccount(account); 
         
         return success ? Ok() : BadRequest();
-
     }
 
     [HttpPost("Login")]
@@ -47,11 +43,5 @@ public class AccountController : ControllerBase //inhertiance from the ASP.NET F
             var s = id.ToString();
             return Ok(s);
         }
-
-    
-
     }
-    
-    
-    
 }

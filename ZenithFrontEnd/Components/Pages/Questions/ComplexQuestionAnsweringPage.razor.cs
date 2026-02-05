@@ -9,23 +9,18 @@ namespace ZenithFrontEnd.Components.Pages.Questions;
 
 public partial class ComplexQuestionAnsweringPage : ComponentBase
 {
-    [Parameter]
-    public int Difficulty { get; set; }
-    
+    private int Difficulty { get; set; }
     [Parameter]
     public string Topic { get; set; } = null!;
     private string QuestionText { get; set; } = "";
     private string UserAnswer { get; set; } = "";
     private Stopwatch TimeToAnswer { get; set; } = new Stopwatch();
-    
     private QuestionModels.QuestionStack<string> Questions { get; set; } = new QuestionModels.QuestionStack<string>();
     private IQuestion<string> CurrentQuestion { get; set; }
-    private List<QuestionModels.AnsweredQuestion> AnsweredQuestions = new List<QuestionModels.AnsweredQuestion>(); 
-    public Dictionary<string, Func<bool>> TopicsMapper { get; set; }
-    
-    public bool StopQuestioning { get; set; } = false;
-
-    public int[] CorrectAnswers { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    private List<QuestionModels.AnsweredQuestion> AnsweredQuestions = new List<QuestionModels.AnsweredQuestion>();
+    private Dictionary<string, Func<bool>> TopicsMapper { get; set; }
+    private bool StopQuestioning { get; set; } = false;
+    private int[] CorrectAnswers { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     private int questionNum = 0;
     private bool authenticated = false;
     private string StudentId;
@@ -44,15 +39,15 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
             {
                 authenticated = true;
             }
-
             StateHasChanged();
         }
     }
     
-    private void Start()
+    private void Start(int difficulty)
     {
+        Difficulty = difficulty;
+        
         StopQuestioning = true;
-        Console.WriteLine("started");
         //this dictionary maps the topic to the genric methods that will generate the questions, This is dependant on a topic
         TopicsMapper = new Dictionary<string, Func<bool>>()
         {
@@ -61,34 +56,25 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
             
         };
         
-        Topic = "quadratic";
+        //attempting to intilaise the stack of questions if the topic parameter is present in the route 
         try
         {
             TopicsMapper.TryGetValue(Topic, out Func<bool>? intialiseStack);
-            Console.WriteLine("dictionary one worked initilaisng the stack");
             intialiseStack!();
-            return;
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            return;
-            
         }
     }
 
     private bool InitialiseQuestionStack<TQuestion>() where TQuestion : IQuestion<string>, new()
     {
-        
-        Difficulty = 2;
-        
-        
         QuestionModels.QuestionStack<string> questions = new QuestionModels.QuestionStack<string>();
 
         //genrating 10 quesitons and pushing them onto the stack
         for (int i = 0; i < 10; i++)
         {
-
             TQuestion question = new TQuestion();
             question.Difficulty = Difficulty;
             question.Generate();
@@ -115,21 +101,17 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
         //stopping the timer 
         TimeToAnswer.Stop(); 
         
-        //initialisng a vairable to keep track of if the user got it right or not 
-       
-        
-        //add some code to chekc the answers
+        //checking the answwer updating the UI elements to reflect that 
         bool answerCorrect = CurrentQuestion.CheckAnswer(UserAnswer);
         CorrectAnswers[questionNum] = answerCorrect? 1:2;
         questionNum++;
         StateHasChanged();
         NextQuestion(answerCorrect);
-        
-        
     }
     
     private void NextQuestion(bool AnswerCorrect)
     {
+        //adding the answered question to the stack 
         QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion
         {
             Correct = AnswerCorrect,
@@ -139,19 +121,16 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
             TimeTaken = TimeToAnswer.ElapsedMilliseconds/1000.0 //converting the milliseconds into seconds 
         };
         AnsweredQuestions.Add(answeredQuestion);
-        TimeToAnswer.Reset();
+        TimeToAnswer.Reset(); //reseting stopwatch 
         
+        //checkign whether to stop or carrying asking questions
         if (Questions.IsEmpty()) 
         {
-
-            Console.WriteLine("Questions stack is now empty");
             StopQuestioning = false;
             SendResultsToAPI(); //round of questioning has finshed time, send results to API then move user onto the summary screen 
-
         }
         else
         {
-            Console.WriteLine("Starting the Question Sequence");   
             QuestionSequence();
         }
     }
@@ -161,44 +140,35 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
         //resetting the array keeping track of the user's answers 
         ResetArray();
         
-        //pulling the User ID from the session storage
-        
         //getting the current time 
         DateTime temporaryTimeHolder = DateTime.Now;
         string time = temporaryTimeHolder.ToString("HH:mm:ss");
         
-        //putting the list of answered questions into an IEnumerbale 
-        
-        //intitialising the request object to be sent to the API putting fake test data in for now 
+        //intitialising the request object to be sent to the API 
         QuestioningRequests.CompletedQuestionRoundRequest request = new QuestioningRequests.CompletedQuestionRoundRequest()
         {
-            Difficulty = 1,
+            Difficulty = Difficulty,
             UserId = StudentId,
-            Topic = "addition",
+            Topic = Topic,
             TimeCompleted = time,
             questions =  AnsweredQuestions
         };
-       
-       
-       
+        
         //sending the request to the API to store the round of questioning in the database
         Console.WriteLine("Trying to send therequest");
        
         HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/AddShortTermData", request);
  
         NavigationManager.NavigateTo("/RoundComplete");
-        
-
     }
     
-    private void ResetArray()
+    private void ResetArray()//this resets the array responsibel for tracking answers in the UI
     {
         for (int i = 0; i < 10; i++)
         {
             CorrectAnswers[i] = 0;
         }
         questionNum = 0;
-        
     }
 
     private async Task<string> GetId()
@@ -209,9 +179,7 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
             Console.WriteLine("There is an ID");
             return Id.Value;
         }
-        
         return null;
     }
-    
 }
 

@@ -13,7 +13,7 @@ public static class ApplicationServicesCollectionExtensions //This is used to in
     {
         services.AddSingleton<IAccountRepo, AccountRepo>(); //adding the account repository
         services.AddSingleton<IQuestionStatisticsRepo, QuestionStatisticsRepo>(); //adding the question statistics repository 
-        services.AddSingleton<IStatsCalculation, StatsCalculation.StatsCalculation>();
+        services.AddSingleton<IStatsCalculation, StatsCalculation.StatsCalculation>();//adding the stats calculation services
         return services;
     }
     //adding the database to the services so it can be loosely coupled to the project

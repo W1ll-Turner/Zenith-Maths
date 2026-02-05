@@ -14,13 +14,4 @@ public class QuestioningRequests
         public List<QuestionModels.AnsweredQuestion> questions { get; set; }
         
     }
-
-    public class GetMostRecentQuestionRoundRequest
-    {
-        public string UserId { get; init; }
-        
-    }
-    
-    
-    
 }

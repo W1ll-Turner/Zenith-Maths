@@ -7,10 +7,6 @@
 
 @if (authenticated)
 {
-
-
-
-
     <div class="QuestionComponent">
         <h1>Welcome to the Question page</h1>
 
@@ -45,7 +41,6 @@
 
                             </div>
                         }
-
                     }
 
                 </div>
@@ -69,8 +64,7 @@
         else
         {
             <h2>Select your difficulty</h2>
-
-
+            
             <button @onclick="() => Start(1)">1</button>
             <button @onclick="() => Start(2)">2</button>
             <button @onclick="() => Start(3)">3</button>

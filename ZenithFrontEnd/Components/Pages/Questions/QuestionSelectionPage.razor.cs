@@ -9,7 +9,7 @@ public partial class QuestionSelectionPage : ComponentBase
 
     private bool authenticated  = false;
     
-    protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
+    protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make surte the user is loggen in before moving on
     {
         if (firstRender)
         {

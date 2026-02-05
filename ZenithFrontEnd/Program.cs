@@ -19,8 +19,6 @@ public class Program
         builder.Services.AddHttpClient(); //used for requestin the API 
         builder.Services.AddBlazoredLocalStorage(); // used for sotring the authorsation token in the browser storage
         builder.Services.AddBlazorBootstrap();
-
-        
         
         var app = builder.Build();
 

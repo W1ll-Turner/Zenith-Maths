@@ -1,7 +1,4 @@
 namespace Zenith.Models.Account;
-
-
-    
 public class shorttermsstatsinfo
 {
     public double averagetime { get; set; }

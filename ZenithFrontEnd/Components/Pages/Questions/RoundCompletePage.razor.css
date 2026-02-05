@@ -1,5 +1,4 @@
 .AnsweredQuestion{
-    
     border: 1px solid black;
     display : flex;
     flex-direction: column;
@@ -24,7 +23,6 @@
     display:grid;
     grid-template-columns: 1fr 1fr 1fr;
     border-bottom: 1px solid black;
-    
 }
 
 .PrimaryInfo{
@@ -35,6 +33,4 @@
     min-height: 5vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    
-    
 }

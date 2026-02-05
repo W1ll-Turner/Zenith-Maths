@@ -2,21 +2,15 @@
     width: 95%;
     height: 95%;
     border: 1px solid black;
-    
     border-radius: 20px;
     background-color: rgba(255,117,13,0.95);
-    
 }
 
 .SelctionContainer{ 
     justify-content: center;
     align-items: center;
-    
-    
     width: 80vw;
     height: 50vh;
-    
-    
     display: grid;
     grid-template-columns: 1fr 1fr 1fr ;
     grid-template-rows: 1fr 1fr;
@@ -29,5 +23,4 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
-    
 }

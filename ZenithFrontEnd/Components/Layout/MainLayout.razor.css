@@ -9,8 +9,6 @@
     display: flex;
     justify-content: flex-end;
     padding-right: 10vw;
-    
-    
 }
 
 .NavItem{
@@ -18,5 +16,4 @@
     color: black;
     text-decoration: none;
     margin-right: 2vw;
-    
 }

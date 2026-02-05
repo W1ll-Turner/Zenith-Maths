@@ -1,12 +1,7 @@
-
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-
-
 @inject ProtectedSessionStorage SessionStorage
 @inject NavigationManager NavigationManager
-
 @page "/QuestionSelection"
-
 
 @if (authenticated)
 {
@@ -32,14 +27,8 @@
             <button class="Selection" @onclick="RouteCollectingTerms">
                 <h2>Collecting terms</h2>
             </button>
-
         </div>
-        
-        
     </div>
-    
-    
-    
 }
 else
 {

@@ -18,8 +18,9 @@ public partial class RoundCompletePage : ComponentBase
     private bool readyToDisplay = false;
     private bool authenticated = false;
     
-    protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
+    protected override async Task OnAfterRenderAsync(bool firstRender) 
     {
+        //getting the user ID
         string? Id;
         if (firstRender)
         {
@@ -38,9 +39,8 @@ public partial class RoundCompletePage : ComponentBase
             StateHasChanged();
             try
             {
-                Console.WriteLine(Id);
+                //trying to get the most recent round of quesitoning, if there is nto one an excpetion will be thrown and nothing displayed 
                 string Address = "http://localhost:5148/api/Questions/GetMostRecentQuestionRound/" + Id;
-                Console.WriteLine(Address);
                 HttpResponseMessage response = await Http.GetAsync(Address); 
                 QuestionStatisticResponses.MostRecentQuestionRoundResponse? body = await response.Content.ReadFromJsonAsync<QuestionStatisticResponses.MostRecentQuestionRoundResponse>();
                 Questions = body.Questions;
@@ -51,8 +51,6 @@ public partial class RoundCompletePage : ComponentBase
                 readyToDisplay = false;
             }
         }
-        
-
     }
     
     private async Task<string?> GetId()
@@ -66,6 +64,5 @@ public partial class RoundCompletePage : ComponentBase
         {
             return null;
         }
-        
     }
 }

@@ -6,6 +6,7 @@ public class StatsCalculation : IStatsCalculation
 {
     public async Task<TopicAverages> CalculateTopicAverages(List<shorttermsstatsinfo> info)
     {
+        //if there is nothing in the list will return an empty list of averages, so the averages arent calculautled
         if (info.Count == 0)
         {
             TopicAverages emptyTopic = new TopicAverages()
@@ -14,12 +15,9 @@ public class StatsCalculation : IStatsCalculation
                 averageTime = 0.0,
                 difficulty = 0,
                 numberOfRounds = 0,
-                
             };
-            
             return emptyTopic;
         }
-        
         
         //calucltuin the averges using the arithmetic mean 
         int totalDifficulty = 0;
@@ -52,7 +50,7 @@ public class StatsCalculation : IStatsCalculation
         double AverageScore = averages.averageScore;
         double AverageTime = averages.averageTime;
         
-        //using the mathjemtical functions to code the summary statistics to a value between 0 and 1 
+        //using the mathemtical functions to code the summary statistics to a value between 0 and 1 
         double AverageScoreSigmoidValue = StatisticalFunctions.SigmoidAverageScore(AverageScore);
         double AverageTimeSigmoidValue = StatisticalFunctions.SigmoidAverageTime(AverageTime);
         double CodedDifficulty = (double)difficulty / 3.0;
@@ -62,13 +60,12 @@ public class StatsCalculation : IStatsCalculation
         double[] Values = new double[]{AverageScoreSigmoidValue, AverageTimeSigmoidValue, CodedDifficulty, CodedRoundsCompleted};
         double CompletionScore = StatisticalFunctions.GeometricMean(Values) ;
 
-        //returng the vcompletions 
+        //returng the completions 
         return CompletionScore;
     }
-    
-    
     public async Task<double> CalclulateOverallCompletion(Dictionary<int, double> completion)
     {
+        //putting the values form the dictionary into an array so it can be passed to the geometric mean function
         double[] values = new double[completion.Count];
         int counter = 0;
         foreach (int Key in completion.Keys)
@@ -83,19 +80,18 @@ public class StatsCalculation : IStatsCalculation
 
     public async Task<double> CompoundCompletion(double currentCompletion, double newCompletion)
     {
-        //meaning there is no crrent completion score and so simply return the one that has just been calculated
+        //meaning there is no current completion score and so simply return the one that has just been calculated
         if (double.IsNaN(currentCompletion))
         {
             return newCompletion;
         }
+        //calculating the new completio sore 
         double temp = currentCompletion * newCompletion * 1.2;
         double completion = Math.Sqrt(temp);
-                
+              
+        //making sure the score cannot exceed 1
         completion = Math.Min(1.0, completion);
         return completion;
-                    
-        
-        
     }
 
     public async Task<int> GetBestTopicID(Dictionary<int, double> completion)
@@ -111,7 +107,6 @@ public class StatsCalculation : IStatsCalculation
                 largestValueKey = Key;;
             }
         }
-        
         return largestValueKey;
     }
     public async Task<int> GetWorstTopicID(Dictionary<int, double> completion)
@@ -149,7 +144,4 @@ public class StatsCalculation : IStatsCalculation
         double[] values = [(double)TotalScore/counter, (double)TotalTime/counter,(double)TotalDifficulty/counter];
         return values;
     }
-    
-    
-    
 }

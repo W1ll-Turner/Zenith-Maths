@@ -1,12 +1,10 @@
 using Zenith.Contracts.Request;
 using Zenith.Contracts.Request.Account;
 using Zenith.Models.Account;
-
 namespace ZenithAPI.ContractMapping;
 
 public static class AccountMapping
 {
-
     public static SignUp MapFromSignUpRequest(this SignUpRequest request)
     {
         return new SignUp
@@ -17,8 +15,6 @@ public static class AccountMapping
             Fullname = request.Fullname,
             ClassCode = request.Classcode
         };
-        
-
     }
 
     public static LogIn MapFromLogInRequest(this LoginRequest request)
@@ -29,6 +25,4 @@ public static class AccountMapping
             Username = request.Username,
         };
     }
-    
-    
 }

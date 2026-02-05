@@ -12,9 +12,4 @@ public class QuestionStatisticResponses
         public string difficulty {get; set;}
         public IEnumerable<QuestionModels.AnsweredQuestion>  Questions {get; set;}
     }
-    
-    
-    
-    
-    
 }

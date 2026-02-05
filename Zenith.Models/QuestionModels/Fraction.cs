@@ -1,11 +1,9 @@
 namespace Zenith.Models.QuestionModels;
-
 public class Fraction
 {
     private int Numerator { get; set; }
     private int Denominator { get; set; }
     public double DecimalValue { get; set; }
-    
     public string StringFormat { get; set; }
 
     //conmsturcvotr to take the initial values of the fraction and then put it into a string form and decimal form
@@ -18,19 +16,15 @@ public class Fraction
     }
     
     //using polymorphism and overlaoding the == operator to compare two fractions 
-    public static bool operator ==(Fraction a, Fraction b) 
+    public static bool operator ==(Fraction a, Fraction b)
     {
-        
         if (a.DecimalValue == b.DecimalValue || (a.Numerator == b.Numerator && a.Denominator == b.Denominator))
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
-        
+        return false;
     }
+    
     //overlaoding the != to compare two fractions
     public static bool operator !=(Fraction a, Fraction b)
     {
@@ -119,10 +113,7 @@ public class Fraction
                 break;
                 
             }
-            else
-            {
-                result--;
-            }
+            result--;
         }
         return result;
     }

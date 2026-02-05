@@ -7,8 +7,6 @@
 .UpperSection{
     display: grid;
     grid-template-columns: 3fr 2fr;
-    
-    
 }
 
 .RecentRoundsOfQuestioning{
@@ -27,14 +25,11 @@
     margin: 10px;
     border: 1px solid black;
     border-radius: 20px;
-    
-    
 }
 
 .LowerSection{
     display: grid;
     grid-template-columns: 3fr 1fr;
-    
 }
 
 .StatButtons{
@@ -51,7 +46,6 @@
     background: rgba(255,113,21,0.95);
     justify-content: center;
     align-items: center;
-    
 }
 
 .ContinueButton{
@@ -73,8 +67,6 @@
     background: whitesmoke;
     border:1px solid black;
     border-radius: 20px;
-    
-    
 }
 
 .SecondaryInfo{
@@ -83,7 +75,6 @@
     display:grid;
     grid-template-columns: 1fr 1fr 1fr;
     border-bottom: 1px solid black;
-
 }
 
 .PrimaryInfo{
@@ -94,6 +85,4 @@
     min-height: 5vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
-
-
 }

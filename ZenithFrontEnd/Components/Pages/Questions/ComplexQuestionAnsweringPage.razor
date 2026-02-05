@@ -41,34 +41,28 @@
 
                             </div>
                         }
-
                     }
-
                 </div>
                 <div class="InfoBubble">
                     <p>Q: @questionNum/10</p>
                 </div>
-
             </div>
 
-
             <div class="QuestionAnsweringBox">
-
                 <h3 >@QuestionText</h3>
 
                 <div>
                     <input type="text" @bind:event="oninput" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class="AnswerBox"></input>
                     <button @onclick="AnswerQuestion">Submit</button>
-
                 </div>
-
-
             </div>
-
         }
         else
         {
-            <button @onclick="Start">Start</button>
+            <h2>Select Your Difficulty</h2>
+            <button @onclick="() => Start(1)">1</button>
+            <button @onclick="() => Start(2)">2</button>
+            <button @onclick="() => Start(3)">3</button>
         }
     </div>
 }
@@ -86,8 +80,5 @@ else
             AnswerQuestion();
             UserAnswer = "";
         }
-
-       
     }
-
 }

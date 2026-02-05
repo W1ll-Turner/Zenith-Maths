@@ -11,8 +11,6 @@ namespace ZenithFrontEnd.Components.Pages.Questions;
 
 public partial class QuestionAnsweringPage:ComponentBase
 {
-
-    [Parameter]
     public int Difficulty { get; set; }
     
     [Parameter]
@@ -25,12 +23,9 @@ public partial class QuestionAnsweringPage:ComponentBase
     private IQuestion<Fraction> CurrentQuestion { get; set; }
     private List<QuestionModels.AnsweredQuestion> AnsweredQuestions = new List<QuestionModels.AnsweredQuestion>(); 
     public Dictionary<string, Func<bool>> TopicsMapper { get; set; }
-    
     public bool StopQuestioning { get; set; } = false;
-
     public int[] CorrectAnswers { get; set; } = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     private int questionNum = 0;
-    
     private bool authenticated = false;
     private string UserId;
 
@@ -49,7 +44,6 @@ public partial class QuestionAnsweringPage:ComponentBase
                 UserId = Id;
                 authenticated = true;
             }
-
             StateHasChanged();
         }
     }
@@ -59,49 +53,35 @@ public partial class QuestionAnsweringPage:ComponentBase
         Difficulty = difficulty;
         
         StopQuestioning = true;
-        Console.WriteLine("started");
         //this dictionary maps the topic to the genric methods that will generate the questions, This is dependant on a topic
         TopicsMapper = new Dictionary<string, Func<bool>>()
-        {
-            //the key is the topic and the vlue is a function call that will call the Intitlaise stack method using the appropiate question type 
+        { 
             { "addition", InitialiseQuestionStack<AdditionQuestion> },
             { "subtraction", InitialiseQuestionStack<SubtractionQuestion> },
             { "multiplication", InitialiseQuestionStack<MultiplicationQuestion> },
             { "division", InitialiseQuestionStack<DivisionQuestion> },
-            
-            
-
         };
-
-        Console.WriteLine("dictionary has been made");
+        
         //initilaising the question stack, if the topic cannot be found an exception will be thrown
         try
         {
             TopicsMapper.TryGetValue(Topic, out Func<bool>? intialiseStack);
-            Console.WriteLine("dictionary one worked initilaisng the stack");
             intialiseStack!();
-            return;
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            return;
-            
         }
     }
-    
     
     //using a generic method to initilaise a stack of questions, The type of question will depend on what it is called with from the dictionary but it will correspond to the Question topic 
     private bool InitialiseQuestionStack<TQuestion>() where TQuestion : IQuestion<Fraction>, new()
     {
-        
-        
         QuestionModels.QuestionStack<Fraction> questions = new QuestionModels.QuestionStack<Fraction>();
 
         //genrating 10 quesitons and pushing them onto the stack
         for (int i = 0; i < 10; i++)
         {
-
             TQuestion question = new TQuestion();
             question.Difficulty = Difficulty;
             question.Generate();
@@ -136,7 +116,6 @@ public partial class QuestionAnsweringPage:ComponentBase
         //this if statement will mark the question approprialtely, whether it is an integer or not essentially 
         if (answer.Length == 1 && answer[0] != "" ) //if it is integer
         {
-            Console.WriteLine("Split string" + answer[0]);
             try
             {
                 //making a fraction with denominator one which will maintain the value of the natural number
@@ -152,7 +131,6 @@ public partial class QuestionAnsweringPage:ComponentBase
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Console.WriteLine("the answer was lenth one and faile to be parsed");
             }
             
         }else if (answer.Length == 2)//if it is a fraction
@@ -170,14 +148,13 @@ public partial class QuestionAnsweringPage:ComponentBase
             }
             catch (Exception e)
             {
-                Console.WriteLine("the answer was lenth two and faile to be parsed");
+                Console.WriteLine(e);
             }
             
         }
         else
         {
             AnswerCorrect = false;
-            Console.WriteLine("Answer wrong format ");
             UserAnswer = "Not Answered";
             
             //Updating the Progress tracker on the GUI
@@ -192,6 +169,7 @@ public partial class QuestionAnsweringPage:ComponentBase
 
     private void NextQuestion(bool AnswerCorrect)
     {
+        //initialsing the answered queston model and adding it to the list 
         QuestionModels.AnsweredQuestion answeredQuestion = new QuestionModels.AnsweredQuestion
         {
             Correct = AnswerCorrect,
@@ -205,15 +183,11 @@ public partial class QuestionAnsweringPage:ComponentBase
         
         if (Questions.IsEmpty()) 
         {
-
-            Console.WriteLine("Questions stack is now empty");
             StopQuestioning = false;
             SendResultsToAPI(); //round of questioning has finshed time, send results to API then move user onto the summary screen 
-
         }
         else
         {
-            Console.WriteLine("Starting the Question Sequence");   
             QuestionSequence();
         }
     }
@@ -240,11 +214,8 @@ public partial class QuestionAnsweringPage:ComponentBase
        
        
        //sending the request to the API to store the round of questioning in the database
-       Console.WriteLine("Trying to send therequest UserID: " + UserId);
-       
        HttpResponseMessage response = await Http.PostAsJsonAsync("http://localhost:5148/api/Questions/AddShortTermData", request);
-       
-       NavigationManager.NavigateTo("/RoundComplete");
+       NavigationManager.NavigateTo("/RoundComplete");//moving onto the next page
     }
     
     //this will reset the array that keeps tracks of the users results so that the user can reperat a round 
@@ -262,10 +233,8 @@ public partial class QuestionAnsweringPage:ComponentBase
         ProtectedBrowserStorageResult<string> Id = await SessionStorage.GetAsync<string>("Id");
         if (Id.Success)
         {
-            Console.WriteLine("There is an ID");
             return Id.Value;
         }
-        
         return null;
     }
 }

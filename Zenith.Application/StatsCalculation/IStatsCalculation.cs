@@ -10,7 +10,5 @@ public interface IStatsCalculation
     Task<double> CompoundCompletion(double currentCompletion, double newCompletion);
     Task<int> GetBestTopicID(Dictionary<int, double> completion);
     Task<int> GetWorstTopicID(Dictionary<int, double> completion);
-
     Task<double[]> CalculateOverallAverageTimeAndScore(Dictionary<int, TopicAverages> averages);
-    
 }

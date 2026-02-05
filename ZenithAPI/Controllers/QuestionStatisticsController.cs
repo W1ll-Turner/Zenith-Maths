@@ -4,17 +4,12 @@ using Zenith.Contracts.Request.Account;
 using Zenith.Contracts.Response;
 using Zenith.Models.Account;
 using Zenith.Models.QuestionModels;
-
 namespace ZenithAPI.Controllers;
-
-
 
 [ApiController]
 [Route("api/Questions")]
 public class QuestionStatisticsController : ControllerBase
 {
-    
-    
     private readonly IQuestionStatisticsRepo _questionStatisticsRepo;
 
     public QuestionStatisticsController(IQuestionStatisticsRepo questionStatisticsRepo)
@@ -31,8 +26,6 @@ public class QuestionStatisticsController : ControllerBase
             return BadRequest(ModelState);
         }
         
-        Console.WriteLine("request received");
-        
         //getting the Answered Questions from the request 
         IEnumerable<QuestionModels.AnsweredQuestion> Questions = request.questions;
         //getting the user ID from the request
@@ -45,7 +38,6 @@ public class QuestionStatisticsController : ControllerBase
             Topic = request.Topic,
             TimeCompleted = request.TimeCompleted,
         };
-
         Console.WriteLine("Attempting the repo");
         //adding the infromation to the database
         bool success = await _questionStatisticsRepo.AddQuestioningRound(Questions, statistics, student);
@@ -55,15 +47,15 @@ public class QuestionStatisticsController : ControllerBase
     [HttpPost("AddLongTermData/{Id}")]
     public async Task<IActionResult> AddLongTermData([FromRoute] string Id)
     {
+        //passing the ID into the databse layer to handle the logic
         bool success = await _questionStatisticsRepo.AddLongTermData(Id);
         return success ? Ok() : BadRequest();
     }
     
-    //this needs to changing to put the ID into the root 
     [HttpGet("GetMostRecentQuestionRound/{Id}")]
     public async Task<IActionResult> GetMostRecentQuestionRound([FromRoute] string  Id)
     {
-        Console.WriteLine("received request");
+        //passing the Id into the repo to get the data out 
         CompletedRoundOfQuestioning questionRound= await _questionStatisticsRepo.GetMostRecentQuestionRound(Id);
 
         if (questionRound == null)
@@ -71,6 +63,7 @@ public class QuestionStatisticsController : ControllerBase
             return NotFound();
         }
         
+        //mapping to the response model 
         QuestionStatisticResponses.MostRecentQuestionRoundResponse response = new QuestionStatisticResponses.MostRecentQuestionRoundResponse()
             {
                 averageTime = Convert.ToString(questionRound.averageTime),
@@ -80,20 +73,18 @@ public class QuestionStatisticsController : ControllerBase
                 
                 Questions = questionRound.answeredQuestions
             };
-        Console.WriteLine(response.averageTime);
-        
         return Ok(response);
     }
 
     [HttpGet("GetAllQuestioningRounds/{studentId}")]
     public async Task<IActionResult> GetAllQuestioningRounds([FromRoute] string studentId)
     {
+        //getting all data from the databse and returinig it 
         IEnumerable<CompletedRoundOfQuestioning> Response = await _questionStatisticsRepo.GetAllQuestionRounds(studentId);
         
         return Ok(Response);
     }
     
-
     [HttpGet("GetAllweeklySummarys/{studentid}")]
     public async Task<IActionResult> GetAllWeeklySummarys([FromRoute] string studentid)
     {
@@ -101,7 +92,4 @@ public class QuestionStatisticsController : ControllerBase
         
         return Ok(Summaries);
     }
-    
-    
-    
 }

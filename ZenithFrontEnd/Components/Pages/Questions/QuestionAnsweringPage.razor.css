@@ -8,12 +8,10 @@
 
 .Green{
     background-color: rgba(41,255,34,0.95);
-    
 }
 
 .Red{
     background-color: rgba(255,5,0,0.95)
-    
 }
 
 .Grey{
@@ -21,8 +19,6 @@
 }
 
 .ProgressBar{
-    
-    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -39,7 +35,6 @@
     text-align: center;
     justify-content: center;
     align-items: center;
-    
 }
 
 .InfoBubble{
@@ -53,12 +48,8 @@
     border-radius: 30px;
     background-color: #38b6ff;
     margin: 2vw
-    
 }
 .InformationBar{
     display: grid;
     grid-template-columns: 1fr 1fr 3fr 1fr ;
-    
-    
-    
 }
