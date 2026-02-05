@@ -14,11 +14,8 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string ConfirmPassword { get; set; }
-    
     public required string ClassCode { get; set; }
-    
     private bool authenticated = false;
-
     private bool Error { get; set; } = false;
     private async void Submit()
     {
@@ -32,8 +29,10 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
             Error = true;
         }
         
+        //mkainig sure the passwords match 
         if (Match && Password == ConfirmPassword)
         {
+            //preparing the request objetc 
             SignUpRequest request = new SignUpRequest()
             {
                 Username = Username,
@@ -43,9 +42,7 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
                 Fullname = FirstName + " " + LastName,
             };
             
-            //sending the sign up request
-            Console.WriteLine("sending request");
-            
+            //sedning the request for a new acconut to be made
             HttpResponseMessage response = await http.PostAsJsonAsync("http://localhost:5148/api/Account/SignUp", request);
             
             if (response.IsSuccessStatusCode)
@@ -54,7 +51,7 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
             }
             else
             {
-                //this will mean that their details were duplicate, or coul;ntt be added to the databse 
+                //this will mean that their details were duplicate, or could not be added to the databse 
                 Error = true;
             }
         }
@@ -63,9 +60,6 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
             //will display the text detialing that the given credentails are incorrect
             Error = true; 
         }
-        
-
-
     }
 
     private bool StringMatch() // this will be used to match all the feilds to the respecitve regex
@@ -92,10 +86,11 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
         {
             return false;
         }
-
     }
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
+
+    protected override async Task
+        OnAfterRenderAsync(
+            bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
     {
         if (firstRender)
         {
@@ -113,9 +108,6 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
             StateHasChanged();
         }
     }
-
-    
-
     private async Task<string> GetId()
     {
         ProtectedBrowserStorageResult<string> Id = await SessionStorage.GetAsync<string>("Id");
@@ -127,7 +119,5 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
         {
             return null;
         }
-        
     }
-
 }

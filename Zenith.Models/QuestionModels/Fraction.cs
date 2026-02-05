@@ -6,7 +6,7 @@ public class Fraction
     public double DecimalValue { get; set; }
     public string StringFormat { get; set; }
 
-    //conmsturcvotr to take the initial values of the fraction and then put it into a string form and decimal form
+    //constructor to take the initial values of the fraction and then put it into a string form and decimal form
     public Fraction(int numerator, int denominator)
     {
         Numerator = numerator;

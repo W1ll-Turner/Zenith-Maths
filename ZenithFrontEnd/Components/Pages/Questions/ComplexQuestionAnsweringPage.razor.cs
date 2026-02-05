@@ -52,8 +52,6 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
         TopicsMapper = new Dictionary<string, Func<bool>>()
         {
             {"quadratic", InitialiseQuestionStack<QuadraticQuestion>},
-            { "collectingterms", InitialiseQuestionStack<CollectingTermsQuestion> },
-            
         };
         
         //attempting to intilaise the stack of questions if the topic parameter is present in the route 

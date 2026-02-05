@@ -1,11 +1,8 @@
 ﻿@page "/Login"
-
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject HttpClient Http
 @inject ProtectedSessionStorage SessionStorage
 @inject NavigationManager NavigationManager
-
-
 
 @if (authenticated)
 {
@@ -14,14 +11,11 @@
 else
 {
     <h3 class="Title">Login</h3>
-
-
-
+    
     @if (Error) @*This is displaying the error messaghe when the username or password are incorrect, they did not match the regex or did not validate  by the API*@
     {
         <p style="color:#b32121">Wrong username or password</p>
     }
-
     <form @onsubmit="Submit">
         <div class="LogInInputs"> @*This is the forms taking the username and password to log in *@
 
@@ -33,7 +27,5 @@ else
                 <button type="submit" class="Button">Login</button>
             </div>
         </div>
-
     </form>
-    
 }

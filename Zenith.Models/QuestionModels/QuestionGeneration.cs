@@ -47,17 +47,10 @@ public class AdditionQuestion : IQuestion<Fraction>
         //computing the answer
         Answer = operand1 + operand2;
         AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
-        int DecimalOrFraction = random.Next(0,1);
         
-        //this will return a fraction or decimal question at random each time, 0 being a fraction and 1 a decimal
-        if (DecimalOrFraction == 0)
-        {
-            return operand1.StringFormat + " + " + operand2.StringFormat;
-        }
-        else
-        {
-            return Convert.ToString(operand1.DecimalValue) + " + " + Convert.ToString(operand2.DecimalValue) + " ="; 
-        }
+        //returning the answer
+        return operand1.StringFormat + " + " + operand2.StringFormat;
+        
     }
 
     public string GenerateMedium()
@@ -70,16 +63,9 @@ public class AdditionQuestion : IQuestion<Fraction>
         //computing the answer
         Answer = operand1 + operand2;
         AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
-        int DecimalOrFraction = random.Next(0,1);
-        //this will return a fraction or decimal question at random each time, 0 being a fraction and 1 a decimal
-        if (DecimalOrFraction == 0)
-        {
-            return operand1.StringFormat + " + " + operand2.StringFormat;
-        }
-        else
-        {
-            return Convert.ToString(operand1.DecimalValue) + " + " + Convert.ToString(operand2.DecimalValue) + " ="; 
-        }
+        
+        return operand1.StringFormat + " + " + operand2.StringFormat;
+        
     }
 
     public string GenerateEasy()
@@ -152,16 +138,8 @@ public class SubtractionQuestion : IQuestion<Fraction>
         Answer = operand1 - operand2;
         AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
         
-         //returning the answer as either a decimal or fraction 
-         int DecimalOrFraction = random.Next(0,1);
-         if (DecimalOrFraction == 0)
-         {
-             return operand1.StringFormat + " - " + operand2.StringFormat;
-         }
-         else
-         {
-             return Convert.ToString(operand1.DecimalValue) + " - " + Convert.ToString(operand2.DecimalValue);
-         }
+        return operand1.StringFormat + " - " + operand2.StringFormat;
+        
     }
 
     public string GenerateMedium()
@@ -178,16 +156,7 @@ public class SubtractionQuestion : IQuestion<Fraction>
         Answer = operand1 - operand2;
         AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
         
-        //returning the question string as a decimal or fraction whcih is decided randomly
-        int DecimalOrFraction = random.Next(0,1);
-        if (DecimalOrFraction == 0)
-        {
-            return operand1.StringFormat + " - " + operand2.StringFormat;
-        }
-        else
-        {
-            return Convert.ToString(operand1.DecimalValue) + " + " + Convert.ToString(operand2.DecimalValue);
-        }
+        return operand1.StringFormat + " - " + operand2.StringFormat;
     }
 
     public string GenerateEasy()
@@ -266,7 +235,7 @@ public class MultiplicationQuestion : IQuestion<Fraction>
         Answer = answer;
         AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
        
-        return operand1.StringFormat + " × " + Convert.ToString(Answer.DecimalValue);
+        return operand1.StringFormat + " × " + operand2.StringFormat;
     }
 
     public string GenerateMedium()
@@ -283,7 +252,7 @@ public class MultiplicationQuestion : IQuestion<Fraction>
        Answer = answer;
        AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);
        
-       return operand1.StringFormat + " × " + Convert.ToString(Answer.DecimalValue);
+       return operand1.StringFormat + " × " + operand2.StringFormat;
     }
 
     public string GenerateEasy()
@@ -292,7 +261,7 @@ public class MultiplicationQuestion : IQuestion<Fraction>
         Random random = new Random();
         
         //used to pick which type of mulitplication question
-        int num1 = random.Next(0,1);
+        int num1 = random.Next(0,2);
         if(num1==1)
         {
             //randomly generating the operands
@@ -301,6 +270,8 @@ public class MultiplicationQuestion : IQuestion<Fraction>
             
             //computing the answer
             int answer = operand1 * operand2;
+            Fraction a = new Fraction(answer, 1);
+            Answer = a;
             AnswerStringFormat = Convert.ToString(answer);
             
             //returning the question string 
@@ -320,9 +291,6 @@ public class MultiplicationQuestion : IQuestion<Fraction>
             //returning the question text
             return Convert.ToString(operand1) + " × " + Convert.ToString(operand2);
         }
-        
-        
-        
     }
 
     public bool CheckAnswer(Fraction userAnswer)
@@ -583,52 +551,6 @@ public class QuadraticQuestion : IQuestion<string>
         {
             return true;
         }
-        
         return false;
     }
 }
-
-
-
-public class CollectingTermsQuestion : IQuestion<string>
-{
-    public string QuestionText { get; set; }
-    public string Answer { get; set; }
-    public string AnswerStringFormat { get; set; }
-    public Dictionary<int, Func<string>> Generators { get; set; }
-    public int Difficulty { get; set; }
-    public void Generate()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GenerateHard()
-    {
-        //2 to 3 varibales easy fracions 
-        throw new NotImplementedException();
-    }
-
-    public string GenerateMedium()
-    {
-        //three to 5 vraibles whole numbers
-        throw new NotImplementedException();
-    }
-
-    public string GenerateEasy()
-    {
-        //two variables, whole numbers
-        
-        //generate coeffecitnt 
-        //group togterh howver keep each on separte, have a loop for each one 
-        //figure out answer onject later 
-        Random random = new Random();
-        throw new NotImplementedException();
-
-    }
-
-    public bool CheckAnswer(string UserAnswer)
-    {
-        throw new NotImplementedException();
-    }
-}
-
