@@ -12,19 +12,16 @@ public partial class StudentDashboard : ComponentBase
     private LineChart lineChart = default!;
     private LineChartOptions lineChartOptions = default!;
     private ChartData chartData = default!;
-    
     //will make sure the page does not try to redner without the required information first, prevenmting a null exception being thrown 
     public bool FinishedRendering = false;
-    
     //stores the most recent stat so they cna be displayed in more detial 
     WeeklySummary MostRecentStats {get; set;}
-    
     //stores every collection of long terms stats
     private IEnumerable<WeeklySummary>? Summaries { get; set; }
     //stores all of the recently answered rounds of questioning 
     private List<CompletedRoundOfQuestioning>? QuestioningRounds { get; set; }
     //stores the round of questioning the user would like to see in more detial 
-    private IEnumerable<QuestionModels.AnsweredQuestion> CurrentQuestioningRound {get; set;}
+    private IEnumerable<QuestionModels.AnsweredQuestion> CurrentQuestioningRound {get; set;} = new List<QuestionModels.AnsweredQuestion>();
     //tracks whether to open the window that will track the most recent round of quesitoning
     private bool displayQuestionRound = false;
     private bool authenticated = false;
@@ -34,10 +31,13 @@ public partial class StudentDashboard : ComponentBase
         //the code will not need to be run after the firts render as all data has been assigned already
         if (!firstRender)
         {
+            InitialiseGraph();
+        
+            await lineChart.InitializeAsync(chartData, lineChartOptions);
+            StateHasChanged();
             return;
         }
-
-        string? Id = await GetId();
+        string Id = await GetId();
         if (Id == null)
         {
             authenticated = false;
@@ -53,14 +53,24 @@ public partial class StudentDashboard : ComponentBase
         //getting all of the recent question rounds from API 
         string questioningRoundsAddress = "http://localhost:5148/api/Questions/GetAllQuestioningRounds/" + Id;
         HttpResponseMessage questionRoundsResponse = await Http.GetAsync(questioningRoundsAddress);
-        QuestioningRounds = await questionRoundsResponse.Content.ReadFromJsonAsync<List<CompletedRoundOfQuestioning>>();
-
-        //asinging the most recvent stats
-        MostRecentStats = Summaries.Last();
+        if (questionRoundsResponse.StatusCode == System.Net.HttpStatusCode.NoContent)
+        {
+            QuestioningRounds = null;
+            CurrentQuestioningRound = new List<QuestionModels.AnsweredQuestion>();
+        }
+        else
+        {
+            QuestioningRounds =
+                await questionRoundsResponse.Content.ReadFromJsonAsync<List<CompletedRoundOfQuestioning>>();
+        }
         
-        InitialiseGraph();
+        //asigning the most recvent stats
+        if (questionRoundsResponse.IsSuccessStatusCode)
+        {
+            MostRecentStats = Summaries?.LastOrDefault();
+        }
         
-        await lineChart.InitializeAsync(chartData, lineChartOptions);
+        FinishedRendering = true;
         StateHasChanged();
     }
 
@@ -80,8 +90,6 @@ public partial class StudentDashboard : ComponentBase
         }
         
         var datasets = new List<IChartDataset>();
-        
-        
         
         var dataset1 = new LineChartDataset
         {
@@ -106,10 +114,6 @@ public partial class StudentDashboard : ComponentBase
         lineChartOptions.Scales.Y!.Title = new ChartAxesTitle { Text = "Completion", Display = true };
         lineChartOptions.Scales.Y.Max = 1.0;
         lineChartOptions.Scales.Y.Min = 0.0;
-        
-        FinishedRendering = true;
-        
-        
     }
 
     //when a user wnats to see a round of questioning they have completed this will open the window so they can view it

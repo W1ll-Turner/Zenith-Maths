@@ -4,11 +4,11 @@
 @inject NavigationManager NavigationManager
 @inject ProtectedSessionStorage SessionStorage
 
-@if (authenticated)
+@if(!isAuthenticated)
 {
     <div class="page signUpPage">
         <h3 class="Title">SignUp</h3>
-        @if (Error == true)
+        @if (Error == true) 
         {
             <p>Credentials incorrect, check your passwords match, is it a valid email address, try changing username so as it could be duplicate</p>
         }

@@ -3,6 +3,7 @@
 @inject ProtectedSessionStorage SessionStorage
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 @page "/Dashboard"
 
 @if (authenticated)
@@ -19,20 +20,26 @@
                         <LineChart @ref="lineChart" Width="700"/>
                     </div>
                 </div>
-
                 <div class="RecentRoundsOfQuestioning">
                     <h2>Recent Question Rounds</h2>
-                    @for (int i = 0; i < QuestioningRounds.Count; i++)
+                    @if (QuestioningRounds == null)
                     {
-                        var index = i;
+                        <h2 class="roundText">You have not completed any rounds of questioning recently</h2>
+                    }
+                    else
+                    {
+                        @for (int i = 0; i < QuestioningRounds.Count; i++)
+                        {
+                            var index = i;
 
-                        <div class="CompletedQuestionRound">
-                            <p>Score: @QuestioningRounds[i].score</p>
-                            <p>Topic: @QuestioningRounds[i].topic</p>
-                            <p>Difficulty: @QuestioningRounds[i].difficulty</p>
-                            <p>AverageTime: @QuestioningRounds[i].averageTime</p>
-                            <button @onclick="() => DisplayRoundOfQuestioning(index)">View</button>
-                        </div>
+                            <div class="CompletedQuestionRound">
+                                <p>Score: @QuestioningRounds[i].score</p>
+                                <p>Topic: @QuestioningRounds[i].topic</p>
+                                <p>Difficulty: @QuestioningRounds[i].difficulty</p>
+                                <p>AverageTime: @QuestioningRounds[i].averageTime</p>
+                                <button @onclick="() => DisplayRoundOfQuestioning(index)">View</button>
+                            </div>
+                        }
                     }
                 </div>
             </div>
@@ -58,11 +65,10 @@
                         <p>Current Completion: @MostRecentStats.completion</p>
                     </div>
                 </div>
-                <div >
+                <div class="ContinueButtonContainer">
                     <button @onclick="NavigateToSelection" class="ContinueButton">Continue to Questions</button>
                 </div>
             </div>
-
         </div>
 
         @if (displayQuestionRound)

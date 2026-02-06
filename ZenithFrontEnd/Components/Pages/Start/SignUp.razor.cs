@@ -15,7 +15,7 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
     public required string LastName { get; set; }
     public required string ConfirmPassword { get; set; }
     public required string ClassCode { get; set; }
-    private bool authenticated = false;
+    private bool isAuthenticated = false;
     private bool Error { get; set; } = false;
     private async void Submit()
     {
@@ -88,23 +88,20 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
         }
     }
 
-    protected override async Task
-        OnAfterRenderAsync(
-            bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
+    protected override async Task OnAfterRenderAsync(bool firstRender) //This is getting the user's ID from local storage, to make sure it is ready to be passed into the API calls
     {
         if (firstRender)
         {
             string Id = await GetId();
-            Console.WriteLine(Id);
             if (Id == null)
             {
-                authenticated = false;
+                isAuthenticated = false;
             }
             else
             {
-                authenticated = true;
+                Console.WriteLine("Authenticated" + Id);
+                isAuthenticated = true;
             }
-
             StateHasChanged();
         }
     }
@@ -115,9 +112,7 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
         {
             return Id.Value;
         }
-        else
-        {
-            return null;
-        }
+        return null;
+        
     }
 }

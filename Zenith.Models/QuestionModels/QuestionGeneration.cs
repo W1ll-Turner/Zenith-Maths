@@ -367,7 +367,7 @@ public class DivisionQuestion : IQuestion<Fraction>
         AnswerStringFormat = Answer.StringFormat + "or" + Convert.ToString(Answer.DecimalValue);    
         
         //returning the question text
-        string questionText = operand1.ToString() + "÷" + operand2.ToString();
+        string questionText = operand1.StringFormat + "÷" + operand2.StringFormat;
         return questionText;
     }
 

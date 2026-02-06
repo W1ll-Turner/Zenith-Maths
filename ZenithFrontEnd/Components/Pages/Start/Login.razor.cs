@@ -2,8 +2,6 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Zenith.Contracts.Request;
-using Zenith.Contracts.Request.Account;
-
 namespace ZenithFrontEnd.Components.Pages.Start;
 
 public partial class Login : ComponentBase //inheritance from ASP.NET Framework allowing for the code to be linked into the HTML file
@@ -30,9 +28,12 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
                 Password = Password
             };
             
-            //making the log in request to the API 
-            Http.BaseAddress = new Uri("http://localhost:5148/api/");
-            HttpResponseMessage response = await Http.PostAsJsonAsync("Account/Login", request); 
+            //making the log in request to the API
+            using HttpClient httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri("http://localhost:5148/api/"),
+            };
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync("Account/Login", request); 
             if (response.IsSuccessStatusCode)//if log in was succsefful
             {
                string id = response.Content.ReadAsStringAsync().Result; //getting the USer's ID from the response
@@ -43,6 +44,7 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
             else
             {
                 Error = true; // username or password were incorrect
+                response.Dispose();
             }
         }
         else //This will display the message that they have given an invalid username and password
@@ -64,7 +66,6 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
             {
                 authenticated = true;
             }
-
             StateHasChanged();
         }
     }

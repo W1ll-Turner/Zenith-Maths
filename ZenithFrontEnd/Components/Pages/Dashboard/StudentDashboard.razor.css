@@ -55,7 +55,12 @@
     border-radius: 20px;
     background: #38b6ff;
 }
-
+.ContinueButtonContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
+    align-items: center;
+}
 
 .QuestionRoundDisplay{
     position: absolute;
@@ -85,4 +90,7 @@
     min-height: 5vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
+}
+.roundText{
+    font-weight: lighter;
 }
