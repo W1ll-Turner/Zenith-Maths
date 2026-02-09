@@ -52,7 +52,7 @@
                 <h3 >@QuestionText</h3>
 
                 <div>
-                    <input type="text" @bind:event="oninput" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class="AnswerBox"></input>
+                    <input type="text" @bind:event="oninput" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class="AnswerBox" maxlength="10"></input>
                     <button @onclick="AnswerQuestion">Submit</button>
                 </div>
             </div>
