@@ -50,6 +50,8 @@ public partial class StudentDashboard : ComponentBase
         HttpResponseMessage summariesResponse = await Http.GetAsync(weeklySummariesAddress);
         Summaries = await summariesResponse.Content.ReadFromJsonAsync<IEnumerable<WeeklySummary>>();
         
+        
+        
         //getting all of the recent question rounds from API 
         string questioningRoundsAddress = "http://localhost:5148/api/Questions/GetAllQuestioningRounds/" + Id;
         HttpResponseMessage questionRoundsResponse = await Http.GetAsync(questioningRoundsAddress);

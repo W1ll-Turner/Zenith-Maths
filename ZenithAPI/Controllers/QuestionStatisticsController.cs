@@ -38,7 +38,7 @@ public class QuestionStatisticsController : ControllerBase
             Topic = request.Topic,
             TimeCompleted = request.TimeCompleted,
         };
-        Console.WriteLine("Attempting the repo");
+        Console.WriteLine("Attempting the repo the topic id" + statistics.Topic);
         //adding the infromation to the database
         bool success = await _questionStatisticsRepo.AddQuestioningRound(Questions, statistics, student);
         return Ok();

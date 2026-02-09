@@ -77,15 +77,17 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                     }
                 }
                 //cross parameterised SQL query working to add the information to the shortterm stats table, works acrss the topic and shorttermstats table 
-                var addStatistcsCommand = new NpgsqlCommand("INSERT INTO shorttermstats(shorttermid, averagetime, score, topicid, difficulty, timecompleted) SELECT @shorttermid, @averagetime, @score, topicid , @difficulty, @timecompleted FROM topic WHERE topicname = 'addition'", connection);
+                var addStatistcsCommand = new NpgsqlCommand("INSERT INTO shorttermstats(shorttermid, averagetime, score, topicid, difficulty, timecompleted) SELECT @shorttermid, @averagetime, @score, topicid , @difficulty, @timecompleted FROM topic WHERE topicname = @topicid ", connection);
                 //assgingin the parameters 
                 addStatistcsCommand.Parameters.AddWithValue("@shorttermid", shortTermId);
                 addStatistcsCommand.Parameters.AddWithValue("@averagetime", averageTime);
                 addStatistcsCommand.Parameters.AddWithValue("@score", score);
                 addStatistcsCommand.Parameters.AddWithValue("@difficulty", Statistics.Difficulty);
                 addStatistcsCommand.Parameters.AddWithValue("@timecompleted", Statistics.TimeCompleted);
+                addStatistcsCommand.Parameters.AddWithValue("@topicid", Statistics.Topic);
                 //executing the query 
                 await addStatistcsCommand.ExecuteNonQueryAsync();
+                Console.WriteLine("query executed ");
                 
                 //adding the relation to the shortterterms stast bridge so it can be accessed properly later
                 var addRelationCommand = new NpgsqlCommand("INSERT INTO shorttermstatsbridge(studentid, shorttermid) VALUES (@studentid, @shorttermid)", connection);
@@ -247,7 +249,7 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
 
             //getting the topic name from the ID
             string topic = "";
-            var getTopicCommand = new NpgsqlCommand("SELECT * FROM topic WHERE topicid = @topicid", connection);
+            var getTopicCommand = new NpgsqlCommand("SELECT topicname FROM topic WHERE topicid = @topicid", connection);
             //assigning parameters
             getTopicCommand.Parameters.AddWithValue("@topicid", topicId);
             //reading the topic

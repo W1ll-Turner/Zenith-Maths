@@ -210,7 +210,8 @@ public partial class QuestionAnsweringPage:ComponentBase
            TimeCompleted = time,
            questions =  AnsweredQuestions
        };
-       
+       Console.WriteLine(Topic);
+       Console.WriteLine("that was the topic");
        
        
        //sending the request to the API to store the round of questioning in the database
