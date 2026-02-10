@@ -56,15 +56,12 @@
                 <h3 >@QuestionText</h3>
 
                 <input type="text" @bind:event="oninput" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class="AnswerBox" maxlength="10"></input>
-                <button @onclick="AnswerQuestion">Submit</button>
-
+                <button @onclick="OnButtonClick">Submit</button>
             </div>
-
         }
         else
         {
             <h2>Select your difficulty</h2>
-            
             <button @onclick="() => Start(1)">1</button>
             <button @onclick="() => Start(2)">2</button>
             <button @onclick="() => Start(3)">3</button>
@@ -85,8 +82,14 @@ else
             AnswerQuestion();
             UserAnswer = "";
         }
+    }
+    private void OnButtonClick()
+    {
+        KeyboardEventHandler(new KeyboardEventArgs
+        {
+            Key = "Enter"
+        });
 
-       
     }
 
 }
