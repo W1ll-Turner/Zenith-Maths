@@ -130,6 +130,9 @@ public partial class QuestionAnsweringPage:ComponentBase
             }
             catch (Exception e)
             {
+                AnswerCorrect = false;
+                questionNum++;
+                CorrectAnswers[questionNum] = AnswerCorrect ? 1 : 2;
                 Console.WriteLine(e);
             }
             
@@ -148,6 +151,10 @@ public partial class QuestionAnsweringPage:ComponentBase
             }
             catch (Exception e)
             {
+                AnswerCorrect = false;
+                CorrectAnswers[questionNum] = AnswerCorrect ? 1 : 2;
+                questionNum++;
+
                 Console.WriteLine(e);
             }
             
@@ -158,6 +165,7 @@ public partial class QuestionAnsweringPage:ComponentBase
             UserAnswer = "Not Answered";
             
             //Updating the Progress tracker on the GUI
+            CorrectAnswers[questionNum] = AnswerCorrect ? 1 : 2;
             questionNum++;
             StateHasChanged();
         }

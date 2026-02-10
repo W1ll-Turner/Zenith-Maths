@@ -94,3 +94,10 @@
 .roundText{
     font-weight: lighter;
 }
+
+.ViewButton{
+    background-color:#38b6ff;
+    border:1px solid black;
+    border-radius: 20px;
+    
+}
