@@ -15,7 +15,7 @@ public class AccountRepo : IAccountRepo
     
     public async Task<bool> CreateAccount(SignUp account)
     {
-        //connecting to the database
+        //connecting to the database, this query is to make sure no other user's have used the username provided 
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
             //this will get the number of user's in the databse who already have the username that was provided. So the repo knows whetehr to reject the request due to a duplicate account name 
@@ -35,7 +35,7 @@ public class AccountRepo : IAccountRepo
             }
         }
         
-        //connecting to the database 
+        //connecting to the database, this will add the accont ot the database
         await using (var connection = (NpgsqlConnection)await _dbConnection.CreateDBConnection())
         {
             try

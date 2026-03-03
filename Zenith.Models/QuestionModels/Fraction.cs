@@ -62,7 +62,7 @@ public class Fraction
         operand2.Numerator *= operand1.Denominator;
         
         //getting the numerator of the asnwer 
-        int numerator = operand1.Numerator - operand2.Denominator;
+        int numerator = operand1.Numerator - operand2.Numerator;
         //getting highest comomoon factor of what will be the new fraction
         int hcf = HighestCommonFactor(numerator, commonDenominator);
         
@@ -115,6 +115,7 @@ public class Fraction
             }
             result--;
         }
-        return result;
+        //if no factor is found 1 is returned
+        return 1;
     }
 }

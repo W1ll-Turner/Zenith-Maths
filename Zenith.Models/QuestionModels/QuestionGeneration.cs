@@ -475,7 +475,6 @@ public class QuadraticQuestion : IQuestion<string>
         int solution1 = random.Next(-10,10);
         int solution2 = random.Next(-10,10);
         int coefficient = random.Next(1,3);
-        Console.WriteLine(coefficient);
         string QuestionText;
         
         int sumOfRoots = (solution1 + solution2) * -coefficient;
@@ -507,10 +506,6 @@ public class QuadraticQuestion : IQuestion<string>
         
         Answer = Convert.ToString(solution1) + " " + Convert.ToString(solution2);
         AnswerStringFormat = Answer;
-
-
-        Console.WriteLine(Answer);
-        Console.WriteLine(QuestionText);
         return QuestionText;
     }
 

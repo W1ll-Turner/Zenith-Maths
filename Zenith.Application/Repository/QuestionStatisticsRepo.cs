@@ -316,6 +316,11 @@ public class QuestionStatisticsRepo : IQuestionStatisticsRepo
                 }
             }
         }
+
+        if (keys.Count == 0)
+        {
+            return false;
+        }
         
         //this dictionary will store the topicId and a list of all question rounds linked to the topic, allowing for statistics to be orderd by topic 
         Dictionary<int, List<shorttermsstatsinfo>> topicData = new Dictionary<int, List<shorttermsstatsinfo>>();
