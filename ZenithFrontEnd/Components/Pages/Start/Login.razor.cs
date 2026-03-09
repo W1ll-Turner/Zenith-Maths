@@ -12,8 +12,8 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
     public bool authenticated = false;
     private async Task Submit()
     {
-        string usernamePattern = "[a-zA-Z_0-9]+";   //Regex to match a Username, (Any combination of a-z 0-9 with an underscore, no spaces)
-        string passwordPattern = "[a-zA-Z0-9]+";// regex to match a Password. This is any combination of a-z 0-9 however with no spaces or underscores
+        string usernamePattern = "^[a-zA-Z0-9]+$";   //Regex to match a Username, (Any combination of a-z 0-9 with an underscore, no spaces)
+        string passwordPattern = "^[a-zA-Z0-9@#$%^&*!]+$";// regex to match a Password. This is any combination of a-z 0-9 however with no spaces or underscores
         
         // initialising the regex patterns
         Regex userRg = new Regex(usernamePattern);
@@ -22,6 +22,7 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         //mathcing the patterns so data is in a valid form 
         if (userRg.IsMatch(Username) && passwordRg.IsMatch(Password))
         {
+            Console.WriteLine("Sending request to API");
             LoginRequest request = new LoginRequest() //making the log in request object
             {
                 Username = Username,
@@ -49,6 +50,7 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         }
         else //This will display the message that they have given an invalid username and password
         {
+            Console.WriteLine("No request made");
             Error = true;
         }
     }
@@ -57,7 +59,6 @@ public partial class Login : ComponentBase //inheritance from ASP.NET Framework 
         if (firstRender)
         {
             string Id = await GetId();
-            Console.WriteLine(Id);
             if (Id == null)
             {
                 authenticated = false;

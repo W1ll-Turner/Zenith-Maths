@@ -8,8 +8,6 @@
 @if (authenticated)
 {
     <div class="QuestionComponent">
-        <h1>Welcome to the Question page</h1>
-
         @if (StopQuestioning)
         {
             <div class="InformationBar">
@@ -52,7 +50,7 @@
 
 
             <div class="QuestionAnsweringBox">
-
+            
                 <h3 >@QuestionText</h3>
 
                 <input type="text" @bind:event="oninput" @bind="UserAnswer" @onkeydown="KeyboardEventHandler" class="AnswerBox" maxlength="10"></input>
@@ -61,10 +59,14 @@
         }
         else
         {
-            <h2>Select your difficulty</h2>
-            <button @onclick="() => Start(1)">1</button>
-            <button @onclick="() => Start(2)">2</button>
-            <button @onclick="() => Start(3)">3</button>
+            <h1 class="Title">Welcome to the Question page</h1>
+            <div class = "DifficultySelection">
+                <h2>Select your difficulty</h2>
+                <button class="difficultybutton" @onclick="() => Start(1)">1</button>
+                <button class="difficultybutton" @onclick="() => Start(2)">2</button>
+                <button class="difficultybutton" @onclick="() => Start(3)">3</button>
+            </div>
+            
         }
     </div>
 }

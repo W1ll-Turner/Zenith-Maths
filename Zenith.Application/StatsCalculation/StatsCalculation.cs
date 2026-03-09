@@ -111,7 +111,7 @@ public class StatsCalculation : IStatsCalculation
     }
     public async Task<int> GetWorstTopicID(Dictionary<int, double> completion)
     {
-        double lowestValue = 2.0;
+        double lowestValue = 10.0;
         int lowestValueKey = 0;
 
         foreach (int Key in completion.Keys)

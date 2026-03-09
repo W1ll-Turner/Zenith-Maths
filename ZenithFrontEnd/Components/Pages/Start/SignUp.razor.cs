@@ -65,13 +65,13 @@ public partial class SignUp : ComponentBase // inheritacne from the framwokr to 
     private bool StringMatch() // this will be used to match all the feilds to the respecitve regex
     {
         const string usernamePattern = "[a-zA-Z_0-9]+"; //regex, for username, any value of a-z 0-9 with no spaces
-        const string passwordPattern = "[a-zA-Z0-9]+"; //regex, for password. any numbre or letter with no spaces of underscores
+        const string passwordPattern = "[a-zA-Z0-9@#$%^&*!]+"; //regex, for password. any numbre or letter with no spaces of underscores
         const string namePattern = "[A-Z][a-z]+"; //regex for a name, a capital lettyer followed by any number of a-z
         const string emailPattern = "^[A-Za-z0-9][A-Za-z1-9!#$%^&*_+=?`{}|~.]+[A-Za-z0-9!#$%^&*_+=?`{}|~.\\\\-]+[A-Za-z0-9]@[A-Za-z1-9][A-Za-z0-9\\\\-]+[A-Za-z0-9].[A-Za-z0-9.]+[A-Za-z0-9]$"; //regex for an email
         const string ClassCodePattern = "^[A-Za-z0-9]+$";
         
         //initialisi g the patterns in regex
-        Regex ClassCodeRg = new Regex(ClassCodePattern);
+        Regex ClassCodeRg = new Regex(ClassCodePattern);    
         Regex userRg = new Regex(usernamePattern);
         Regex passwordRg = new Regex(passwordPattern);
         Regex nameRg = new Regex(namePattern);

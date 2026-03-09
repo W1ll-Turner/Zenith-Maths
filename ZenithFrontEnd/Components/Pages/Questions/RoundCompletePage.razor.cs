@@ -25,7 +25,6 @@ public partial class RoundCompletePage : ComponentBase
         if (firstRender)
         {
             Id = await GetId();
-            Console.WriteLine(Id);
             if (Id == null)
             {
                 authenticated = false;

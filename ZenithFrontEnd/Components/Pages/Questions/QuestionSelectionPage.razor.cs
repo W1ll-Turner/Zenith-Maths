@@ -14,7 +14,6 @@ public partial class QuestionSelectionPage : ComponentBase
         if (firstRender)
         {
             string Id = await GetId();
-            Console.WriteLine(Id);
             if (Id == null)
             {
                 authenticated = false;
@@ -68,16 +67,7 @@ public partial class QuestionSelectionPage : ComponentBase
     
     private void RouteQuadratic()
     {
-        NavigationManager.NavigateTo($"/Questions/quadratic");
+        NavigationManager.NavigateTo($"/AdvancedQuestions/quadratic");
     }
-
-    private void RouteCollectingTerms()
-    {
-        NavigationManager.NavigateTo($"/Questions/collectingterms");
-    }
-
-    
-    
-    
     
 }

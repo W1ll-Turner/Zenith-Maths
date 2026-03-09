@@ -48,9 +48,31 @@
     width: 7vw;
     border-radius: 30px;
     background-color: #38b6ff;
-    margin: 2vw
+    margin: 2vw;
+    Justify-content: center;
+    align-items: center;
+    text-align: center;
+    
 }
 .InformationBar{
     display: grid;
     grid-template-columns: 1fr 1fr 3fr 1fr ;
+}
+
+.difficultybutton{
+    background-color: #38b6ff;
+    color: white;
+    border: none;
+    padding: 20px;
+    font: inherit;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.DifficultySelection{
+    align-items:center;
+    width: 100vw;
+    justify-self: center;
+    text-align: center;
 }
