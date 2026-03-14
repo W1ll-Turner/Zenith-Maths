@@ -201,6 +201,7 @@ public partial class QuestionAnsweringPage:ComponentBase
     
     private async Task  SendResultsToAPI()
     {
+        Console.WriteLine("Starting to send reuslts ");
         //resetting the array keeping track of the user's answers 
         ResetArray();
         

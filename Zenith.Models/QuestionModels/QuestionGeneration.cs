@@ -542,7 +542,16 @@ public class QuadraticQuestion : IQuestion<string>
 
     public bool CheckAnswer(string UserAnswer)
     {
-        if (UserAnswer == Answer)
+        string[] correct = Answer.Split(' ');
+        string[] input = UserAnswer.Split(' ');
+
+        if (correct.Length != 2 || input.Length != 2)
+        {
+            return false;
+            
+        }
+        
+        if ((correct[0] == input[0] && correct[1] == input[1]) || (correct[0] == input[1] && correct[1] == input[0]))
         {
             return true;
         }

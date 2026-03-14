@@ -42,7 +42,7 @@ public class Fraction
         operand2.Numerator *= operand1.Denominator;
         
         //Numerator of the answeer
-        int numerator = operand1.Numerator + operand2.Denominator;
+        int numerator = operand1.Numerator + operand2.Numerator;
         
         //Finding the Highest common factor
         int hcf = HighestCommonFactor(numerator, commonDenominator);

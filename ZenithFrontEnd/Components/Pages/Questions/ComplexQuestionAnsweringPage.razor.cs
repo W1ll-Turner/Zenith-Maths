@@ -36,6 +36,7 @@ public partial class ComplexQuestionAnsweringPage : ComponentBase
             }
             else
             {
+                StudentId = Id;
                 authenticated = true;
             }
             StateHasChanged();
